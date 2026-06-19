@@ -24,8 +24,8 @@ pengaduan yang masuk.
 ## Instalasi
 
 ```bash
-git clone <url-repo-ini>
-cd silpm
+git clone https://github.com/Hatta-Fahri/sistem_pengaduan.git
+cd sistem_pengaduan
 
 composer install
 
@@ -57,6 +57,21 @@ php artisan serve
 ```
 
 Aplikasi dapat diakses di `http://localhost:8000`.
+
+## Konfigurasi Email
+
+Secara default `MAIL_MAILER=log` — email tidak benar-benar terkirim, hanya
+ditulis ke `storage/logs/laravel.log` (cukup untuk development cepat). Untuk
+menerima email sungguhan, isi blok `MAIL_*` di `.env` dengan salah satu:
+
+- **Gmail SMTP** — `MAIL_MAILER=smtp`, `MAIL_HOST=smtp.gmail.com`, `MAIL_PORT=587`,
+  `MAIL_USERNAME` = alamat Gmail, `MAIL_PASSWORD` = [App Password](https://myaccount.google.com/apppasswords)
+  (bukan password akun biasa), `MAIL_FROM_ADDRESS` harus sama dengan `MAIL_USERNAME`.
+- **Mailtrap sandbox** — `MAIL_MAILER=smtp`, `MAIL_HOST=sandbox.smtp.mailtrap.io`,
+  `MAIL_PORT=2525`, kredensial dari dashboard [mailtrap.io](https://mailtrap.io)
+  (email akan tertangkap di inbox Mailtrap, bukan ke email tujuan asli — cocok untuk testing tanpa spam).
+
+Jangan commit `.env` — kredensial email selalu lewat file lokal, bukan `.env.example`.
 
 ## Menjalankan Queue Worker
 
