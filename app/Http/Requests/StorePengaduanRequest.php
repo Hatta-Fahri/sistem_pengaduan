@@ -15,6 +15,17 @@ class StorePengaduanRequest extends FormRequest
     }
 
     /**
+     * Normalisasi checkbox "is_anonymous" jadi boolean sebelum divalidasi
+     * (checkbox tidak tercentang tidak ikut terkirim oleh browser).
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'is_anonymous' => $this->boolean('is_anonymous'),
+        ]);
+    }
+
+    /**
      * Aturan validasi server-side untuk form pengaduan baru.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
@@ -27,6 +38,7 @@ class StorePengaduanRequest extends FormRequest
             'subjek'           => ['required', 'string', 'min:10', 'max:255'],
             'isi_pengaduan'    => ['required', 'string', 'min:30', 'max:5000'],
             'bukti'            => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
+            'is_anonymous'     => ['required', 'boolean'],
         ];
     }
 

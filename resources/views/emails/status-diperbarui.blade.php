@@ -18,8 +18,11 @@
         .badge-gray   { background: #f3f4f6; color: #374151; }
         .badge-blue   { background: #dbeafe; color: #1e40af; }
         .badge-yellow { background: #fef3c7; color: #92400e; }
+        .badge-cyan   { background: #cffafe; color: #155e75; }
         .badge-green  { background: #d1fae5; color: #065f46; }
         .badge-red    { background: #fee2e2; color: #991b1b; }
+        .deadline-box { background: #ecfeff; border: 1px solid #a5f3fc; border-radius: 6px; padding: 14px 18px; margin: 20px 0; }
+        .deadline-box p { font-size: 14px; color: #155e75; line-height: 1.6; }
         .arrow { color: #9ca3af; font-size: 18px; font-weight: bold; }
         .info-box { background: #eff6ff; border-left: 4px solid #1d4ed8; border-radius: 4px; padding: 16px 20px; margin: 20px 0; }
         .info-box .label { font-size: 11px; font-weight: bold; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
@@ -56,6 +59,7 @@
                 'blue'   => 'badge-blue',
                 'yellow' => 'badge-yellow',
                 'orange' => 'badge-yellow',
+                'cyan'   => 'badge-cyan',
                 'green'  => 'badge-green',
                 'red'    => 'badge-red',
             ];
@@ -91,6 +95,13 @@
         <div class="catatan-box">
             <div class="label">Catatan dari Admin</div>
             <p>{{ $pengaduan->catatan_admin }}</p>
+        </div>
+        @endif
+
+        <!-- Pengingat batas waktu konfirmasi -->
+        @if ($pengaduan->status === \App\Models\Pengaduan::STATUS_MENUNGGU_KONFIRMASI)
+        <div class="deadline-box">
+            <p><strong>Mohon konfirmasi dalam {{ \App\Models\Pengaduan::SLA_HARI }} hari.</strong> Admin menandai pengaduan ini selesai ditangani. Silakan login dan konfirmasi di halaman detail pengaduan — jika tidak ada respons dalam {{ \App\Models\Pengaduan::SLA_HARI }} hari, pengaduan akan otomatis ditutup.</p>
         </div>
         @endif
 

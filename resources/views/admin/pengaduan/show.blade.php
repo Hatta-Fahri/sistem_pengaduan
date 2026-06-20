@@ -7,6 +7,7 @@
         'menunggu_verifikasi'           => 'bg-gray-100 text-gray-700 ring-1 ring-gray-200',
         'sedang_diproses'               => 'bg-blue-50 text-blue-700 ring-1 ring-blue-200',
         'membutuhkan_informasi_tambahan'=> 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
+        'menunggu_konfirmasi_mahasiswa' => 'bg-cyan-50 text-cyan-700 ring-1 ring-cyan-200',
         'selesai_ditangani'             => 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
         'ditolak'                       => 'bg-red-50 text-red-700 ring-1 ring-red-200',
     ];
@@ -14,6 +15,7 @@
         'menunggu_verifikasi'           => 'bg-gray-300 ring-gray-100',
         'sedang_diproses'               => 'bg-blue-500 ring-blue-100',
         'membutuhkan_informasi_tambahan'=> 'bg-amber-500 ring-amber-100',
+        'menunggu_konfirmasi_mahasiswa' => 'bg-cyan-500 ring-cyan-100',
         'selesai_ditangani'             => 'bg-emerald-500 ring-emerald-100',
         'ditolak'                       => 'bg-red-500 ring-red-100',
     ];
@@ -74,24 +76,34 @@
                             <svg class="w-5 h-5 text-polmed-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                             <h3 class="font-bold text-gray-800 tracking-tight">Informasi Pelapor</h3>
                         </div>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-                            <div>
-                                <p class="text-gray-400 text-xs mb-1 uppercase tracking-wider font-semibold">Nama Lengkap</p>
-                                <p class="font-bold text-gray-900">{{ $pengaduan->user->name }}</p>
+                        @if ($pengaduan->is_anonymous)
+                            <div class="flex items-center gap-3 text-gray-500">
+                                <svg class="w-8 h-8 text-purple-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.243 4.243L9.88 9.88"/></svg>
+                                <div>
+                                    <p class="font-bold text-gray-600">Identitas pelapor disembunyikan (anonim)</p>
+                                    <p class="text-xs text-gray-400 mt-0.5">Mahasiswa memilih untuk tidak menampilkan identitasnya. Notifikasi status tetap terkirim otomatis ke akun terkait.</p>
+                                </div>
                             </div>
-                            <div>
-                                <p class="text-gray-400 text-xs mb-1 uppercase tracking-wider font-semibold">NIM</p>
-                                <p class="font-bold text-gray-900">{{ $pengaduan->user->nim }}</p>
+                        @else
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+                                <div>
+                                    <p class="text-gray-400 text-xs mb-1 uppercase tracking-wider font-semibold">Nama Lengkap</p>
+                                    <p class="font-bold text-gray-900">{{ $pengaduan->user->name }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 text-xs mb-1 uppercase tracking-wider font-semibold">NIM</p>
+                                    <p class="font-bold text-gray-900">{{ $pengaduan->user->nim }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 text-xs mb-1 uppercase tracking-wider font-semibold">Kelas</p>
+                                    <p class="font-bold text-gray-900">{{ $pengaduan->user->class }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 text-xs mb-1 uppercase tracking-wider font-semibold">Email</p>
+                                    <p class="font-medium text-gray-700 truncate" title="{{ $pengaduan->user->email }}">{{ $pengaduan->user->email }}</p>
+                                </div>
                             </div>
-                            <div>
-                                <p class="text-gray-400 text-xs mb-1 uppercase tracking-wider font-semibold">Kelas</p>
-                                <p class="font-bold text-gray-900">{{ $pengaduan->user->class }}</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-400 text-xs mb-1 uppercase tracking-wider font-semibold">Email</p>
-                                <p class="font-medium text-gray-700 truncate" title="{{ $pengaduan->user->email }}">{{ $pengaduan->user->email }}</p>
-                            </div>
-                        </div>
+                        @endif
                     </div>
 
                     {{-- Isi Pengaduan --}}
@@ -187,7 +199,7 @@
                                 
                                 <div class="text-xs font-semibold text-gray-400 flex items-center gap-1.5 group-odd:md:justify-end">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                                    Admin: {{ $history->changedBy->name }}
+                                    {{ $history->changedBy?->name ?? 'Sistem (Otomatis)' }}
                                 </div>
                             </div>
                         </div>
@@ -215,8 +227,18 @@
                     <h2 class="text-xl font-bold text-gray-900 tracking-tight">Update Status</h2>
                 </div>
                 
+                @if ($pengaduan->isFinal())
+                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-5 flex items-start gap-3">
+                        <svg class="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 10-8 0v4h8z"/></svg>
+                        <p class="text-sm font-semibold text-gray-600 leading-relaxed">
+                            Pengaduan ini sudah <strong>{{ $statusLabels[$pengaduan->status] ?? $pengaduan->status }}</strong> dan terkunci permanen. Status tidak dapat diubah lagi oleh admin.
+                        </p>
+                    </div>
+                @else
                 <p class="text-sm text-gray-500 font-medium mb-6 leading-relaxed">
                     Ubah status penanganan pengaduan ini. Mahasiswa akan menerima notifikasi email secara otomatis.
+                    Pilih "Menunggu Konfirmasi Mahasiswa" jika sudah selesai ditangani — pengaduan baru benar-benar
+                    selesai setelah dikonfirmasi mahasiswa (atau otomatis setelah {{ \App\Models\Pengaduan::SLA_HARI }} hari tanpa respons).
                 </p>
 
                 {{-- Tampilkan error validasi --}}
@@ -248,7 +270,7 @@
                                     class="appearance-none w-full px-4 py-3 bg-gray-50 border rounded-xl text-sm font-semibold text-gray-800 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue focus:bg-white outline-none transition-all
                                            {{ $errors->has('status') ? 'border-red-400 bg-red-50' : 'border-gray-200' }}">
                                 <option value="">-- Pilih Status --</option>
-                                @foreach ($statusLabels as $key => $label)
+                                @foreach ($statusOptions as $key => $label)
                                     <option value="{{ $key }}">{{ $label }}</option>
                                 @endforeach
                             </select>
@@ -281,6 +303,7 @@
                         Simpan Perubahan
                     </button>
                 </form>
+                @endif
 
             </div>
         </div>

@@ -7,6 +7,7 @@
         'menunggu_verifikasi'           => 'bg-gray-100 text-gray-700 ring-1 ring-gray-200',
         'sedang_diproses'               => 'bg-blue-50 text-blue-700 ring-1 ring-blue-200',
         'membutuhkan_informasi_tambahan'=> 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
+        'menunggu_konfirmasi_mahasiswa' => 'bg-cyan-50 text-cyan-700 ring-1 ring-cyan-200',
         'selesai_ditangani'             => 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
         'ditolak'                       => 'bg-red-50 text-red-700 ring-1 ring-red-200',
     ];
@@ -16,6 +17,7 @@
         'menunggu_verifikasi'           => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>',
         'sedang_diproses'               => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>',
         'membutuhkan_informasi_tambahan'=> '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+        'menunggu_konfirmasi_mahasiswa' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
         'selesai_ditangani'             => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>',
         'ditolak'                       => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>',
     ];
@@ -25,6 +27,7 @@
         'menunggu_verifikasi'           => 'bg-gray-100 text-gray-500',
         'sedang_diproses'               => 'bg-blue-100 text-blue-600',
         'membutuhkan_informasi_tambahan'=> 'bg-amber-100 text-amber-600',
+        'menunggu_konfirmasi_mahasiswa' => 'bg-cyan-100 text-cyan-600',
         'selesai_ditangani'             => 'bg-emerald-100 text-emerald-600',
         'ditolak'                       => 'bg-red-100 text-red-600',
     ];
@@ -64,6 +67,12 @@
                         <span class="inline-flex items-center px-3 py-1 rounded-md text-xs font-bold bg-gray-100 text-gray-600 border border-gray-200 tracking-wide uppercase">
                             {{ $pengaduan->kategori->nama_kategori }}
                         </span>
+                        @if ($pengaduan->is_anonymous)
+                        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-md text-xs font-bold bg-purple-50 text-purple-600 border border-purple-200 tracking-wide uppercase">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.243 4.243L9.88 9.88"/></svg>
+                            Diajukan Anonim
+                        </span>
+                        @endif
                     </div>
 
                     <!-- Judul -->
@@ -117,6 +126,56 @@
 
         {{-- ===== Kolom Samping (Kanan): Timeline Status ===== --}}
         <div class="lg:col-span-1 space-y-6">
+
+            {{-- Aksi Konfirmasi Penyelesaian --}}
+            @if ($pengaduan->status === \App\Models\Pengaduan::STATUS_MENUNGGU_KONFIRMASI)
+            <div class="bg-cyan-50 border border-cyan-200 rounded-2xl p-6 sm:p-7" x-data="{ tolakOpen: false }">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-100 text-cyan-700 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <h3 class="font-bold text-cyan-900 tracking-tight">Admin Menandai Selesai</h3>
+                </div>
+                <p class="text-sm text-cyan-800 font-medium leading-relaxed mb-5">
+                    Admin sudah menandai pengaduan ini selesai ditangani. Mohon konfirmasi — jika tidak ada respons
+                    dalam <strong>{{ \App\Models\Pengaduan::SLA_HARI }} hari</strong>, pengaduan akan otomatis ditutup.
+                </p>
+
+                @error('alasan')
+                    <p class="text-xs font-bold text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-4">{{ $message }}</p>
+                @enderror
+
+                <div class="flex flex-col gap-2.5">
+                    <form method="POST" action="{{ route('mahasiswa.pengaduan.konfirmasi-selesai', $pengaduan) }}">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit"
+                                class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow-sm transition-all">
+                            Ya, Konfirmasi Selesai
+                        </button>
+                    </form>
+
+                    <button type="button" @click="tolakOpen = !tolakOpen"
+                            class="w-full py-3 bg-white border-2 border-cyan-300 hover:bg-cyan-100 text-cyan-800 font-bold rounded-xl text-sm transition-all">
+                        Belum Selesai
+                    </button>
+
+                    <form x-cloak x-show="tolakOpen" x-transition method="POST"
+                          action="{{ route('mahasiswa.pengaduan.tolak-konfirmasi', $pengaduan) }}" class="mt-1">
+                        @csrf
+                        @method('PATCH')
+                        <textarea name="alasan" rows="3" maxlength="2000" required
+                                  placeholder="Jelaskan mengapa pengaduan ini belum selesai..."
+                                  class="w-full px-3.5 py-2.5 bg-white border border-cyan-300 rounded-xl text-sm font-medium text-gray-800 focus:ring-4 focus:ring-cyan-500/20 focus:border-cyan-500 outline-none transition-all resize-none mb-2.5">{{ old('alasan') }}</textarea>
+                        <button type="submit"
+                                class="w-full py-2.5 bg-cyan-700 hover:bg-cyan-800 text-white font-bold rounded-xl text-sm transition-all">
+                            Kirim & Buka Kembali
+                        </button>
+                    </form>
+                </div>
+            </div>
+            @endif
+
             <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-8 relative">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="w-10 h-10 bg-polmed-light rounded-xl flex items-center justify-center text-polmed-blue">

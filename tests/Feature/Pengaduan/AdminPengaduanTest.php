@@ -118,9 +118,68 @@ class AdminPengaduanTest extends TestCase
 
         $this->actingAs($admin)->patch(
             route('admin.pengaduan.update-status', $pengaduan),
-            ['status' => Pengaduan::STATUS_SELESAI, 'catatan_admin' => 'Selesai ditangani.']
+            ['status' => Pengaduan::STATUS_MENUNGGU_KONFIRMASI, 'catatan_admin' => 'Selesai ditangani.']
         );
 
         Mail::assertQueued(StatusDiperbarui::class);
+    }
+
+    public function test_admin_tidak_bisa_set_status_selesai_secara_langsung(): void
+    {
+        $admin     = User::factory()->create(['role' => 'admin']);
+        $mahasiswa = User::factory()->create(['role' => 'mahasiswa']);
+        $pengaduan = $this->buatPengaduan($mahasiswa);
+
+        $response = $this->actingAs($admin)->patch(
+            route('admin.pengaduan.update-status', $pengaduan),
+            ['status' => Pengaduan::STATUS_SELESAI]
+        );
+
+        $response->assertSessionHasErrors('status');
+        $this->assertDatabaseHas('pengaduan', [
+            'id'     => $pengaduan->id,
+            'status' => Pengaduan::STATUS_MENUNGGU,
+        ]);
+    }
+
+    public function test_admin_bisa_set_status_menunggu_konfirmasi(): void
+    {
+        Mail::fake();
+
+        $admin     = User::factory()->create(['role' => 'admin']);
+        $mahasiswa = User::factory()->create(['role' => 'mahasiswa']);
+        $pengaduan = $this->buatPengaduan($mahasiswa);
+
+        $response = $this->actingAs($admin)->patch(
+            route('admin.pengaduan.update-status', $pengaduan),
+            ['status' => Pengaduan::STATUS_MENUNGGU_KONFIRMASI]
+        );
+
+        $response->assertRedirect(route('admin.pengaduan.show', $pengaduan));
+        $this->assertDatabaseHas('pengaduan', [
+            'id'     => $pengaduan->id,
+            'status' => Pengaduan::STATUS_MENUNGGU_KONFIRMASI,
+        ]);
+    }
+
+    public function test_status_final_tidak_bisa_diubah_lagi(): void
+    {
+        Mail::fake();
+
+        $admin     = User::factory()->create(['role' => 'admin']);
+        $mahasiswa = User::factory()->create(['role' => 'mahasiswa']);
+        $pengaduan = $this->buatPengaduan($mahasiswa);
+        $pengaduan->update(['status' => Pengaduan::STATUS_SELESAI]);
+
+        $response = $this->actingAs($admin)->patch(
+            route('admin.pengaduan.update-status', $pengaduan),
+            ['status' => Pengaduan::STATUS_DIPROSES]
+        );
+
+        $response->assertSessionHasErrors('status');
+        $this->assertDatabaseHas('pengaduan', [
+            'id'     => $pengaduan->id,
+            'status' => Pengaduan::STATUS_SELESAI,
+        ]);
     }
 }

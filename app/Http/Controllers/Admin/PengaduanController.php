@@ -51,13 +51,18 @@ class PengaduanController extends Controller
         }
 
         // Filter berdasarkan pencarian: nama mahasiswa, NIM, atau subjek
+        // Pencarian nama/NIM dikecualikan untuk pengaduan anonim — supaya admin
+        // tidak bisa "mencari" nama mahasiswa tertentu untuk menyingkap pelapor anonim.
         if ($request->filled('search')) {
             $search = strip_tags(trim($request->search));
             $query->where(function ($q) use ($search) {
                 $q->where('subjek', 'like', '%' . $search . '%')
-                  ->orWhereHas('user', function ($uq) use ($search) {
-                      $uq->where('name', 'like', '%' . $search . '%')
-                         ->orWhere('nim', 'like', '%' . $search . '%');
+                  ->orWhere(function ($idq) use ($search) {
+                      $idq->where('is_anonymous', false)
+                          ->whereHas('user', function ($uq) use ($search) {
+                              $uq->where('name', 'like', '%' . $search . '%')
+                                 ->orWhere('nim', 'like', '%' . $search . '%');
+                          });
                   });
             });
         }
@@ -91,7 +96,12 @@ class PengaduanController extends Controller
         $statusLabels = Pengaduan::statusLabels();
         $statusColors = Pengaduan::statusColors();
 
-        return view('admin.pengaduan.show', compact('pengaduan', 'statusLabels', 'statusColors'));
+        // Opsi status yang bisa dipilih admin di form update — STATUS_SELESAI dikecualikan
+        // karena admin hanya bisa membawa pengaduan ke "menunggu konfirmasi", bukan langsung selesai.
+        $statusOptions = $statusLabels;
+        unset($statusOptions[Pengaduan::STATUS_SELESAI]);
+
+        return view('admin.pengaduan.show', compact('pengaduan', 'statusLabels', 'statusColors', 'statusOptions'));
     }
 
     /**
@@ -158,9 +168,9 @@ class PengaduanController extends Controller
             foreach ($pengaduan as $index => $p) {
                 fputcsv($handle, [
                     $index + 1,
-                    $p->user->name,
-                    $p->user->nim,
-                    $p->user->class,
+                    $p->is_anonymous ? 'Anonim' : $p->user->name,
+                    $p->is_anonymous ? '-' : $p->user->nim,
+                    $p->is_anonymous ? '-' : $p->user->class,
                     $p->kategori->nama_kategori,
                     $p->subjek,
                     $p->tanggal_kejadian->format('d/m/Y'),

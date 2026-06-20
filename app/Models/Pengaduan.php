@@ -10,6 +10,7 @@ class Pengaduan extends Model
 
     protected $fillable = [
         'user_id',
+        'is_anonymous',
         'kategori_id',
         'tanggal_kejadian',
         'subjek',
@@ -21,15 +22,28 @@ class Pengaduan extends Model
 
     protected $casts = [
         'tanggal_kejadian' => 'datetime',
+        'is_anonymous'     => 'boolean',
     ];
 
     // ===================== Konstanta Status =====================
 
     const STATUS_MENUNGGU              = 'menunggu_verifikasi';
-    const STATUS_DIPROSES              = 'sedang_diproses';
-    const STATUS_BUTUH_INFO            = 'membutuhkan_informasi_tambahan';
-    const STATUS_SELESAI               = 'selesai_ditangani';
-    const STATUS_DITOLAK               = 'ditolak';
+    const STATUS_DIPROSES               = 'sedang_diproses';
+    const STATUS_BUTUH_INFO             = 'membutuhkan_informasi_tambahan';
+    const STATUS_MENUNGGU_KONFIRMASI    = 'menunggu_konfirmasi_mahasiswa';
+    const STATUS_SELESAI                = 'selesai_ditangani';
+    const STATUS_DITOLAK                = 'ditolak';
+
+    /**
+     * Status yang sudah final — tidak dapat diubah lagi oleh siapapun.
+     */
+    const STATUS_FINAL = [self::STATUS_SELESAI, self::STATUS_DITOLAK];
+
+    /**
+     * Jumlah hari batas SLA: dipakai untuk auto-close di status menunggu konfirmasi
+     * mahasiswa, dan untuk menandai pengaduan "terlambat" di status non-final lainnya.
+     */
+    const SLA_HARI = 3;
 
     /**
      * Daftar label status yang ramah pengguna.
@@ -37,11 +51,12 @@ class Pengaduan extends Model
     public static function statusLabels(): array
     {
         return [
-            self::STATUS_MENUNGGU   => 'Menunggu Verifikasi',
-            self::STATUS_DIPROSES   => 'Sedang Diproses',
-            self::STATUS_BUTUH_INFO => 'Membutuhkan Informasi Tambahan',
-            self::STATUS_SELESAI    => 'Selesai Ditangani',
-            self::STATUS_DITOLAK    => 'Ditolak',
+            self::STATUS_MENUNGGU           => 'Menunggu Verifikasi',
+            self::STATUS_DIPROSES            => 'Sedang Diproses',
+            self::STATUS_BUTUH_INFO          => 'Membutuhkan Informasi Tambahan',
+            self::STATUS_MENUNGGU_KONFIRMASI => 'Menunggu Konfirmasi Mahasiswa',
+            self::STATUS_SELESAI             => 'Selesai Ditangani',
+            self::STATUS_DITOLAK             => 'Ditolak',
         ];
     }
 
@@ -51,11 +66,12 @@ class Pengaduan extends Model
     public static function statusColors(): array
     {
         return [
-            self::STATUS_MENUNGGU   => 'yellow',
-            self::STATUS_DIPROSES   => 'blue',
-            self::STATUS_BUTUH_INFO => 'orange',
-            self::STATUS_SELESAI    => 'green',
-            self::STATUS_DITOLAK    => 'red',
+            self::STATUS_MENUNGGU           => 'yellow',
+            self::STATUS_DIPROSES            => 'blue',
+            self::STATUS_BUTUH_INFO          => 'orange',
+            self::STATUS_MENUNGGU_KONFIRMASI => 'cyan',
+            self::STATUS_SELESAI             => 'green',
+            self::STATUS_DITOLAK             => 'red',
         ];
     }
 
@@ -65,6 +81,23 @@ class Pengaduan extends Model
     public function getStatusLabelAttribute(): string
     {
         return self::statusLabels()[$this->status] ?? $this->status;
+    }
+
+    /**
+     * Status final tidak dapat diubah lagi (lihat PengaduanService::updateStatus).
+     */
+    public function isFinal(): bool
+    {
+        return in_array($this->status, self::STATUS_FINAL, true);
+    }
+
+    /**
+     * True jika sudah melewati SLA_HARI hari tanpa perubahan status, dan belum final.
+     * Dipakai untuk menandai pengaduan yang "terlantar" di dashboard admin.
+     */
+    public function getIsOverdueAttribute(): bool
+    {
+        return ! $this->isFinal() && $this->updated_at->lte(now()->subDays(self::SLA_HARI));
     }
 
     /**
@@ -133,5 +166,14 @@ class Pengaduan extends Model
     public function scopeMilikSaya($query)
     {
         return $query->where('user_id', auth()->id());
+    }
+
+    /**
+     * Pengaduan non-final yang sudah melewati SLA_HARI hari tanpa perubahan status.
+     */
+    public function scopeOverdue($query)
+    {
+        return $query->whereNotIn('status', self::STATUS_FINAL)
+            ->where('updated_at', '<=', now()->subDays(self::SLA_HARI));
     }
 }

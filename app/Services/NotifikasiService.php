@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Mail\KonfirmasiDitolakAdmin;
 use App\Mail\PengaduanBaruAdmin;
 use App\Mail\PengaduanDiterima;
 use App\Mail\StatusDiperbarui;
@@ -126,6 +127,39 @@ class NotifikasiService
                 pengaduanId: $pengaduan->id,
                 status: 'failed',
             );
+        }
+    }
+
+    /**
+     * Kirim notifikasi ke semua admin bahwa mahasiswa menolak konfirmasi penyelesaian
+     * (menyatakan pengaduan belum selesai), beserta alasannya.
+     * Dispatched via Queue.
+     */
+    public function kirimKonfirmasiDitolakAdmin(Pengaduan $pengaduan, string $alasan): void
+    {
+        $subject = '[SILPM] Mahasiswa Menyatakan Belum Selesai — Pengaduan #' . $pengaduan->id;
+
+        try {
+            $pengaduan->loadMissing(['user', 'kategori']);
+
+            $admins = User::where('role', 'admin')->get();
+
+            foreach ($admins as $admin) {
+                Mail::to($admin->email)
+                    ->queue(new KonfirmasiDitolakAdmin($pengaduan, $alasan));
+
+                $this->catatEmailLog(
+                    recipientEmail: $admin->email,
+                    subject: $subject,
+                    type: 'konfirmasi_ditolak_admin',
+                    pengaduanId: $pengaduan->id,
+                    status: 'sent',
+                );
+            }
+        } catch (\Throwable $e) {
+            Log::error('[SILPM Email] Gagal dispatch KonfirmasiDitolakAdmin: ' . $e->getMessage(), [
+                'pengaduan_id' => $pengaduan->id,
+            ]);
         }
     }
 

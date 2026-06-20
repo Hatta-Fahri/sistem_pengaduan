@@ -42,22 +42,29 @@
         <!-- Data Pelapor -->
         <div class="pelapor-box">
             <div class="section-label">Identitas Pelapor</div>
-            <div class="info-row">
-                <span class="key">Nama</span>
-                <span class="val">{{ $pengaduan->user->name }}</span>
-            </div>
-            <div class="info-row">
-                <span class="key">NIM</span>
-                <span class="val">{{ $pengaduan->user->nim }}</span>
-            </div>
-            <div class="info-row">
-                <span class="key">Kelas</span>
-                <span class="val">{{ $pengaduan->user->class }}</span>
-            </div>
-            <div class="info-row">
-                <span class="key">Email</span>
-                <span class="val">{{ $pengaduan->user->email }}</span>
-            </div>
+            @if ($pengaduan->is_anonymous)
+                <div class="info-row">
+                    <span class="key">Identitas</span>
+                    <span class="val">Disembunyikan (Anonim)</span>
+                </div>
+            @else
+                <div class="info-row">
+                    <span class="key">Nama</span>
+                    <span class="val">{{ $pengaduan->user->name }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="key">NIM</span>
+                    <span class="val">{{ $pengaduan->user->nim }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="key">Kelas</span>
+                    <span class="val">{{ $pengaduan->user->class }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="key">Email</span>
+                    <span class="val">{{ $pengaduan->user->email }}</span>
+                </div>
+            @endif
         </div>
 
         <!-- Detail Pengaduan -->

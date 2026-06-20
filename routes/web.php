@@ -43,6 +43,10 @@ Route::prefix('mahasiswa')
             ->name('pengaduan.store');
         Route::get('/pengaduan/{pengaduan}', [Mahasiswa\PengaduanController::class, 'show'])
             ->name('pengaduan.show');
+        Route::patch('/pengaduan/{pengaduan}/konfirmasi-selesai', [Mahasiswa\PengaduanController::class, 'konfirmasiSelesai'])
+            ->name('pengaduan.konfirmasi-selesai');
+        Route::patch('/pengaduan/{pengaduan}/tolak-konfirmasi', [Mahasiswa\PengaduanController::class, 'tolakKonfirmasi'])
+            ->name('pengaduan.tolak-konfirmasi');
 
         // Profil mahasiswa
         Route::get('/profil', [ProfileController::class, 'edit'])->name('profil.edit');

@@ -16,12 +16,14 @@ class DashboardController extends Controller
     {
         // Statistik seluruh pengaduan (admin melihat semua)
         $stats = [
-            'total'         => Pengaduan::count(),
-            'menunggu'      => Pengaduan::byStatus(Pengaduan::STATUS_MENUNGGU)->count(),
-            'diproses'      => Pengaduan::byStatus(Pengaduan::STATUS_DIPROSES)->count(),
-            'butuh_info'    => Pengaduan::byStatus(Pengaduan::STATUS_BUTUH_INFO)->count(),
-            'selesai'       => Pengaduan::byStatus(Pengaduan::STATUS_SELESAI)->count(),
-            'ditolak'       => Pengaduan::byStatus(Pengaduan::STATUS_DITOLAK)->count(),
+            'total'               => Pengaduan::count(),
+            'menunggu'            => Pengaduan::byStatus(Pengaduan::STATUS_MENUNGGU)->count(),
+            'diproses'            => Pengaduan::byStatus(Pengaduan::STATUS_DIPROSES)->count(),
+            'butuh_info'          => Pengaduan::byStatus(Pengaduan::STATUS_BUTUH_INFO)->count(),
+            'menunggu_konfirmasi' => Pengaduan::byStatus(Pengaduan::STATUS_MENUNGGU_KONFIRMASI)->count(),
+            'selesai'             => Pengaduan::byStatus(Pengaduan::STATUS_SELESAI)->count(),
+            'ditolak'             => Pengaduan::byStatus(Pengaduan::STATUS_DITOLAK)->count(),
+            'overdue'             => Pengaduan::overdue()->count(),
         ];
 
         // 10 pengaduan terbaru masuk
@@ -30,6 +32,13 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
 
-        return view('admin.dashboard', compact('stats', 'pengaduanTerbaru'));
+        // Pengaduan yang sudah terlantar (overdue) — paling lama menunggu duluan
+        $pengaduanOverdue = Pengaduan::with(['user', 'kategori'])
+            ->overdue()
+            ->orderBy('updated_at', 'asc')
+            ->limit(5)
+            ->get();
+
+        return view('admin.dashboard', compact('stats', 'pengaduanTerbaru', 'pengaduanOverdue'));
     }
 }

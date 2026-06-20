@@ -19,6 +19,8 @@ class UpdateStatusRequest extends FormRequest
     /**
      * Aturan validasi untuk update status pengaduan.
      * catatan_admin wajib diisi jika status = ditolak atau membutuhkan_informasi_tambahan.
+     * STATUS_SELESAI sengaja tidak ada di daftar — admin hanya bisa membawa pengaduan ke
+     * menunggu_konfirmasi_mahasiswa, baru mahasiswa (atau auto-close) yang menjadikannya selesai.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
@@ -36,7 +38,7 @@ class UpdateStatusRequest extends FormRequest
                     Pengaduan::STATUS_MENUNGGU,
                     Pengaduan::STATUS_DIPROSES,
                     Pengaduan::STATUS_BUTUH_INFO,
-                    Pengaduan::STATUS_SELESAI,
+                    Pengaduan::STATUS_MENUNGGU_KONFIRMASI,
                     Pengaduan::STATUS_DITOLAK,
                 ]),
             ],
@@ -49,6 +51,24 @@ class UpdateStatusRequest extends FormRequest
                 'max:2000',
             ],
         ];
+    }
+
+    /**
+     * Blokir perubahan apapun jika pengaduan sudah berstatus final
+     * (selesai_ditangani / ditolak) — status final terkunci permanen.
+     */
+    public function withValidator(\Illuminate\Validation\Validator $validator): void
+    {
+        $validator->after(function ($validator) {
+            $pengaduan = $this->route('pengaduan');
+
+            if ($pengaduan && $pengaduan->isFinal()) {
+                $validator->errors()->add(
+                    'status',
+                    'Pengaduan ini sudah final (' . $pengaduan->status_label . ') dan tidak dapat diubah lagi.'
+                );
+            }
+        });
     }
 
     /**

@@ -106,6 +106,16 @@
                     <p class="text-xs text-gray-400 font-medium mt-1.5">Unggah foto atau dokumen PDF sebagai bukti (JPG, PNG, PDF — maksimal 5MB).</p>
                 </div>
 
+                {{-- Opsi Anonim --}}
+                <div class="bg-blue-50/50 border border-blue-100 rounded-xl p-4 flex items-start gap-3">
+                    <input id="is_anonymous" name="is_anonymous" type="checkbox" value="1" {{ old('is_anonymous') ? 'checked' : '' }}
+                           class="mt-1 w-4 h-4 rounded border-gray-300 text-polmed-blue focus:ring-4 focus:ring-blue-500/20 cursor-pointer" />
+                    <label for="is_anonymous" class="text-sm cursor-pointer">
+                        <span class="font-bold text-gray-900 block">Ajukan secara anonim</span>
+                        <span class="text-xs text-gray-500 leading-relaxed">Identitas Anda (nama, NIM, kelas, email) akan disembunyikan dari admin saat meninjau pengaduan ini. Notifikasi status tetap dikirim ke email Anda seperti biasa.</span>
+                    </label>
+                </div>
+
                 <div class="pt-6 mt-6 border-t border-gray-100 flex flex-col-reverse sm:flex-row items-center justify-end gap-3">
                     <a href="{{ route('mahasiswa.pengaduan.index') }}"
                        class="w-full sm:w-auto text-center px-6 py-3.5 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-bold rounded-xl transition-colors">

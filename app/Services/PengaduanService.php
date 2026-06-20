@@ -31,6 +31,7 @@ class PengaduanService
             // Simpan pengaduan ke database
             $pengaduan = Pengaduan::create([
                 'user_id'          => $userId,
+                'is_anonymous'     => $data['is_anonymous'] ?? false,
                 'kategori_id'      => $data['kategori_id'],
                 'tanggal_kejadian' => $data['tanggal_kejadian'],
                 'subjek'           => $data['subjek'],
@@ -90,5 +91,85 @@ class PengaduanService
 
             return $pengaduan->fresh();
         });
+    }
+
+    /**
+     * Konfirmasi dari mahasiswa bahwa pengaduan sudah benar-benar selesai.
+     * Hanya valid dari status menunggu_konfirmasi_mahasiswa (dijaga di controller).
+     */
+    public function konfirmasiSelesai(Pengaduan $pengaduan, int $mahasiswaId): Pengaduan
+    {
+        return DB::transaction(function () use ($pengaduan, $mahasiswaId) {
+            $statusLama = $pengaduan->status;
+
+            $pengaduan->update(['status' => Pengaduan::STATUS_SELESAI]);
+
+            StatusHistory::create([
+                'pengaduan_id' => $pengaduan->id,
+                'status_lama'  => $statusLama,
+                'status_baru'  => Pengaduan::STATUS_SELESAI,
+                'catatan'      => 'Mahasiswa mengonfirmasi pengaduan telah selesai ditangani.',
+                'changed_by'   => $mahasiswaId,
+            ]);
+
+            return $pengaduan->fresh();
+        });
+    }
+
+    /**
+     * Mahasiswa menyatakan pengaduan belum benar-benar selesai — dibuka kembali
+     * ke status sedang_diproses agar admin menindaklanjuti lagi.
+     * Hanya valid dari status menunggu_konfirmasi_mahasiswa (dijaga di controller).
+     */
+    public function tolakKonfirmasi(Pengaduan $pengaduan, string $alasan, int $mahasiswaId): Pengaduan
+    {
+        return DB::transaction(function () use ($pengaduan, $alasan, $mahasiswaId) {
+            $statusLama = $pengaduan->status;
+
+            $pengaduan->update(['status' => Pengaduan::STATUS_DIPROSES]);
+
+            StatusHistory::create([
+                'pengaduan_id' => $pengaduan->id,
+                'status_lama'  => $statusLama,
+                'status_baru'  => Pengaduan::STATUS_DIPROSES,
+                'catatan'      => $alasan,
+                'changed_by'   => $mahasiswaId,
+            ]);
+
+            $this->notifikasiService->kirimKonfirmasiDitolakAdmin($pengaduan->fresh(), $alasan);
+
+            return $pengaduan->fresh();
+        });
+    }
+
+    /**
+     * Tutup otomatis pengaduan yang sudah SLA_HARI hari di status menunggu_konfirmasi_mahasiswa
+     * tanpa respons dari mahasiswa (anggap diterima). Dipanggil dari scheduled command.
+     *
+     * @return int  Jumlah pengaduan yang ditutup.
+     */
+    public function autoCloseStale(): int
+    {
+        $stale = Pengaduan::byStatus(Pengaduan::STATUS_MENUNGGU_KONFIRMASI)
+            ->where('updated_at', '<=', now()->subDays(Pengaduan::SLA_HARI))
+            ->get();
+
+        foreach ($stale as $pengaduan) {
+            DB::transaction(function () use ($pengaduan) {
+                $pengaduan->update(['status' => Pengaduan::STATUS_SELESAI]);
+
+                StatusHistory::create([
+                    'pengaduan_id' => $pengaduan->id,
+                    'status_lama'  => Pengaduan::STATUS_MENUNGGU_KONFIRMASI,
+                    'status_baru'  => Pengaduan::STATUS_SELESAI,
+                    'catatan'      => 'Ditutup otomatis oleh sistem karena tidak ada respons dari mahasiswa dalam ' . Pengaduan::SLA_HARI . ' hari.',
+                    'changed_by'   => null,
+                ]);
+
+                $this->notifikasiService->kirimStatusDiperbarui($pengaduan->fresh(), Pengaduan::STATUS_MENUNGGU_KONFIRMASI);
+            });
+        }
+
+        return $stale->count();
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePengaduanRequest;
+use App\Http\Requests\TolakKonfirmasiRequest;
 use App\Models\KategoriPengaduan;
 use App\Models\Pengaduan;
 use App\Services\PengaduanService;
@@ -103,5 +104,51 @@ class PengaduanController extends Controller
         $statusColors = Pengaduan::statusColors();
 
         return view('mahasiswa.pengaduan.show', compact('pengaduan', 'statusLabels', 'statusColors'));
+    }
+
+    /**
+     * Mahasiswa mengonfirmasi pengaduan miliknya sudah benar-benar selesai.
+     * Hanya valid dari status menunggu_konfirmasi_mahasiswa.
+     */
+    public function konfirmasiSelesai(Pengaduan $pengaduan): RedirectResponse
+    {
+        if ($pengaduan->user_id !== auth()->id()) {
+            abort(403, 'Anda tidak memiliki akses ke pengaduan ini.');
+        }
+
+        if ($pengaduan->status !== Pengaduan::STATUS_MENUNGGU_KONFIRMASI) {
+            abort(403, 'Pengaduan ini belum dapat dikonfirmasi.');
+        }
+
+        $this->pengaduanService->konfirmasiSelesai($pengaduan, auth()->id());
+
+        return redirect()
+            ->route('mahasiswa.pengaduan.show', $pengaduan)
+            ->with('success', 'Terima kasih telah mengonfirmasi. Pengaduan ini sekarang ditandai selesai.');
+    }
+
+    /**
+     * Mahasiswa menyatakan pengaduan miliknya belum benar-benar selesai — dibuka
+     * kembali agar admin menindaklanjuti. Hanya valid dari status menunggu_konfirmasi_mahasiswa.
+     */
+    public function tolakKonfirmasi(TolakKonfirmasiRequest $request, Pengaduan $pengaduan): RedirectResponse
+    {
+        if ($pengaduan->user_id !== auth()->id()) {
+            abort(403, 'Anda tidak memiliki akses ke pengaduan ini.');
+        }
+
+        if ($pengaduan->status !== Pengaduan::STATUS_MENUNGGU_KONFIRMASI) {
+            abort(403, 'Pengaduan ini belum dapat ditolak konfirmasinya.');
+        }
+
+        $this->pengaduanService->tolakKonfirmasi(
+            pengaduan: $pengaduan,
+            alasan: $request->validated('alasan'),
+            mahasiswaId: auth()->id(),
+        );
+
+        return redirect()
+            ->route('mahasiswa.pengaduan.show', $pengaduan)
+            ->with('success', 'Pengaduan dibuka kembali dan admin akan menindaklanjuti.');
     }
 }
