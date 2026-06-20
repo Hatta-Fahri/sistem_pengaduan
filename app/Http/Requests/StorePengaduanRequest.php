@@ -26,6 +26,7 @@ class StorePengaduanRequest extends FormRequest
             'tanggal_kejadian' => ['required', 'date', 'before_or_equal:today'],
             'subjek'           => ['required', 'string', 'min:10', 'max:255'],
             'isi_pengaduan'    => ['required', 'string', 'min:30', 'max:5000'],
+            'bukti'            => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
         ];
     }
 
@@ -48,6 +49,9 @@ class StorePengaduanRequest extends FormRequest
             'isi_pengaduan.required'    => 'Isi pengaduan wajib diisi.',
             'isi_pengaduan.min'         => 'Isi pengaduan minimal 30 karakter agar dapat diproses dengan baik.',
             'isi_pengaduan.max'         => 'Isi pengaduan terlalu panjang (maksimal 5000 karakter).',
+            'bukti.file'                => 'Berkas bukti tidak valid.',
+            'bukti.mimes'               => 'Bukti harus berupa gambar (JPG, PNG) atau dokumen PDF.',
+            'bukti.max'                 => 'Ukuran bukti maksimal 5MB.',
         ];
     }
 }

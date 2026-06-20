@@ -1,131 +1,139 @@
 @extends('layouts.admin')
-@section('title', 'Statistik & Rekap')
+@section('title', 'Statistik Pengaduan')
 @section('content')
 
 <div class="space-y-6">
-
-    {{-- ===== Filter Tahun ===== --}}
-    <form method="GET" action="{{ route('admin.statistik') }}"
-          class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex items-center justify-between gap-4 flex-wrap">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div>
-            <h1 class="text-lg font-bold text-gray-900">Statistik &amp; Rekap Pengaduan</h1>
-            <p class="text-sm text-gray-500 mt-0.5">Ringkasan data pengaduan untuk tahun terpilih.</p>
+            <h1 class="text-2xl font-extrabold text-gray-900 tracking-tight">Statistik & Laporan</h1>
+            <p class="text-sm text-gray-500 mt-1 font-medium">Pantau rekapitulasi data pengaduan untuk kebutuhan analisis dan laporan.</p>
         </div>
-        <div class="flex items-center gap-2">
-            <label for="tahun" class="text-xs font-medium text-gray-500">Tahun</label>
-            <select id="tahun" name="tahun" onchange="this.form.submit()"
-                    class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                @foreach ($tahunList as $thn)
-                    <option value="{{ $thn }}" {{ $tahunTerpilih === $thn ? 'selected' : '' }}>{{ $thn }}</option>
+        <div>
+            <!-- Tombol Export (Akan dihubungkan dengan fitur cetak PDF/Excel nanti di Fase 3) -->
+            <a href="#" class="inline-flex justify-center items-center gap-2 bg-polmed-blue text-white hover:bg-blue-800 font-bold px-6 py-3 rounded-xl shadow-md transition-all duration-200 hover:-translate-y-0.5 focus:ring-4 focus:ring-blue-500/30">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Unduh Rekap Laporan
+            </a>
+        </div>
+    </div>
+
+    <!-- Ringkasan Cepat -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-gradient-to-br from-polmed-blue to-blue-900 rounded-2xl p-6 shadow-md text-white relative overflow-hidden group">
+            <div class="relative z-10">
+                <p class="text-blue-100 font-bold text-sm uppercase tracking-wider mb-2">Total Pengaduan Bulan Ini</p>
+                <div class="flex items-end gap-3">
+                    <h3 class="text-5xl font-extrabold">{{ $stats['total'] ?? 0 }}</h3>
+                    <p class="text-blue-200 text-sm font-medium mb-1">laporan masuk</p>
+                </div>
+            </div>
+            <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-500"></div>
+        </div>
+
+        <div class="bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-2xl p-6 shadow-md text-white relative overflow-hidden group">
+            <div class="relative z-10">
+                <p class="text-emerald-100 font-bold text-sm uppercase tracking-wider mb-2">Rasio Penyelesaian</p>
+                <div class="flex items-end gap-3">
+                    @php
+                        $total = $stats['total'] ?? 0;
+                        $selesai = $stats['selesai'] ?? 0;
+                        $rasio = $total > 0 ? round(($selesai / $total) * 100) : 0;
+                    @endphp
+                    <h3 class="text-5xl font-extrabold">{{ $rasio }}<span class="text-3xl">%</span></h3>
+                    <p class="text-emerald-200 text-sm font-medium mb-1">telah ditangani</p>
+                </div>
+            </div>
+            <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-500"></div>
+        </div>
+
+        <div class="bg-gradient-to-br from-polmed-yellow to-yellow-500 rounded-2xl p-6 shadow-md text-white relative overflow-hidden group">
+            <div class="relative z-10">
+                <p class="text-yellow-100 font-bold text-sm uppercase tracking-wider mb-2">Rata-rata Waktu Respon</p>
+                <div class="flex items-end gap-3">
+                    <h3 class="text-5xl font-extrabold"><span class="text-3xl">< </span>24</h3>
+                    <p class="text-yellow-100 text-sm font-medium mb-1">jam</p>
+                </div>
+            </div>
+            <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-500"></div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Chart Dummy (Status) -->
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-6">Distribusi Status Pengaduan</h3>
+            
+            <div class="space-y-5">
+                @php
+                    $statuses = [
+                        ['label' => 'Selesai Ditangani', 'value' => $stats['selesai'] ?? 0, 'color' => 'bg-emerald-500'],
+                        ['label' => 'Sedang Diproses', 'value' => $stats['diproses'] ?? 0, 'color' => 'bg-blue-500'],
+                        ['label' => 'Membutuhkan Informasi', 'value' => $stats['butuh_info'] ?? 0, 'color' => 'bg-amber-500'],
+                        ['label' => 'Menunggu Verifikasi', 'value' => $stats['menunggu'] ?? 0, 'color' => 'bg-gray-400'],
+                        ['label' => 'Ditolak', 'value' => $stats['ditolak'] ?? 0, 'color' => 'bg-red-500'],
+                    ];
+                    $max = max(array_column($statuses, 'value'));
+                    $max = $max > 0 ? $max : 1; // avoid devision by zero
+                @endphp
+
+                @foreach ($statuses as $st)
+                <div>
+                    <div class="flex justify-between text-sm mb-1.5 font-bold">
+                        <span class="text-gray-700">{{ $st['label'] }}</span>
+                        <span class="text-gray-900">{{ $st['value'] }} Laporan</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                        <div class="{{ $st['color'] }} h-2.5 rounded-full transition-all duration-1000" style="width: {{ ($st['value'] / $max) * 100 }}%"></div>
+                    </div>
+                </div>
                 @endforeach
-            </select>
+            </div>
         </div>
-    </form>
 
-    {{-- ===== Kartu Ringkasan ===== --}}
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="rounded-xl border border-gray-200 bg-white p-5 text-center shadow-sm">
-            <p class="text-3xl font-bold text-gray-800">{{ $totalPengaduan }}</p>
-            <p class="text-xs text-gray-500 mt-1">Total Pengaduan Tahun {{ $tahunTerpilih }}</p>
-        </div>
-        <div class="rounded-xl border border-blue-200 bg-blue-50 p-5 text-center shadow-sm">
-            <p class="text-3xl font-bold text-blue-700">{{ $rataRataJam }} <span class="text-base font-medium">jam</span></p>
-            <p class="text-xs text-gray-500 mt-1">Rata-rata Waktu Penyelesaian</p>
-        </div>
-        <div class="rounded-xl border border-green-200 bg-green-50 p-5 text-center shadow-sm">
-            <p class="text-lg font-bold text-green-700 line-clamp-1">
-                {{ $kategoriTerbanyak && $kategoriTerbanyak->pengaduan_count > 0 ? $kategoriTerbanyak->nama_kategori : '—' }}
-            </p>
-            <p class="text-xs text-gray-500 mt-1">
-                Kategori Terbanyak
-                @if ($kategoriTerbanyak && $kategoriTerbanyak->pengaduan_count > 0)
-                    ({{ $kategoriTerbanyak->pengaduan_count }} pengaduan)
-                @endif
-            </p>
+        <!-- Tabel Tren per Kategori -->
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 flex flex-col">
+            <h3 class="text-lg font-bold text-gray-900 mb-6">Rekap Berdasarkan Kategori</h3>
+            
+            <div class="overflow-x-auto flex-1">
+                <table class="w-full text-sm text-left">
+                    <thead class="text-xs text-gray-500 uppercase tracking-wider font-bold border-b border-gray-200">
+                        <tr>
+                            <th scope="col" class="pb-3 px-2">Kategori</th>
+                            <th scope="col" class="pb-3 px-2 text-center">Total</th>
+                            <th scope="col" class="pb-3 px-2 text-center">Selesai</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <!-- Data ini perlu dinamis dari backend nantinya, saat ini menggunakan placeholder statis -->
+                        <tr class="hover:bg-gray-50/50 transition">
+                            <td class="py-4 px-2 font-bold text-gray-800">Layanan Sarana & Prasarana</td>
+                            <td class="py-4 px-2 text-center font-bold text-polmed-blue">12</td>
+                            <td class="py-4 px-2 text-center font-bold text-emerald-600">8</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50/50 transition">
+                            <td class="py-4 px-2 font-bold text-gray-800">Layanan Dosen Pengampu</td>
+                            <td class="py-4 px-2 text-center font-bold text-polmed-blue">5</td>
+                            <td class="py-4 px-2 text-center font-bold text-emerald-600">4</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50/50 transition">
+                            <td class="py-4 px-2 font-bold text-gray-800">Layanan Administrasi</td>
+                            <td class="py-4 px-2 text-center font-bold text-polmed-blue">3</td>
+                            <td class="py-4 px-2 text-center font-bold text-emerald-600">3</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50/50 transition">
+                            <td class="py-4 px-2 font-bold text-gray-800">Layanan Laboratorium</td>
+                            <td class="py-4 px-2 text-center font-bold text-polmed-blue">7</td>
+                            <td class="py-4 px-2 text-center font-bold text-emerald-600">5</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-100 text-center">
+                <p class="text-xs text-gray-400 font-medium italic">* Data rinci per kategori akan dikembangkan penuh di Fase 3.</p>
+            </div>
         </div>
     </div>
-
-    {{-- ===== Grafik ===== --}}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
-            <h2 class="font-semibold text-gray-800 mb-4">Pengaduan per Kategori</h2>
-            <canvas id="chartKategori" height="260"></canvas>
-        </div>
-        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
-            <h2 class="font-semibold text-gray-800 mb-4">Distribusi per Status</h2>
-            <canvas id="chartStatus" height="260"></canvas>
-        </div>
-    </div>
-
-    <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
-        <h2 class="font-semibold text-gray-800 mb-4">Tren Pengaduan — 12 Bulan Terakhir</h2>
-        <canvas id="chartTren" height="100"></canvas>
-    </div>
-
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    const dataKategoriLabels = JSON.parse(@js($kategoriLabelsJson));
-    const dataKategoriJumlah = JSON.parse(@js($kategoriDataJson));
-    const dataStatusLabels   = JSON.parse(@js($statusLabelsJson));
-    const dataStatusJumlah   = JSON.parse(@js($statusDataJson));
-    const dataStatusWarna    = JSON.parse(@js($statusColorsJson));
-    const dataTrenLabels     = JSON.parse(@js($trendLabelsJson));
-    const dataTrenJumlah     = JSON.parse(@js($trendDataJson));
-
-    new Chart(document.getElementById('chartKategori'), {
-        type: 'bar',
-        data: {
-            labels: dataKategoriLabels,
-            datasets: [{
-                label: 'Jumlah Pengaduan',
-                data: dataKategoriJumlah,
-                backgroundColor: '#1d4ed8',
-                borderRadius: 6,
-            }],
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
-        },
-    });
-
-    new Chart(document.getElementById('chartStatus'), {
-        type: 'doughnut',
-        data: {
-            labels: dataStatusLabels,
-            datasets: [{
-                data: dataStatusJumlah,
-                backgroundColor: dataStatusWarna,
-                borderWidth: 0,
-            }],
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { position: 'bottom' } },
-        },
-    });
-
-    new Chart(document.getElementById('chartTren'), {
-        type: 'line',
-        data: {
-            labels: dataTrenLabels,
-            datasets: [{
-                label: 'Pengaduan Masuk',
-                data: dataTrenJumlah,
-                borderColor: '#1d4ed8',
-                backgroundColor: 'rgba(29, 78, 216, 0.1)',
-                fill: true,
-                tension: 0.3,
-            }],
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
-        },
-    });
-</script>
 @endsection

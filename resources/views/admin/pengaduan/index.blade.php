@@ -4,161 +4,204 @@
 
 @php
     $badgeClass = [
-        'menunggu_verifikasi'           => 'bg-gray-100 text-gray-700',
-        'sedang_diproses'               => 'bg-blue-100 text-blue-700',
-        'membutuhkan_informasi_tambahan'=> 'bg-yellow-100 text-yellow-700',
-        'selesai_ditangani'             => 'bg-green-100 text-green-700',
-        'ditolak'                       => 'bg-red-100 text-red-700',
+        'menunggu_verifikasi'           => 'bg-gray-100 text-gray-700 ring-1 ring-gray-200',
+        'sedang_diproses'               => 'bg-blue-50 text-blue-700 ring-1 ring-blue-200',
+        'membutuhkan_informasi_tambahan'=> 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
+        'selesai_ditangani'             => 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
+        'ditolak'                       => 'bg-red-50 text-red-700 ring-1 ring-red-200',
     ];
 @endphp
 
-<div class="space-y-5">
+<div class="space-y-6">
 
-    {{-- ===== Form Filter Lengkap ===== --}}
-    <form method="GET" action="{{ route('admin.pengaduan.index') }}"
-          class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-
-            {{-- Search --}}
-            <div class="sm:col-span-2 lg:col-span-2">
-                <label class="block text-xs font-medium text-gray-500 mb-1">Cari</label>
-                <div class="relative">
-                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                    <input type="text" name="search" value="{{ request('search') }}"
-                           placeholder="Nama mahasiswa, NIM, atau subjek pengaduan..."
-                           class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-                </div>
-            </div>
-
-            {{-- Filter Status --}}
-            <div>
-                <label class="block text-xs font-medium text-gray-500 mb-1">Status</label>
-                <select name="status"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">Semua Status</option>
-                    @foreach ($statusLabels as $key => $label)
-                        <option value="{{ $key }}" {{ request('status') === $key ? 'selected' : '' }}>
-                            {{ $label }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            {{-- Filter Kategori --}}
-            <div>
-                <label class="block text-xs font-medium text-gray-500 mb-1">Kategori</label>
-                <select name="kategori_id"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">Semua Kategori</option>
-                    @foreach ($kategoriList as $kat)
-                        <option value="{{ $kat->id }}" {{ request('kategori_id') == $kat->id ? 'selected' : '' }}>
-                            {{ $kat->nama_kategori }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            {{-- Filter Tanggal Dari --}}
-            <div>
-                <label class="block text-xs font-medium text-gray-500 mb-1">Tanggal Dari</label>
-                <input type="date" name="tanggal_dari" value="{{ request('tanggal_dari') }}"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-            </div>
-
-            {{-- Filter Tanggal Sampai --}}
-            <div>
-                <label class="block text-xs font-medium text-gray-500 mb-1">Tanggal Sampai</label>
-                <input type="date" name="tanggal_sampai" value="{{ request('tanggal_sampai') }}"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-            </div>
-
+    {{-- ===== Header & Aksi Cepat ===== --}}
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Data Pengaduan Mahasiswa</h1>
+            <p class="text-sm text-gray-500 mt-1">Kelola, verifikasi, dan pantau status seluruh pengaduan yang masuk.</p>
         </div>
-
-        <div class="flex items-center gap-3 mt-4 pt-4 border-t border-gray-100">
-            <button type="submit"
-                    class="px-5 py-2 bg-blue-700 hover:bg-blue-800 text-white text-sm font-semibold rounded-lg transition">
-                Terapkan Filter
-            </button>
+        <div class="flex items-center gap-3 w-full sm:w-auto">
             <a href="{{ route('admin.pengaduan.export', request()->only(['status', 'kategori_id', 'tanggal_dari', 'tanggal_sampai'])) }}"
-               class="flex items-center gap-2 px-4 py-2 border border-green-600 text-green-700 hover:bg-green-50 text-sm font-semibold rounded-lg transition">
+               class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border-2 border-emerald-600 text-emerald-700 hover:bg-emerald-50 text-sm font-bold rounded-xl shadow-sm transition-all focus:ring-4 focus:ring-emerald-100">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/>
                 </svg>
-                Ekspor CSV
+                Ekspor Data (CSV)
             </a>
-            @if (request()->hasAny(['status', 'kategori_id', 'search', 'tanggal_dari', 'tanggal_sampai']))
-                <a href="{{ route('admin.pengaduan.index') }}"
-                   class="px-4 py-2 border border-gray-300 text-gray-600 hover:bg-gray-50 text-sm font-medium rounded-lg transition">
-                    Reset Filter
-                </a>
-                <span class="text-sm text-gray-400 ml-1">
-                    {{ $pengaduan->total() }} pengaduan ditemukan
-                </span>
-            @else
-                <span class="text-sm text-gray-400">Total: {{ $pengaduan->total() }} pengaduan</span>
-            @endif
         </div>
-    </form>
+    </div>
+
+    {{-- ===== Form Filter Lengkap ===== --}}
+    <div x-data="{ filterOpen: false }" class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        
+        <!-- Toggle Button for Mobile -->
+        <button @click="filterOpen = !filterOpen" class="w-full flex items-center justify-between px-6 py-4 bg-gray-50/50 hover:bg-gray-50 text-left transition lg:hidden">
+            <span class="font-semibold text-gray-700 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                Filter Pencarian
+            </span>
+            <svg class="w-5 h-5 text-gray-500 transition-transform duration-200" :class="filterOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+
+        <form method="GET" action="{{ route('admin.pengaduan.index') }}"
+              class="p-6 lg:block transition-all duration-300"
+              :class="filterOpen ? 'block' : 'hidden'">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                {{-- Search --}}
+                <div class="md:col-span-2 lg:col-span-4">
+                    <label class="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wide">Pencarian Utama</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                        </div>
+                        <input type="text" name="search" value="{{ request('search') }}"
+                               placeholder="Ketik nama mahasiswa, NIM, atau subjek pengaduan..."
+                               class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue focus:bg-white transition-all placeholder-gray-400 font-medium" />
+                    </div>
+                </div>
+
+                {{-- Filter Status --}}
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wide">Status</label>
+                    <div class="relative">
+                        <select name="status" class="appearance-none w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue focus:bg-white transition-all">
+                            <option value="">Semua Status</option>
+                            @foreach ($statusLabels as $key => $label)
+                                <option value="{{ $key }}" {{ request('status') === $key ? 'selected' : '' }}>
+                                    {{ $label }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Filter Kategori --}}
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wide">Kategori</label>
+                    <div class="relative">
+                        <select name="kategori_id" class="appearance-none w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue focus:bg-white transition-all">
+                            <option value="">Semua Kategori</option>
+                            @foreach ($kategoriList as $kat)
+                                <option value="{{ $kat->id }}" {{ request('kategori_id') == $kat->id ? 'selected' : '' }}>
+                                    {{ $kat->nama_kategori }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Filter Tanggal Dari --}}
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wide">Mulai Tanggal</label>
+                    <input type="date" name="tanggal_dari" value="{{ request('tanggal_dari') }}"
+                           class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue focus:bg-white transition-all" />
+                </div>
+
+                {{-- Filter Tanggal Sampai --}}
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wide">Sampai Tanggal</label>
+                    <input type="date" name="tanggal_sampai" value="{{ request('tanggal_sampai') }}"
+                           class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue focus:bg-white transition-all" />
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pt-6 border-t border-gray-100">
+                <div class="text-sm font-medium text-gray-500 w-full sm:w-auto text-center sm:text-left">
+                    Menampilkan <span class="text-gray-900 font-bold">{{ $pengaduan->total() }}</span> hasil pengaduan
+                </div>
+                
+                <div class="flex items-center gap-3 w-full sm:w-auto">
+                    @if (request()->hasAny(['status', 'kategori_id', 'search', 'tanggal_dari', 'tanggal_sampai']))
+                        <a href="{{ route('admin.pengaduan.index') }}"
+                           class="flex-1 sm:flex-none text-center px-5 py-2.5 bg-white border-2 border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900 text-sm font-bold rounded-xl transition-all">
+                            Reset Filter
+                        </a>
+                    @endif
+                    <button type="submit"
+                            class="flex-1 sm:flex-none px-6 py-2.5 bg-polmed-blue hover:bg-blue-800 text-white text-sm font-bold rounded-xl shadow-md shadow-blue-900/20 transition-all focus:ring-4 focus:ring-blue-500/30">
+                        Terapkan Filter
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
 
     {{-- ===== Tabel Pengaduan ===== --}}
-    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
 
         @if ($pengaduan->isEmpty())
-            <div class="px-6 py-14 text-center">
-                <svg class="w-14 h-14 mx-auto mb-3 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                <p class="text-sm font-medium text-gray-500">Tidak ada pengaduan ditemukan.</p>
+            <div class="px-6 py-20 text-center flex flex-col items-center justify-center">
+                <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                    <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800">Tidak Ada Data</h3>
+                <p class="text-sm text-gray-500 mt-1 max-w-sm">Kami tidak dapat menemukan pengaduan yang cocok dengan filter yang Anda berikan.</p>
             </div>
         @else
             <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead class="bg-gray-50 border-b border-gray-200">
+                <table class="w-full text-sm text-left">
+                    <thead class="bg-gray-50/80 border-b border-gray-200 text-gray-500 text-xs uppercase tracking-wider font-semibold">
                         <tr>
-                            <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide w-8">No</th>
-                            <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Nama Pelapor</th>
-                            <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">NIM</th>
-                            <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Kategori</th>
-                            <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Subjek</th>
-                            <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-                            <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Tanggal</th>
-                            <th class="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Aksi</th>
+                            <th scope="col" class="px-6 py-4 w-12 text-center">No</th>
+                            <th scope="col" class="px-6 py-4">Info Pelapor</th>
+                            <th scope="col" class="px-6 py-4">Detail Pengaduan</th>
+                            <th scope="col" class="px-6 py-4">Status & Waktu</th>
+                            <th scope="col" class="px-6 py-4 text-center">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100">
+                    <tbody class="divide-y divide-gray-100 bg-white">
                         @foreach ($pengaduan as $index => $p)
-                        <tr class="hover:bg-gray-50 transition-colors {{ $p->status === 'menunggu_verifikasi' ? 'bg-yellow-50 hover:bg-yellow-100' : '' }}">
-                            <td class="px-4 py-3.5 text-gray-400 text-xs">
+                        <tr class="hover:bg-gray-50/80 transition-colors {{ $p->status === 'menunggu_verifikasi' ? 'bg-amber-50/30' : '' }} group relative">
+                            @if($p->status === 'menunggu_verifikasi')
+                                <td class="absolute left-0 top-0 bottom-0 w-1 bg-amber-400 rounded-r-md"></td>
+                            @endif
+                            <td class="px-6 py-4 text-center text-gray-400 text-xs font-medium">
                                 {{ ($pengaduan->currentPage() - 1) * $pengaduan->perPage() + $loop->iteration }}
                             </td>
-                            <td class="px-4 py-3.5">
-                                <p class="font-medium text-gray-800">{{ $p->user->name }}</p>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-full bg-blue-50 text-polmed-blue flex items-center justify-center font-bold text-sm ring-1 ring-blue-100">
+                                        {{ strtoupper(substr($p->user->name, 0, 1)) }}
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-gray-900">{{ $p->user->name }}</p>
+                                        <p class="text-xs text-gray-500 font-medium mt-0.5">{{ $p->user->nim }}</p>
+                                    </div>
+                                </div>
                             </td>
-                            <td class="px-4 py-3.5 text-gray-500 text-xs whitespace-nowrap">
-                                {{ $p->user->nim }}
-                            </td>
-                            <td class="px-4 py-3.5 text-gray-500 text-xs whitespace-nowrap max-w-24">
-                                <span class="line-clamp-1">{{ $p->kategori->nama_kategori }}</span>
-                            </td>
-                            <td class="px-4 py-3.5 max-w-xs">
-                                <p class="text-gray-700 line-clamp-1">{{ $p->subjek }}</p>
-                            </td>
-                            <td class="px-4 py-3.5 whitespace-nowrap">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold
-                                             {{ $badgeClass[$p->status] ?? 'bg-gray-100 text-gray-700' }}">
-                                    {{ $statusLabels[$p->status] ?? $p->status }}
+                            <td class="px-6 py-4 max-w-sm">
+                                <p class="text-gray-900 font-semibold line-clamp-1 mb-1">{{ $p->subjek }}</p>
+                                <span class="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-600 uppercase tracking-wider">
+                                    {{ $p->kategori->nama_kategori }}
                                 </span>
                             </td>
-                            <td class="px-4 py-3.5 text-xs text-gray-400 whitespace-nowrap">
-                                {{ $p->created_at->format('d/m/Y') }}<br>{{ $p->created_at->format('H:i') }}
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex flex-col items-start gap-1.5">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold {{ $badgeClass[$p->status] ?? 'bg-gray-100 text-gray-700 ring-1 ring-gray-200' }}">
+                                        @if($p->status === 'menunggu_verifikasi')
+                                            <span class="w-1.5 h-1.5 rounded-full bg-gray-500 mr-1.5 animate-pulse"></span>
+                                        @endif
+                                        {{ $statusLabels[$p->status] ?? $p->status }}
+                                    </span>
+                                    <span class="text-xs font-medium text-gray-400 flex items-center gap-1 mt-1">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        {{ $p->created_at->format('d M Y, H:i') }}
+                                    </span>
+                                </div>
                             </td>
-                            <td class="px-4 py-3.5 text-right">
+                            <td class="px-6 py-4 text-center whitespace-nowrap">
                                 <a href="{{ route('admin.pengaduan.show', $p) }}"
-                                   class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs font-semibold transition whitespace-nowrap">
-                                    Kelola →
+                                   class="inline-flex items-center justify-center px-4 py-2 bg-white border border-gray-200 hover:border-polmed-blue hover:text-polmed-blue text-gray-700 rounded-lg text-sm font-bold transition-all shadow-sm focus:ring-4 focus:ring-blue-500/20">
+                                    Detail
                                 </a>
                             </td>
                         </tr>
@@ -169,7 +212,7 @@
 
             {{-- Pagination --}}
             @if ($pengaduan->hasPages())
-                <div class="px-5 py-4 border-t border-gray-100">
+                <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50">
                     {{ $pengaduan->links() }}
                 </div>
             @endif

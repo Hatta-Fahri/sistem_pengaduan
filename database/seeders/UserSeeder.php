@@ -18,8 +18,8 @@ class UserSeeder extends Seeder
             'name'     => 'Administrator SILPM',
             'nim'      => null,
             'class'    => null,
-            'email'    => 'admin@silpm.local',
-            'password' => Hash::make('Admin123!'),
+            'email'    => 'yuuotosaka2506@gmail.com',
+            'password' => Hash::make('password'),
             'role'     => 'admin',
         ]);
 
@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
         User::create([
             'name'     => 'Budi Santoso',
             'nim'      => '2305001',
-            'class'    => 'MI-4A',  
+            'class'    => 'MI-4A',
             'email'    => 'mahasiswa1@silpm.local',
             'password' => Hash::make('Test123!'),
             'role'     => 'mahasiswa',

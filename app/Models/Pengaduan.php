@@ -14,6 +14,7 @@ class Pengaduan extends Model
         'tanggal_kejadian',
         'subjek',
         'isi_pengaduan',
+        'bukti',
         'status',
         'catatan_admin',
     ];
@@ -64,6 +65,14 @@ class Pengaduan extends Model
     public function getStatusLabelAttribute(): string
     {
         return self::statusLabels()[$this->status] ?? $this->status;
+    }
+
+    /**
+     * URL publik file bukti pendukung (null jika tidak ada lampiran).
+     */
+    public function getBuktiUrlAttribute(): ?string
+    {
+        return $this->bukti ? \Illuminate\Support\Facades\Storage::disk('public')->url($this->bukti) : null;
     }
 
     // ===================== Relasi =====================

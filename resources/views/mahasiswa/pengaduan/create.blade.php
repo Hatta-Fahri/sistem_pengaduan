@@ -1,138 +1,125 @@
 @extends('layouts.mahasiswa')
-
 @section('title', 'Buat Pengaduan Baru')
-
 @section('content')
-<div class="max-w-3xl mx-auto space-y-6">
-    <!-- Header -->
-    <div>
-        <nav class="flex text-sm text-gray-400 mb-2 gap-1 items-center">
-            <a href="{{ route('mahasiswa.dashboard') }}" class="hover:text-blue-600">Dashboard</a>
-            <span>/</span>
-            <a href="{{ route('mahasiswa.pengaduan.index') }}" class="hover:text-blue-600">Pengaduan Saya</a>
-            <span>/</span>
-            <span class="text-gray-600">Buat Baru</span>
-        </nav>
-        <h1 class="text-xl font-bold text-gray-900">Buat Pengaduan Baru</h1>
-        <p class="text-sm text-gray-500 mt-1">Isi formulir di bawah ini dengan informasi yang lengkap dan jelas.</p>
+
+<div class="max-w-4xl mx-auto space-y-6">
+
+    {{-- ===== Breadcrumb ===== --}}
+    <nav class="flex text-sm text-gray-500 gap-2 items-center font-medium mb-4">
+        <a href="{{ route('mahasiswa.dashboard') }}" class="hover:text-polmed-blue transition-colors flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            Dashboard
+        </a>
+        <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        <a href="{{ route('mahasiswa.pengaduan.index') }}" class="hover:text-polmed-blue transition-colors">Pengaduan Saya</a>
+        <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        <span class="text-polmed-blue font-bold">Buat Baru</span>
+    </nav>
+
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden relative">
+        <!-- Decorative Top Border -->
+        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-polmed-yellow to-yellow-300"></div>
+        
+        <div class="p-6 sm:p-8">
+            <div class="flex items-start gap-4 mb-8 pb-6 border-b border-gray-100">
+                <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-polmed-blue flex-shrink-0 ring-1 ring-blue-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Formulir Pengaduan</h2>
+                    <p class="text-sm text-gray-500 font-medium mt-1">Sampaikan keluhan, kritik, atau saran Anda. Laporan akan diteruskan ke admin untuk ditindaklanjuti.</p>
+                </div>
+            </div>
+
+            {{-- Tampilkan error validasi umum --}}
+            @if ($errors->any())
+                <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-8">
+                    <div class="flex items-center gap-2 text-red-800 font-bold text-sm mb-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        Mohon periksa kembali input Anda:
+                    </div>
+                    <ul class="list-disc list-inside text-xs font-medium text-red-700 space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('mahasiswa.pengaduan.store') }}" class="space-y-6" enctype="multipart/form-data">
+                @csrf
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {{-- Kategori --}}
+                    <div>
+                        <label for="kategori_id" class="block text-sm font-bold text-gray-700 mb-2">Kategori <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <select id="kategori_id" name="kategori_id" required
+                                    class="appearance-none w-full px-4 py-3.5 bg-gray-50 border rounded-xl text-sm font-semibold text-gray-800 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue focus:bg-white outline-none transition-all cursor-pointer {{ $errors->has('kategori_id') ? 'border-red-400' : 'border-gray-200' }}">
+                                <option value="">-- Pilih Kategori --</option>
+                                @foreach ($kategoriList as $kat)
+                                    <option value="{{ $kat->id }}" {{ old('kategori_id') == $kat->id ? 'selected' : '' }}>
+                                        {{ $kat->nama_kategori }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Tanggal Kejadian --}}
+                    <div>
+                        <label for="tanggal_kejadian" class="block text-sm font-bold text-gray-700 mb-2">Waktu Kejadian <span class="text-red-500">*</span></label>
+                        <input id="tanggal_kejadian" name="tanggal_kejadian" type="datetime-local" required
+                               value="{{ old('tanggal_kejadian') }}"
+                               class="w-full px-4 py-3 bg-gray-50 border rounded-xl text-sm font-semibold text-gray-800 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue focus:bg-white outline-none transition-all {{ $errors->has('tanggal_kejadian') ? 'border-red-400' : 'border-gray-200' }}" />
+                    </div>
+                </div>
+
+                {{-- Subjek --}}
+                <div>
+                    <label for="subjek" class="block text-sm font-bold text-gray-700 mb-2">Subjek / Judul Pengaduan <span class="text-red-500">*</span></label>
+                    <input id="subjek" name="subjek" type="text" required maxlength="100"
+                           value="{{ old('subjek') }}"
+                           class="w-full px-4 py-3.5 bg-gray-50 border rounded-xl text-sm font-semibold text-gray-800 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue focus:bg-white outline-none transition-all {{ $errors->has('subjek') ? 'border-red-400' : 'border-gray-200' }}"
+                           placeholder="Contoh: Proyektor di Kelas MI-4A Rusak" />
+                    <p class="text-xs text-gray-400 font-medium mt-1.5 flex justify-end">Maksimal 100 karakter</p>
+                </div>
+
+                {{-- Isi Pengaduan --}}
+                <div>
+                    <label for="isi_pengaduan" class="block text-sm font-bold text-gray-700 mb-2">Detail Pengaduan <span class="text-red-500">*</span></label>
+                    <textarea id="isi_pengaduan" name="isi_pengaduan" rows="8" required
+                              class="w-full px-4 py-3.5 bg-gray-50 border rounded-xl text-sm font-medium text-gray-800 leading-relaxed focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue focus:bg-white outline-none transition-all resize-none {{ $errors->has('isi_pengaduan') ? 'border-red-400' : 'border-gray-200' }}"
+                              placeholder="Ceritakan detail kejadian secara jelas dan objektif...">{{ old('isi_pengaduan') }}</textarea>
+                </div>
+
+                {{-- Bukti Pendukung (Opsional) --}}
+                <div>
+                    <label for="bukti" class="block text-sm font-bold text-gray-700 mb-2">Bukti Pendukung <span class="text-gray-400 font-medium">(opsional)</span></label>
+                    <input id="bukti" name="bukti" type="file" accept=".jpg,.jpeg,.png,.pdf"
+                           class="w-full text-sm font-medium text-gray-600 border rounded-xl bg-gray-50 cursor-pointer focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue transition-all
+                                  file:mr-4 file:py-3.5 file:px-4 file:border-0 file:font-bold file:text-sm file:bg-polmed-blue file:text-white hover:file:bg-blue-800 file:cursor-pointer file:transition-colors
+                                  {{ $errors->has('bukti') ? 'border-red-400' : 'border-gray-200' }}" />
+                    <p class="text-xs text-gray-400 font-medium mt-1.5">Unggah foto atau dokumen PDF sebagai bukti (JPG, PNG, PDF — maksimal 5MB).</p>
+                </div>
+
+                <div class="pt-6 mt-6 border-t border-gray-100 flex flex-col-reverse sm:flex-row items-center justify-end gap-3">
+                    <a href="{{ route('mahasiswa.pengaduan.index') }}"
+                       class="w-full sm:w-auto text-center px-6 py-3.5 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-bold rounded-xl transition-colors">
+                        Batal
+                    </a>
+                    <button type="submit"
+                            class="w-full sm:w-auto px-8 py-3.5 bg-polmed-blue hover:bg-blue-800 text-white font-bold rounded-xl shadow-lg shadow-blue-900/20 transition-all focus:ring-4 focus:ring-blue-500/30 flex justify-center items-center gap-2">
+                        Kirim Laporan
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <form id="form-pengaduan" method="POST" action="{{ route('mahasiswa.pengaduan.store') }}"
-          class="bg-white rounded-2xl border border-gray-200 p-8 space-y-6">
-        @csrf
-
-        <!-- Identitas Mahasiswa (Auto-fill, Read-only) -->
-        <div class="bg-blue-50 rounded-xl p-5 border border-blue-100">
-            <p class="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-3">Identitas Pelapor</p>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-                <div>
-                    <p class="text-gray-500 text-xs mb-1">Nama Lengkap</p>
-                    <p class="font-medium text-gray-800">{{ $user->name }}</p>
-                </div>
-                <div>
-                    <p class="text-gray-500 text-xs mb-1">NIM</p>
-                    <p class="font-medium text-gray-800">{{ $user->nim }}</p>
-                </div>
-                <div>
-                    <p class="text-gray-500 text-xs mb-1">Kelas</p>
-                    <p class="font-medium text-gray-800">{{ $user->class }}</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Kategori Pengaduan -->
-        <div>
-            <label for="kategori_id" class="block text-sm font-medium text-gray-700 mb-1">
-                Kategori Pengaduan <span class="text-red-500">*</span>
-            </label>
-            <select id="kategori_id" name="kategori_id" required
-                    class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition
-                           {{ $errors->has('kategori_id') ? 'border-red-400 bg-red-50' : 'border-gray-300' }}">
-                <option value="">-- Pilih Kategori --</option>
-                @foreach ($kategori as $kat)
-                    <option value="{{ $kat->id }}" {{ old('kategori_id') == $kat->id ? 'selected' : '' }}>
-                        {{ $kat->nama_kategori }}
-                    </option>
-                @endforeach
-            </select>
-            @error('kategori_id')
-                <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
-            @enderror
-        </div>
-
-        <!-- Tanggal Kejadian -->
-        <div>
-            <label for="tanggal_kejadian" class="block text-sm font-medium text-gray-700 mb-1">
-                Tanggal & Waktu Kejadian <span class="text-red-500">*</span>
-            </label>
-            <input id="tanggal_kejadian" name="tanggal_kejadian" type="datetime-local" required
-                   max="{{ now()->format('Y-m-d\TH:i') }}"
-                   value="{{ old('tanggal_kejadian') }}"
-                   class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition
-                          {{ $errors->has('tanggal_kejadian') ? 'border-red-400 bg-red-50' : 'border-gray-300' }}" />
-            @error('tanggal_kejadian')
-                <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
-            @enderror
-        </div>
-
-        <!-- Subjek -->
-        <div>
-            <label for="subjek" class="block text-sm font-medium text-gray-700 mb-1">
-                Subjek Pengaduan <span class="text-red-500">*</span>
-            </label>
-            <input id="subjek" name="subjek" type="text" required
-                   value="{{ old('subjek') }}"
-                   maxlength="255"
-                   class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition
-                          {{ $errors->has('subjek') ? 'border-red-400 bg-red-50' : 'border-gray-300' }}"
-                   placeholder="Ringkasan singkat mengenai pengaduan Anda (min. 10 karakter)" />
-            @error('subjek')
-                <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
-            @enderror
-        </div>
-
-        <!-- Isi Pengaduan -->
-        <div>
-            <label for="isi_pengaduan" class="block text-sm font-medium text-gray-700 mb-1">
-                Isi Pengaduan <span class="text-red-500">*</span>
-            </label>
-            <textarea id="isi_pengaduan" name="isi_pengaduan" rows="7" required
-                      maxlength="5000"
-                      class="w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition resize-none
-                             {{ $errors->has('isi_pengaduan') ? 'border-red-400 bg-red-50' : 'border-gray-300' }}"
-                      placeholder="Jelaskan pengaduan Anda secara lengkap dan rinci. Sertakan waktu, tempat, dan pihak yang terlibat. (min. 30 karakter)">{{ old('isi_pengaduan') }}</textarea>
-            <div class="flex justify-between mt-1">
-                @error('isi_pengaduan')
-                    <p class="text-xs text-red-600">{{ $message }}</p>
-                @else
-                    <p class="text-xs text-gray-400">Minimal 30 karakter</p>
-                @enderror
-                <p class="text-xs text-gray-400" id="char-count">0 / 5000</p>
-            </div>
-        </div>
-
-        <!-- Tombol Aksi -->
-        <div class="flex items-center justify-between pt-2 border-t border-gray-100">
-            <a href="{{ route('mahasiswa.pengaduan.index') }}"
-               class="px-5 py-2.5 border border-gray-300 text-gray-600 hover:bg-gray-50 rounded-lg text-sm font-medium transition">
-                Batal
-            </a>
-            <button type="submit" id="btn-submit"
-                    class="px-6 py-2.5 bg-blue-700 hover:bg-blue-800 text-white font-semibold rounded-lg text-sm transition focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                Kirim Pengaduan
-            </button>
-        </div>
-    </form>
 </div>
 
-<script>
-    // Counter karakter untuk textarea
-    const textarea = document.getElementById('isi_pengaduan');
-    const charCount = document.getElementById('char-count');
-    function updateCount() {
-        charCount.textContent = textarea.value.length + ' / 5000';
-    }
-    textarea.addEventListener('input', updateCount);
-    updateCount();
-</script>
 @endsection

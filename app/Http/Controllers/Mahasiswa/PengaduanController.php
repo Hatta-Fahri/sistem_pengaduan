@@ -61,10 +61,10 @@ class PengaduanController extends Controller
      */
     public function create(): View
     {
-        $kategori = KategoriPengaduan::active()->orderBy('nama_kategori')->get();
-        $user     = auth()->user();
+        $kategoriList = KategoriPengaduan::active()->orderBy('nama_kategori')->get();
+        $user         = auth()->user();
 
-        return view('mahasiswa.pengaduan.create', compact('kategori', 'user'));
+        return view('mahasiswa.pengaduan.create', compact('kategoriList', 'user'));
     }
 
     /**

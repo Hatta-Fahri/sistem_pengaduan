@@ -22,7 +22,12 @@ class PengaduanService
      */
     public function createPengaduan(array $data, int $userId): Pengaduan
     {
-        return DB::transaction(function () use ($data, $userId) {
+        // Simpan file bukti (jika ada) ke disk public sebelum transaksi DB dimulai
+        $buktiPath = isset($data['bukti']) && $data['bukti'] instanceof \Illuminate\Http\UploadedFile
+            ? $data['bukti']->store('bukti-pengaduan', 'public')
+            : null;
+
+        return DB::transaction(function () use ($data, $userId, $buktiPath) {
             // Simpan pengaduan ke database
             $pengaduan = Pengaduan::create([
                 'user_id'          => $userId,
@@ -30,6 +35,7 @@ class PengaduanService
                 'tanggal_kejadian' => $data['tanggal_kejadian'],
                 'subjek'           => $data['subjek'],
                 'isi_pengaduan'    => $data['isi_pengaduan'],
+                'bukti'            => $buktiPath,
                 'status'           => Pengaduan::STATUS_MENUNGGU,
             ]);
 
