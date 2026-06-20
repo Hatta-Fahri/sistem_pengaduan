@@ -155,8 +155,8 @@
                             <th scope="col" class="px-6 py-4 w-12 text-center">No</th>
                             <th scope="col" class="px-6 py-4">Info Pelapor</th>
                             <th scope="col" class="px-6 py-4">Detail Pengaduan</th>
-                            <th scope="col" class="px-6 py-4">Status & Waktu</th>
-                            <th scope="col" class="px-6 py-4 text-center">Aksi</th>
+                            <th scope="col" class="px-6 py-4 w-48">Status & Waktu</th>
+                            <th scope="col" class="px-6 py-4 w-24 text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 bg-white">
@@ -195,11 +195,11 @@
                                     {{ $p->kategori->nama_kategori }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex flex-col items-start gap-1.5">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold {{ $badgeClass[$p->status] ?? 'bg-gray-100 text-gray-700 ring-1 ring-gray-200' }}">
+                            <td class="px-6 py-4">
+                                <div class="flex flex-col items-start gap-1.5 max-w-[170px]">
+                                    <span class="inline-flex items-center justify-center text-center leading-tight px-2.5 py-1 rounded-lg text-xs font-bold {{ $badgeClass[$p->status] ?? 'bg-gray-100 text-gray-700 ring-1 ring-gray-200' }}">
                                         @if($p->status === 'menunggu_verifikasi')
-                                            <span class="w-1.5 h-1.5 rounded-full bg-gray-500 mr-1.5 animate-pulse"></span>
+                                            <span class="w-1.5 h-1.5 rounded-full bg-gray-500 mr-1.5 animate-pulse flex-shrink-0"></span>
                                         @endif
                                         {{ $statusLabels[$p->status] ?? $p->status }}
                                     </span>
@@ -208,8 +208,8 @@
                                             Terlambat
                                         </span>
                                     @endif
-                                    <span class="text-xs font-medium text-gray-400 flex items-center gap-1 mt-1">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span class="text-xs font-medium text-gray-400 flex items-center gap-1 mt-1 whitespace-nowrap">
+                                        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                         {{ $p->created_at->format('d M Y, H:i') }}
                                     </span>
                                 </div>

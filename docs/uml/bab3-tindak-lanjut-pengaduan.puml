@@ -1,0 +1,81 @@
+@startuml bab3-tindak-lanjut-pengaduan
+title Activity Diagram - Tindak Lanjut Pengaduan
+
+|Admin|
+start
+:Membuka daftar pengaduan\n(dapat disaring berdasarkan\nstatus, kategori, atau kata kunci);
+
+switch (Admin memilih aktivitas?)
+case ( Mengunduh Laporan Pengaduan )
+  |Sistem|
+  :Menyusun laporan dalam\nbentuk berkas;
+  :Memberikan berkas laporan\nkepada admin;
+  stop
+
+case ( Menindaklanjuti Pengaduan )
+  |Admin|
+  :Membuka detail salah satu pengaduan;
+  |Sistem|
+  :Menampilkan detail pengaduan\nbeserta riwayat penanganannya;
+
+  repeat
+  |Admin|
+  switch (Admin menentukan status\npenanganan?)
+  case ( Memproses Pengaduan )
+    :Mengubah status menjadi\n"Sedang Diproses";
+    |Sistem|
+    :Mencatat riwayat status;
+    :Mengirim notifikasi kepada mahasiswa;
+    |Admin|
+
+  case ( Meminta Informasi Tambahan )
+    :Mengubah status menjadi\n"Membutuhkan Informasi Tambahan"\ndisertai catatan;
+    |Sistem|
+    :Mencatat riwayat status;
+    :Mengirim notifikasi kepada mahasiswa;
+    |Mahasiswa|
+    :Memberikan informasi tambahan\nyang diminta;
+    |Sistem|
+    :Mengubah status kembali menjadi\n"Sedang Diproses";
+    :Mengirim notifikasi kepada admin;
+    |Admin|
+
+  case ( Menolak Pengaduan )
+    :Mengubah status menjadi "Ditolak"\ndisertai catatan;
+    |Sistem|
+    :Mencatat riwayat status;
+    :Mengirim notifikasi kepada mahasiswa;
+    :Mengunci status pengaduan\nsecara permanen;
+
+  case ( Mengajukan Penyelesaian )
+    :Mengubah status menjadi\n"Menunggu Konfirmasi Mahasiswa";
+    |Sistem|
+    :Mencatat riwayat status;
+    :Mengirim notifikasi kepada mahasiswa;
+    switch (Tanggapan mahasiswa?)
+    case ( Mengonfirmasi Selesai )
+      |Mahasiswa|
+      :Mengonfirmasi pengaduan\ntelah selesai ditangani;
+      |Sistem|
+      :Mengubah status menjadi\n"Selesai Ditangani";
+      :Mengunci status pengaduan\nsecara permanen;
+    case ( Menyatakan Belum Selesai )
+      |Mahasiswa|
+      :Menyatakan pengaduan belum\nselesai disertai alasan;
+      |Sistem|
+      :Mengubah status kembali menjadi\n"Sedang Diproses";
+      :Mengirim notifikasi kepada admin;
+      |Admin|
+    case ( Tidak Memberikan Tanggapan )
+      |Sistem|
+      :Menutup pengaduan secara otomatis\nsetelah melewati batas waktu;
+      :Mengubah status menjadi\n"Selesai Ditangani";
+      :Mengunci status pengaduan\nsecara permanen;
+    endswitch
+  endswitch
+  |Sistem|
+  repeat while (Status pengaduan\nbelum bersifat akhir?) is (ya) not (tidak)
+endswitch
+stop
+
+@enduml

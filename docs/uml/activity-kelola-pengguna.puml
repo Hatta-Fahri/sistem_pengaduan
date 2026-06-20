@@ -1,0 +1,38 @@
+@startuml activity-kelola-pengguna
+title Activity Diagram - Kelola Pengguna Mahasiswa (Admin)
+
+|Admin|
+start
+:Buka menu "Kelola Pengguna";
+:Cari nama/NIM/email [opsional];
+
+|Sistem|
+:Tampilkan daftar mahasiswa\n(nama, NIM, jumlah pengaduan,\nstatus aktif) sesuai pencarian;
+
+|Admin|
+switch (Admin pilih aksi?)
+case ( Lihat Detail & Statistik )
+  :Klik salah satu mahasiswa;
+  |Sistem|
+  :Tampilkan profil mahasiswa\n+ statistik jumlah pengaduan per status\n+ riwayat seluruh pengaduannya;
+
+case ( Blokir / Aktifkan Akun )
+  :Klik toggle status\npada salah satu mahasiswa;
+  |Sistem|
+  :Balik nilai is_active;
+  if (Akun dinonaktifkan?) then (ya)
+    :Tampilkan pesan\n"akun diblokir, tidak bisa login lagi";
+    note right
+      Mahasiswa akan dipaksa logout
+      otomatis oleh middleware role pada
+      request berikutnya (lihat Activity
+      Diagram Login & RBAC - sudah ada)
+    end note
+  else (tidak)
+    :Tampilkan pesan\n"akun diaktifkan kembali";
+  endif
+  :Redirect ke daftar pengguna\ndengan status berhasil;
+endswitch
+stop
+
+@enduml

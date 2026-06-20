@@ -1,0 +1,47 @@
+@startuml bab3-kelola-profil-akun
+title Activity Diagram - Kelola Profil dan Akun
+
+|Mahasiswa|
+start
+:Membuka halaman profil;
+
+switch (Mahasiswa memilih aktivitas?)
+case ( Memperbarui Data Profil )
+  :Mengubah nama dan/atau email;
+  |Sistem|
+  if (Data valid?) then (tidak)
+    :Menampilkan pesan kesalahan;
+    stop
+  else (ya)
+    :Menyimpan perubahan data profil;
+    :Menampilkan notifikasi berhasil;
+  endif
+
+case ( Mengubah Password )
+  |Mahasiswa|
+  :Memasukkan password lama\ndan password baru;
+  |Sistem|
+  if (Password lama benar dan\npassword baru memenuhi syarat?) then (tidak)
+    :Menampilkan pesan kesalahan;
+    stop
+  else (ya)
+    :Memperbarui password;
+    :Menampilkan notifikasi berhasil;
+  endif
+
+case ( Menghapus Akun )
+  |Mahasiswa|
+  :Memasukkan password\nsebagai konfirmasi;
+  |Sistem|
+  if (Password sesuai?) then (tidak)
+    :Menampilkan pesan kesalahan;
+    stop
+  else (ya)
+    :Menghapus akun secara permanen;
+    :Mengakhiri sesi pengguna;
+    :Mengarahkan ke halaman utama;
+  endif
+endswitch
+stop
+
+@enduml

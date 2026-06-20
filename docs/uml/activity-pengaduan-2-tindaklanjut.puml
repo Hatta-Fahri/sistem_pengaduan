@@ -1,0 +1,69 @@
+@startuml activity-pengaduan-2-tindaklanjut
+title Activity Diagram - Siklus Hidup Pengaduan (2/2) - Tindak Lanjut & Resolusi
+
+|Admin|
+start
+:Login;
+:Buka daftar pengaduan;
+:Buka detail pengaduan\n(status awal: Menunggu Verifikasi);
+
+repeat
+|Admin|
+switch (Admin pilih tindakan?)
+case ( Set "Sedang Diproses" )
+  :Update status -> Sedang Diproses;
+  |Sistem|
+  :Catat status_history;
+  :Kirim email "Status Diperbarui"\nke mahasiswa;
+  |Admin|
+
+case ( Set "Membutuhkan Informasi Tambahan" - catatan wajib )
+  :Update status + catatan\n+ lampiran opsional;
+  |Sistem|
+  :Catat status_history;
+  :Kirim email "Status Diperbarui"\nke mahasiswa;
+  |Mahasiswa|
+  :Balas permintaan informasi\n(teks wajib + lampiran opsional);
+  |Sistem|
+  :Otomatis ubah status ->\nSedang Diproses;
+  :Catat status_history;
+  :Kirim email "Mahasiswa Membalas\nInformasi" ke semua admin;
+  |Admin|
+
+case ( Set "Ditolak" - catatan wajib )
+  |Sistem|
+  :Catat status_history;
+  :Kirim email "Status Diperbarui"\nke mahasiswa;
+  :Status -> Ditolak\n(final, terkunci permanen);
+
+case ( Set "Menunggu Konfirmasi Mahasiswa" - lampiran opsional )
+  |Sistem|
+  :Catat status_history;
+  :Kirim email "Status Diperbarui"\n(berisi deadline 3 hari) ke mahasiswa;
+  switch (Respons mahasiswa\ndalam 3 hari?)
+  case ( Konfirmasi selesai )
+    |Mahasiswa|
+    :Konfirmasi pengaduan selesai;
+    |Sistem|
+    :Status -> Selesai Ditangani\n(final, terkunci permanen);
+  case ( Tolak konfirmasi - alasan wajib )
+    |Mahasiswa|
+    :Tolak konfirmasi + alasan;
+    |Sistem|
+    :Ubah status -> Sedang Diproses;
+    :Catat status_history;
+    :Kirim email "Mahasiswa Menolak\nKonfirmasi" ke semua admin;
+    |Admin|
+  case ( Tidak ada respons\n> 3 hari )
+    |Sistem|
+    :Job terjadwal\n(pengaduan auto-close) berjalan;
+    :Status -> Selesai Ditangani\n(otomatis, changed_by = null, final);
+    :Catat status_history;
+    :Kirim email "Status Diperbarui"\nke mahasiswa;
+  endswitch
+endswitch
+|Sistem|
+repeat while (Status pengaduan\nbelum final?) is (ya) not (tidak)
+stop
+
+@enduml

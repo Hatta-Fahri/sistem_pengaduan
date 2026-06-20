@@ -1,0 +1,32 @@
+@startuml usecase-administrasi
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #FEFECE
+  BorderColor #888888
+}
+
+actor Admin
+
+rectangle "Modul Administrasi" {
+  usecase "Kelola Kategori Pengaduan" as UC17
+  usecase "Kelola Pengguna Mahasiswa" as UC18
+}
+
+Admin --> UC17
+Admin --> UC18
+
+note bottom of UC17
+  Tambah, edit, aktifkan/nonaktifkan --
+  tidak ada hapus permanen (dibatasi
+  foreign key ke data Pengaduan lama).
+end note
+
+note bottom of UC18
+  Mencakup: lihat daftar & detail/statistik
+  pengaduan per mahasiswa, dan
+  blokir/aktifkan kembali akun
+  (bukan hapus data).
+end note
+
+@enduml

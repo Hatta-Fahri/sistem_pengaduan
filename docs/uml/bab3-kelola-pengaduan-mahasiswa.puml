@@ -1,0 +1,40 @@
+@startuml bab3-kelola-pengaduan-mahasiswa
+title Activity Diagram - Kelola Pengaduan Mahasiswa
+
+|Mahasiswa|
+start
+switch (Mahasiswa memilih aktivitas?)
+case ( Mengajukan Pengaduan Baru )
+  repeat
+    :Mengisi formulir pengaduan\n(kategori, tanggal kejadian, subjek, isi,\nbukti pendukung, status anonim);
+  backward :Sistem menampilkan pesan kesalahan;
+  repeat while (Data valid dan belum melebihi\nbatas pengajuan harian?) is (tidak) not (ya)
+  |Sistem|
+  :Menyimpan pengaduan baru;
+  :Mengirim notifikasi kepada\nmahasiswa dan admin;
+  :Menampilkan notifikasi berhasil;
+  |Mahasiswa|
+
+case ( Mengubah Pengaduan yang Diajukan )
+  :Memilih pengaduan\nyang belum diverifikasi admin;
+  |Sistem|
+  if (Pengaduan masih berstatus\n"Menunggu Verifikasi"?) then (tidak)
+    :Menolak permintaan pengubahan;
+    stop
+  else (ya)
+    :Menampilkan formulir\nberisi data sebelumnya;
+  endif
+  |Mahasiswa|
+  :Mengubah data pengaduan;
+  |Sistem|
+  if (Data valid?) then (tidak)
+    :Menampilkan pesan kesalahan;
+    stop
+  else (ya)
+    :Menyimpan perubahan pengaduan;
+    :Menampilkan notifikasi berhasil;
+  endif
+endswitch
+stop
+
+@enduml

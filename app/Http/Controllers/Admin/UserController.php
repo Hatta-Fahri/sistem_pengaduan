@@ -50,16 +50,21 @@ class UserController extends Controller
     }
 
     /**
-     * Nonaktifkan akun mahasiswa — bukan hapus permanen.
+     * Nonaktifkan akun mahasiswa (diblokir, tidak bisa login lagi) atau aktifkan
+     * kembali — tidak ada penghapusan data permanen sama sekali.
      */
-    public function destroy(User $user): RedirectResponse
+    public function toggleActive(User $user): RedirectResponse
     {
         abort_unless($user->isMahasiswa(), 404);
 
-        $user->update(['is_active' => false]);
+        $user->update(['is_active' => ! $user->is_active]);
+
+        $pesan = $user->is_active
+            ? 'Akun mahasiswa "' . $user->name . '" berhasil diaktifkan kembali.'
+            : 'Akun mahasiswa "' . $user->name . '" berhasil dinonaktifkan. Mahasiswa ini tidak akan bisa login lagi sampai diaktifkan kembali.';
 
         return redirect()
             ->route('admin.users.index')
-            ->with('success', 'Akun mahasiswa "' . $user->name . '" berhasil dinonaktifkan.');
+            ->with('success', $pesan);
     }
 }

@@ -1,0 +1,37 @@
+@startuml bab3-login
+title Activity Diagram - Login
+
+|Pengguna|
+start
+:Membuka halaman login;
+:Memasukkan email dan password;
+
+|Sistem|
+if (Email dan password sesuai?) then (tidak)
+  :Menampilkan pesan kesalahan;
+  stop
+else (ya)
+endif
+
+if (Peran pengguna?) then (Admin)
+  :Mengarahkan ke dashboard admin;
+  stop
+else (Mahasiswa)
+endif
+
+if (Email sudah diverifikasi?) then (belum)
+  :Mengarahkan ke halaman\nverifikasi email;
+  stop
+else (sudah)
+endif
+
+if (Akun masih aktif?) then (tidak)
+  :Mengeluarkan pengguna dari sistem;
+  :Menampilkan pesan akun dinonaktifkan;
+  stop
+else (ya)
+  :Mengarahkan ke dashboard mahasiswa;
+  stop
+endif
+
+@enduml

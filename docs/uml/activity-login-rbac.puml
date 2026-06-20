@@ -1,0 +1,37 @@
+@startuml activity-login-rbac
+title Activity Diagram - Login & Pemeriksaan Akses (RBAC)
+
+|User|
+start
+:Isi form login (email, password);
+
+|Sistem|
+if (Kredensial valid? maks 5x percobaan,\nlalu rate-limited) then (tidak)
+  :Tampilkan error;
+  stop
+else (ya)
+endif
+
+if (Role user?) then (Admin)
+  :Redirect ke Dashboard Admin;
+  stop
+else (Mahasiswa)
+endif
+
+if (Email terverifikasi?) then (belum)
+  :Redirect ke halaman\nVerifikasi Email;
+  stop
+else (sudah)
+endif
+
+if (Akun aktif / is_active?) then (tidak / diblokir)
+  :Paksa logout otomatis;
+  :Tampilkan pesan\n"akun dinonaktifkan";
+  :Redirect ke halaman Login;
+  stop
+else (aktif)
+  :Redirect ke Dashboard Mahasiswa;
+  stop
+endif
+
+@enduml

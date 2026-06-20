@@ -1,0 +1,33 @@
+@startuml activity-kelola-pengaduan-admin
+title Activity Diagram - Kelola Pengaduan (Admin) - Pencarian, Filter & Ekspor
+
+|Admin|
+start
+:Buka menu "Manajemen Pengaduan";
+:Atur filter (status, kategori,\nrentang tanggal) dan/atau\ncari nama/NIM/subjek [opsional];
+
+|Sistem|
+if (Pencarian berdasarkan\nnama/NIM mahasiswa?) then (ya)
+  :Kecualikan pengaduan anonim\ndari hasil pencarian nama/NIM;
+else (tidak)
+endif
+:Tampilkan daftar pengaduan\nsesuai filter\n(identitas anonim disembunyikan);
+
+|Admin|
+switch (Admin pilih tindakan?)
+case ( Lihat Detail Pengaduan )
+  |Sistem|
+  :Tampilkan detail pengaduan\n+ riwayat status\n(identitas disembunyikan jika anonim);
+  note right
+    Lanjut ke Activity Diagram
+    "Tindak Lanjut & Resolusi Pengaduan"
+    (sudah ada) untuk verifikasi/update status
+  end note
+case ( Ekspor Laporan ke CSV )
+  |Sistem|
+  :Susun berkas CSV dari hasil\npengaduan terfilter\n(kolom identitas anonim ditandai "Anonim");
+  :Unduh berkas CSV;
+endswitch
+stop
+
+@enduml

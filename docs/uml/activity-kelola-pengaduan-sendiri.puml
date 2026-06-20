@@ -1,0 +1,45 @@
+@startuml activity-kelola-pengaduan-sendiri
+title Activity Diagram - Kelola Pengaduan Sendiri (Mahasiswa)
+
+|Mahasiswa|
+start
+:Buka menu "Riwayat Pengaduan";
+:Atur filter (status, kategori)\ndan/atau cari subjek [opsional];
+
+|Sistem|
+:Tampilkan daftar pengaduan\nmilik sendiri sesuai filter;
+
+|Mahasiswa|
+:Pilih salah satu pengaduan;
+
+|Sistem|
+:Tampilkan detail pengaduan\n+ riwayat status (timeline);
+
+|Mahasiswa|
+if (Ingin mengedit pengaduan?) then (tidak)
+  :Tetap di halaman detail;
+else (ya)
+  :Klik "Edit Pengaduan";
+  |Sistem|
+  if (Pemilik sah & status masih\n"Menunggu Verifikasi"?) then (tidak)
+    :Tolak akses (403 Forbidden);
+    stop
+  else (ya)
+    :Tampilkan form edit\nterisi data sebelumnya;
+  endif
+
+  |Mahasiswa|
+  :Ubah kategori/tanggal kejadian/\nsubjek/isi/bukti/status anonim;
+
+  |Sistem|
+  if (Validasi lolos?) then (tidak)
+    :Tampilkan pesan error;
+    stop
+  else (ya)
+    :Simpan perubahan\n(ganti file bukti lama jika diunggah baru);
+    :Redirect ke halaman detail\npengaduan dengan status berhasil;
+  endif
+endif
+stop
+
+@enduml

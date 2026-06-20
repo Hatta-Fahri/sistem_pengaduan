@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Jakarta', // GMT+7 (WIB) — sesuai lokasi Politeknik Negeri Medan
 
     /*
     |--------------------------------------------------------------------------

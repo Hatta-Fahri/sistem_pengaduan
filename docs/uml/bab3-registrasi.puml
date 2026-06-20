@@ -1,0 +1,28 @@
+@startuml bab3-registrasi
+title Activity Diagram - Registrasi
+
+|Calon Mahasiswa|
+start
+repeat
+  :Mengisi formulir registrasi\n(nama, NIM, kelas, email, password);
+backward :Sistem menampilkan pesan kesalahan;
+repeat while (Data valid dan belum terdaftar?) is (tidak) not (ya)
+
+|Sistem|
+:Membuat akun mahasiswa baru;
+:Mengirim email verifikasi;
+:Mengarahkan ke halaman utama mahasiswa;
+
+if (Email sudah diverifikasi?) then (belum)
+  :Mengarahkan ke halaman\nverifikasi email;
+  |Calon Mahasiswa|
+  :Membuka email dan mengklik\ntautan verifikasi;
+  |Sistem|
+  :Menandai email sebagai terverifikasi;
+  :Mengarahkan ke halaman utama mahasiswa;
+else (sudah)
+  :Mengarahkan ke halaman utama mahasiswa;
+endif
+stop
+
+@enduml

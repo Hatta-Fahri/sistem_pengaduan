@@ -215,9 +215,10 @@
         <main class="flex-1 px-6 lg:px-10 py-6 overflow-y-auto">
             @yield('content')
         </main>
-        
+
     </div>
 </div>
 
+@stack('scripts')
 </body>
 </html>

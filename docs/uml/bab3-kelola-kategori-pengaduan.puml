@@ -1,0 +1,41 @@
+@startuml bab3-kelola-kategori-pengaduan
+title Activity Diagram - Kelola Kategori Pengaduan
+
+|Admin|
+start
+:Membuka halaman kelola kategori;
+
+switch (Admin memilih aktivitas?)
+case ( Menambah Kategori )
+  :Mengisi nama dan\ndeskripsi kategori baru;
+  |Sistem|
+  if (Nama kategori valid\ndan belum digunakan?) then (tidak)
+    :Menampilkan pesan kesalahan;
+    stop
+  else (ya)
+    :Menyimpan kategori baru;
+    :Menampilkan notifikasi berhasil;
+  endif
+
+case ( Mengubah Kategori )
+  |Admin|
+  :Mengubah nama dan/atau\ndeskripsi kategori;
+  |Sistem|
+  if (Nama kategori valid\ndan belum digunakan?) then (tidak)
+    :Menampilkan pesan kesalahan;
+    stop
+  else (ya)
+    :Menyimpan perubahan kategori;
+    :Menampilkan notifikasi berhasil;
+  endif
+
+case ( Mengaktifkan/Menonaktifkan Kategori )
+  |Admin|
+  :Mengubah status\naktif kategori;
+  |Sistem|
+  :Memperbarui status kategori;
+  :Menampilkan notifikasi berhasil;
+endswitch
+stop
+
+@enduml

@@ -1,0 +1,124 @@
+@startuml usecase-silpm
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #FEFECE
+  BorderColor #888888
+}
+
+actor Mahasiswa
+actor Admin
+actor "Sistem" as Sistem <<automated>>
+
+rectangle "SILPM (Sistem Informasi Layanan Pengaduan Mahasiswa)" {
+
+  package "Autentikasi & Akun" {
+    usecase "Registrasi Akun" as UC1
+    usecase "Verifikasi Email" as UC2
+    usecase "Login" as UC3
+    usecase "Logout" as UC4
+    usecase "Kelola Profil" as UC11
+    usecase "Hapus Akun Sendiri" as UC12
+  }
+
+  package "Pengaduan" {
+    usecase "Ajukan Pengaduan Baru" as UC6
+    usecase "Pilih Kategori" as UC6a
+    usecase "Ajukan Secara Anonim" as UC6b
+    usecase "Lampirkan Bukti Pendukung" as UCBukti
+    usecase "Kelola Pengaduan Sendiri" as UC7
+    usecase "Balas Permintaan\nInformasi Tambahan" as UC8
+    usecase "Konfirmasi Penyelesaian\nPengaduan" as UC9
+    usecase "Tolak Konfirmasi Penyelesaian" as UC10
+    usecase "Unduh Berkas Bukti Pendukung" as UCUnduh
+    usecase "Kelola Pengaduan" as UC14
+    usecase "Ekspor Laporan ke CSV" as UC15
+  }
+
+  package "Dashboard & Laporan" {
+    usecase "Lihat Dashboard Mahasiswa" as UC5
+    usecase "Lihat Dashboard Admin" as UC13
+    usecase "Lihat Statistik & Laporan" as UC16
+  }
+
+  package "Administrasi" {
+    usecase "Kelola Kategori Pengaduan" as UC17
+    usecase "Kelola Pengguna Mahasiswa" as UC18
+  }
+
+  package "Proses Otomatis (Sistem)" {
+    usecase "Kirim Notifikasi Email" as UC19
+    usecase "Tutup Otomatis Pengaduan" as UC20
+  }
+}
+
+' ---- Aktor - Use Case (Mahasiswa) ----
+Mahasiswa --> UC1
+Mahasiswa --> UC3
+Mahasiswa --> UC4
+Mahasiswa --> UC11
+Mahasiswa --> UC12
+Mahasiswa --> UC5
+Mahasiswa --> UC6
+Mahasiswa --> UC7
+Mahasiswa --> UC8
+Mahasiswa --> UC9
+Mahasiswa --> UC10
+
+' ---- Aktor - Use Case (Admin) ----
+Admin --> UC3
+Admin --> UC4
+Admin --> UC13
+Admin --> UC14
+Admin --> UC16
+Admin --> UC17
+Admin --> UC18
+
+' ---- Aktor - Use Case (Sistem) ----
+Sistem --> UC19
+Sistem --> UC20
+
+' ---- Relasi include ----
+UC1 ..> UC2 : <<include>>
+UC6 ..> UC6a : <<include>>
+UC6 ..> UC19 : <<include>>
+UC14 ..> UC19 : <<include>>
+UC8 ..> UC19 : <<include>>
+UC10 ..> UC19 : <<include>>
+UC20 ..> UC19 : <<include>>
+
+' ---- Relasi extend ----
+UCBukti ..> UC6 : <<extend>>
+UC6b ..> UC6 : <<extend>>
+UCBukti ..> UC14 : <<extend>>
+UCUnduh ..> UC7 : <<extend>>
+UCUnduh ..> UC14 : <<extend>>
+UC15 ..> UC14 : <<extend>>
+
+note bottom of UC14
+  Mencakup: lihat daftar seluruh pengaduan
+  (dengan filter), lihat detail, dan
+  perbarui status penanganan.
+end note
+
+note bottom of UC7
+  Mencakup: lihat daftar/detail & riwayat
+  status pengaduan milik sendiri, dan edit
+  isi selama status masih "Menunggu Verifikasi".
+end note
+
+note right of Sistem
+  Aktor sekunder/otomatis: proses terjadwal
+  (pengaduan:auto-close, harian) dan
+  event-driven (kirim email), tidak login
+  interaktif.
+end note
+
+note bottom of UC9
+  Catatan dari kode: use case ini TIDAK
+  memicu "Kirim Notifikasi Email" -- berbeda
+  dari Tolak Konfirmasi & Balas Informasi
+  yang memicu email ke admin.
+end note
+
+@enduml

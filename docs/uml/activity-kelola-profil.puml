@@ -1,0 +1,58 @@
+@startuml activity-kelola-profil
+title Activity Diagram - Kelola Profil & Akun (Mahasiswa)
+
+|Mahasiswa|
+start
+:Buka halaman "Profil Saya";
+
+|Sistem|
+:Tampilkan form Edit Profil,\nUbah Password, & Hapus Akun;
+
+|Mahasiswa|
+switch (Mahasiswa pilih aksi?)
+case ( Edit Profil )
+  :Ubah nama dan/atau email;
+  |Sistem|
+  if (Validasi lolos? (email unik)) then (tidak)
+    :Tampilkan pesan error;
+    stop
+  else (ya)
+    if (Email diubah?) then (ya)
+      :Set email_verified_at = null;
+      :Simpan perubahan;
+      :Tampilkan status berhasil\n(perlu verifikasi ulang email);
+    else (tidak)
+      :Simpan perubahan;
+      :Tampilkan status berhasil diperbarui;
+    endif
+  endif
+
+case ( Ubah Password )
+  |Mahasiswa|
+  :Isi password saat ini,\npassword baru + konfirmasi;
+  |Sistem|
+  if (Password saat ini benar &\npassword baru sesuai kebijakan?) then (tidak)
+    :Tampilkan pesan error;
+    stop
+  else (ya)
+    :Update password (hash baru);
+    :Tampilkan status "password berhasil diubah";
+  endif
+
+case ( Hapus Akun Sendiri )
+  |Mahasiswa|
+  :Isi password untuk konfirmasi;
+  |Sistem|
+  if (Password sesuai?) then (tidak)
+    :Tampilkan pesan error;
+    stop
+  else (ya)
+    :Logout paksa;
+    :Hapus akun secara permanen;
+    :Invalidate session;
+    :Redirect ke halaman utama;
+  endif
+endswitch
+stop
+
+@enduml

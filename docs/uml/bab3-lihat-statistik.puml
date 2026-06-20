@@ -1,0 +1,18 @@
+@startuml bab3-lihat-statistik
+title Activity Diagram - Lihat Statistik
+
+|Admin|
+start
+:Membuka halaman statistik;
+:Memilih tahun yang ingin\nditampilkan [opsional];
+
+|Sistem|
+if (Tahun yang dipilih tersedia?) then (tidak)
+  :Menggunakan tahun berjalan\nsebagai tampilan default;
+else (ya)
+endif
+:Mengolah data pengaduan\nsesuai tahun terpilih;
+:Menampilkan grafik dan rekapitulasi\nstatistik pengaduan;
+stop
+
+@enduml

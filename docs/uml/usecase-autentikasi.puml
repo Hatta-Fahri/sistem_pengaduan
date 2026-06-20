@@ -1,0 +1,37 @@
+@startuml usecase-autentikasi
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #FEFECE
+  BorderColor #888888
+}
+
+actor Mahasiswa
+actor Admin
+
+rectangle "Modul Autentikasi & Manajemen Akun" {
+  usecase "Registrasi Akun" as UC1
+  usecase "Verifikasi Email" as UC2
+  usecase "Login" as UC3
+  usecase "Logout" as UC4
+  usecase "Kelola Profil" as UC11
+  usecase "Hapus Akun Sendiri" as UC12
+}
+
+Mahasiswa --> UC1
+Mahasiswa --> UC3
+Mahasiswa --> UC4
+Mahasiswa --> UC11
+Mahasiswa --> UC12
+
+Admin --> UC3
+Admin --> UC4
+
+UC1 ..> UC2 : <<include>>
+
+note bottom of UC2
+  Akun lama (sebelum fitur ini aktif)
+  dianggap sudah terverifikasi otomatis.
+end note
+
+@enduml

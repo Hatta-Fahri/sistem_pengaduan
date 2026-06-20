@@ -1,0 +1,33 @@
+@startuml usecase-laporan-statistik
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #FEFECE
+  BorderColor #888888
+}
+
+actor Mahasiswa
+actor Admin
+
+rectangle "Modul Dashboard & Laporan" {
+  usecase "Lihat Dashboard Mahasiswa" as UC5
+  usecase "Lihat Dashboard Admin" as UC13
+  usecase "Lihat Statistik & Laporan" as UC16
+}
+
+Mahasiswa --> UC5
+Admin --> UC13
+Admin --> UC16
+
+note bottom of UC13
+  Menampilkan statistik ringkas,
+  daftar pengaduan terbaru, dan
+  daftar pengaduan terlambat/overdue.
+end note
+
+note bottom of UC16
+  Grafik distribusi status, rekap kategori,
+  dan tren 12 bulan terakhir (filter tahun).
+end note
+
+@enduml

@@ -1,0 +1,56 @@
+@startuml activity-kelola-kategori
+title Activity Diagram - Kelola Kategori Pengaduan (Admin)
+
+|Admin|
+start
+:Buka menu "Kelola Kategori";
+
+|Sistem|
+:Tampilkan daftar kategori\n(aktif & nonaktif) beserta\njumlah pengaduan per kategori;
+
+|Admin|
+switch (Admin pilih aksi?)
+case ( Tambah Kategori )
+  :Klik "Tambah Kategori";
+  |Sistem|
+  :Tampilkan form tambah;
+  |Admin|
+  :Isi nama kategori\n+ deskripsi [opsional];
+  |Sistem|
+  if (Nama kategori valid & belum dipakai?) then (tidak)
+    :Tampilkan pesan error;
+    stop
+  else (ya)
+    :Simpan kategori baru\n(is_active = true);
+    :Redirect ke daftar kategori\ndengan status berhasil;
+  endif
+
+case ( Edit Kategori )
+  :Klik "Edit" pada salah satu kategori;
+  |Sistem|
+  :Tampilkan form edit\nterisi data sebelumnya;
+  |Admin|
+  :Ubah nama dan/atau deskripsi;
+  |Sistem|
+  if (Nama kategori valid & belum dipakai?) then (tidak)
+    :Tampilkan pesan error;
+    stop
+  else (ya)
+    :Simpan perubahan;
+    :Redirect ke daftar kategori\ndengan status berhasil;
+  endif
+
+case ( Aktifkan / Nonaktifkan Kategori )
+  :Klik toggle status\npada salah satu kategori;
+  |Sistem|
+  :Balik nilai is_active;
+  if (Kategori dinonaktifkan?) then (ya)
+    :Sembunyikan dari pilihan\nform pengaduan baru\n(data pengaduan lama tetap valid);
+  else (tidak)
+    :Tampilkan kembali sebagai\npilihan di form pengaduan baru;
+  endif
+  :Redirect ke daftar kategori\ndengan status berhasil;
+endswitch
+stop
+
+@enduml

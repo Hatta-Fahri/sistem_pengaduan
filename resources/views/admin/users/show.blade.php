@@ -57,17 +57,22 @@
             </div>
         </div>
 
-        @if ($user->isActive())
-            <form method="POST" action="{{ route('admin.users.destroy', $user) }}" class="mt-5"
-                  onsubmit="return confirm('Nonaktifkan akun {{ $user->name }}? Mahasiswa ini tidak akan bisa login lagi.');">
-                @csrf
-                @method('DELETE')
+        <form method="POST" action="{{ route('admin.users.toggle-active', $user) }}" class="mt-5"
+              onsubmit="return confirm('{{ $user->isActive() ? 'Nonaktifkan akun ' . $user->name . '? Mahasiswa ini tidak akan bisa login lagi sampai diaktifkan kembali.' : 'Aktifkan kembali akun ' . $user->name . '?' }}');">
+            @csrf
+            @method('PATCH')
+            @if ($user->isActive())
                 <button type="submit"
                         class="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg text-sm font-semibold transition">
-                    Nonaktifkan Akun
+                    Nonaktifkan Akun (Blokir)
                 </button>
-            </form>
-        @endif
+            @else
+                <button type="submit"
+                        class="px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg text-sm font-semibold transition">
+                    Aktifkan Kembali
+                </button>
+            @endif
+        </form>
     </div>
 
     {{-- ===== Statistik Pengaduan ===== --}}

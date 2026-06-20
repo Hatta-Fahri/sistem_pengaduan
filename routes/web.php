@@ -99,8 +99,8 @@ Route::prefix('admin')
             ->name('users.index');
         Route::get('/users/{user}', [Admin\UserController::class, 'show'])
             ->name('users.show');
-        Route::delete('/users/{user}', [Admin\UserController::class, 'destroy'])
-            ->name('users.destroy');
+        Route::patch('/users/{user}/toggle-active', [Admin\UserController::class, 'toggleActive'])
+            ->name('users.toggle-active');
 
         // Kelola kategori pengaduan
         Route::get('/kategori', [Admin\KategoriPengaduanController::class, 'index'])

@@ -1,0 +1,23 @@
+@startuml activity-pengaduan-1-pengajuan
+title Activity Diagram - Siklus Hidup Pengaduan (1/2) - Pengajuan
+
+|Mahasiswa|
+start
+:Login;
+repeat
+  :Isi form pengaduan\n(kategori, tanggal kejadian, subjek, isi,\nbukti [opsional], anonim [opsional]);
+backward :Tampilkan pesan error;
+repeat while (Validasi & rate limit maks 5/hari lolos?) is (tidak) not (ya)
+
+|Sistem|
+:Simpan pengaduan\n(status = Menunggu Verifikasi);
+:Catat ke status_history;
+:Kirim email "Pengaduan Diterima"\nke mahasiswa + "Pengaduan Baru Masuk"\nke semua admin;
+
+note right
+  Berlanjut ke diagram
+  "(2/2) Tindak Lanjut & Resolusi"
+end note
+stop
+
+@enduml

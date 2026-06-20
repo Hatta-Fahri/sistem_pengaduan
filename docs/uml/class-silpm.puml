@@ -1,0 +1,114 @@
+@startuml class-silpm
+title Class Diagram - Entitas Domain SILPM
+skinparam classAttributeIconSize 0
+
+class User {
+  -id : bigint <<PK>>
+  -name : string
+  -nim : string[20] <<unique, nullable>>
+  -class : string[50] <<nullable>>
+  -email : string <<unique>>
+  -email_verified_at : timestamp <<nullable>>
+  -password : string
+  -role : enum{mahasiswa, admin}
+  -is_active : boolean = true
+  -created_at : timestamp
+  -updated_at : timestamp
+  --
+  +isAdmin() : boolean
+  +isMahasiswa() : boolean
+  +isActive() : boolean
+}
+
+class Pengaduan {
+  -id : bigint <<PK>>
+  -user_id : bigint <<FK>>
+  -kategori_id : bigint <<FK>>
+  -is_anonymous : boolean = false
+  -tanggal_kejadian : datetime
+  -subjek : string[255]
+  -isi_pengaduan : text
+  -bukti : string <<nullable>>
+  -status : string[50]
+  -catatan_admin : text <<nullable>>
+  -created_at : timestamp
+  -updated_at : timestamp
+  --
+  +isFinal() : boolean
+  +isOverdue() : boolean
+  +getBuktiUrlAttribute() : string
+  +statusLabels() : array <<static>>
+  +statusColors() : array <<static>>
+}
+
+class KategoriPengaduan {
+  -id : bigint <<PK>>
+  -nama_kategori : string[100] <<unique>>
+  -deskripsi : text <<nullable>>
+  -is_active : boolean = true
+  -created_at : timestamp
+  -updated_at : timestamp
+}
+
+class StatusHistory {
+  -id : bigint <<PK>>
+  -pengaduan_id : bigint <<FK>>
+  -status_lama : string[50] <<nullable>>
+  -status_baru : string[50]
+  -catatan : text <<nullable>>
+  -bukti : string <<nullable>>
+  -changed_by : bigint <<FK, nullable>>
+  -created_at : timestamp
+  --
+  +getStatusBaruLabelAttribute() : string
+  +getStatusLamaLabelAttribute() : string
+  +getBuktiUrlAttribute() : string
+}
+
+class EmailLog {
+  -id : bigint <<PK>>
+  -recipient_email : string
+  -subject : string[255]
+  -type : string[50]
+  -pengaduan_id : bigint <<FK, nullable>>
+  -status : enum{sent, failed}
+  -sent_at : timestamp <<nullable>>
+}
+
+User "1" -- "0..*" Pengaduan : mengajukan >
+User "0..1" -- "0..*" StatusHistory : mengubah >
+KategoriPengaduan "1" -- "0..*" Pengaduan : mengelompokkan >
+Pengaduan "1" -- "1..*" StatusHistory : memiliki >
+Pengaduan "0..1" -- "0..*" EmailLog : memicu >
+
+note right of Pengaduan
+  Konstanta status (state machine):
+  menunggu_verifikasi (awal)
+  -> sedang_diproses <-> membutuhkan_informasi_tambahan
+  -> menunggu_konfirmasi_mahasiswa
+  -> selesai_ditangani (final) / ditolak (final)
+  SLA = 3 hari (dipakai oleh isOverdue() & auto-close)
+end note
+
+note bottom of StatusHistory
+  changed_by = null berarti perubahan
+  dilakukan otomatis oleh Sistem
+  (contoh: job auto-close).
+  Tidak ada updated_at -- bersifat immutable
+  sebagai audit trail.
+end note
+
+note bottom of User
+  Atribut "class" merepresentasikan kolom DB
+  "kelas" mahasiswa (nama disesuaikan agar
+  tidak bentrok dengan reserved word).
+end note
+
+note left of EmailLog
+  type: salah satu dari
+  pengaduan_diterima, pengaduan_baru_admin,
+  status_diperbarui, konfirmasi_ditolak_admin,
+  balasan_informasi_admin
+end note
+
+@enduml

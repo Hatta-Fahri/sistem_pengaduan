@@ -1,0 +1,28 @@
+@startuml bab3-kelola-pengguna
+title Activity Diagram - Kelola Pengguna
+
+|Admin|
+start
+:Membuka halaman kelola pengguna;
+:Mencari mahasiswa berdasarkan\nnama, NIM, atau email [opsional];
+
+|Sistem|
+:Menampilkan daftar mahasiswa\nsesuai pencarian;
+
+|Admin|
+switch (Admin memilih aktivitas?)
+case ( Melihat Detail dan Statistik Mahasiswa )
+  :Memilih salah satu mahasiswa;
+  |Sistem|
+  :Menampilkan profil mahasiswa\nbeserta statistik dan riwayat\npengaduannya;
+
+case ( Menonaktifkan/Mengaktifkan Akun )
+  |Admin|
+  :Mengubah status\naktif akun mahasiswa;
+  |Sistem|
+  :Memperbarui status akun;
+  :Menampilkan notifikasi berhasil;
+endswitch
+stop
+
+@enduml

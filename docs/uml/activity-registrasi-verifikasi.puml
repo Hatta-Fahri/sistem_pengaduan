@@ -1,0 +1,28 @@
+@startuml activity-registrasi-verifikasi
+title Activity Diagram - Registrasi & Verifikasi Email
+
+|Calon Mahasiswa|
+start
+repeat
+  :Isi form registrasi\n(nama, NIM, kelas, email, password);
+backward :Tampilkan pesan error;
+repeat while (Validasi lolos? NIM unik, email unik,\npassword sesuai kebijakan) is (tidak) not (ya)
+
+|Sistem|
+:Buat akun\n(role = mahasiswa, is_active = true,\nemail_verified_at = null);
+:Kirim email verifikasi;
+:Auto-login;
+
+if (Akun sudah verifikasi email?) then (belum)
+  :Redirect ke halaman\n"Verifikasi Email"\n(bisa kirim ulang);
+  |Mahasiswa|
+  :Klik link verifikasi di email;
+  |Sistem|
+  :Tandai email_verified_at = sekarang;
+  :Redirect ke Dashboard Mahasiswa;
+else (sudah)
+  :Redirect ke Dashboard Mahasiswa;
+endif
+stop
+
+@enduml

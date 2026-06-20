@@ -1,0 +1,25 @@
+@startuml activity-statistik-laporan
+title Activity Diagram - Lihat Statistik & Laporan (Admin)
+
+|Admin|
+start
+:Buka menu "Statistik Laporan";
+:Pilih filter tahun [opsional];
+
+|Sistem|
+if (Tahun terpilih valid?\n(tahun ini, -1, atau -2)) then (tidak)
+  :Gunakan tahun berjalan\nsebagai default;
+else (ya)
+endif
+:Hitung total pengaduan per kategori\n(sesuai tahun terpilih);
+:Hitung total pengaduan per status\n(sesuai tahun terpilih);
+:Hitung tren pengaduan 12 bulan\nterakhir (rolling, tidak bergantung\npada filter tahun);
+:Hitung rata-rata waktu penyelesaian\n(status "Selesai Ditangani", tahun terpilih);
+:Tentukan kategori dengan\npengaduan terbanyak;
+:Tampilkan grafik & rekap statistik;
+
+|Admin|
+:Lihat grafik distribusi status,\nrekap per kategori, dan tren bulanan;
+stop
+
+@enduml
