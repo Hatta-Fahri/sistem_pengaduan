@@ -101,11 +101,12 @@ class Pengaduan extends Model
     }
 
     /**
-     * URL publik file bukti pendukung (null jika tidak ada lampiran).
+     * URL untuk mengakses file bukti pendukung (null jika tidak ada lampiran).
+     * Disajikan lewat route terotentikasi (bukan disk publik) — hanya pemilik & admin yang bisa akses.
      */
     public function getBuktiUrlAttribute(): ?string
     {
-        return $this->bukti ? \Illuminate\Support\Facades\Storage::disk('public')->url($this->bukti) : null;
+        return $this->bukti ? route('bukti.pengaduan', $this) : null;
     }
 
     // ===================== Relasi =====================

@@ -33,7 +33,11 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
-            'serve' => true,
+            // serve dimatikan secara sengaja — Laravel otomatis mendaftarkan route
+            // publik /storage/{path} TANPA middleware auth apapun kalau ini true,
+            // yang akan membuka kembali akses bebas ke berkas bukti yang justru
+            // sedang sengaja kita pindah ke disk privat ini (lihat BuktiController).
+            'serve' => false,
             'throw' => false,
             'report' => false,
         ],

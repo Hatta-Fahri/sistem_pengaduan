@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Mail\BalasanInformasiAdmin;
 use App\Mail\KonfirmasiDitolakAdmin;
 use App\Mail\PengaduanBaruAdmin;
 use App\Mail\PengaduanDiterima;
@@ -158,6 +159,38 @@ class NotifikasiService
             }
         } catch (\Throwable $e) {
             Log::error('[SILPM Email] Gagal dispatch KonfirmasiDitolakAdmin: ' . $e->getMessage(), [
+                'pengaduan_id' => $pengaduan->id,
+            ]);
+        }
+    }
+
+    /**
+     * Kirim notifikasi ke semua admin bahwa mahasiswa membalas permintaan
+     * informasi tambahan. Dispatched via Queue.
+     */
+    public function kirimBalasanInformasiAdmin(Pengaduan $pengaduan, string $balasan): void
+    {
+        $subject = '[SILPM] Mahasiswa Membalas Permintaan Informasi — Pengaduan #' . $pengaduan->id;
+
+        try {
+            $pengaduan->loadMissing(['user', 'kategori']);
+
+            $admins = User::where('role', 'admin')->get();
+
+            foreach ($admins as $admin) {
+                Mail::to($admin->email)
+                    ->queue(new BalasanInformasiAdmin($pengaduan, $balasan));
+
+                $this->catatEmailLog(
+                    recipientEmail: $admin->email,
+                    subject: $subject,
+                    type: 'balasan_informasi_admin',
+                    pengaduanId: $pengaduan->id,
+                    status: 'sent',
+                );
+            }
+        } catch (\Throwable $e) {
+            Log::error('[SILPM Email] Gagal dispatch BalasanInformasiAdmin: ' . $e->getMessage(), [
                 'pengaduan_id' => $pengaduan->id,
             ]);
         }

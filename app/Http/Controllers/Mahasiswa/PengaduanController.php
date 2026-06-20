@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BalasInformasiRequest;
 use App\Http\Requests\StorePengaduanRequest;
 use App\Http\Requests\TolakKonfirmasiRequest;
+use App\Http\Requests\UpdatePengaduanRequest;
 use App\Models\KategoriPengaduan;
 use App\Models\Pengaduan;
 use App\Services\PengaduanService;
@@ -107,6 +109,37 @@ class PengaduanController extends Controller
     }
 
     /**
+     * Tampilkan form edit — hanya pemilik & hanya selama status masih menunggu_verifikasi.
+     */
+    public function edit(Pengaduan $pengaduan): View
+    {
+        if ($pengaduan->user_id !== auth()->id()) {
+            abort(403, 'Anda tidak memiliki akses ke pengaduan ini.');
+        }
+
+        if ($pengaduan->status !== Pengaduan::STATUS_MENUNGGU) {
+            abort(403, 'Pengaduan ini sudah diproses dan tidak dapat diedit lagi.');
+        }
+
+        $kategoriList = KategoriPengaduan::active()->orderBy('nama_kategori')->get();
+
+        return view('mahasiswa.pengaduan.edit', compact('pengaduan', 'kategoriList'));
+    }
+
+    /**
+     * Simpan perubahan pengaduan — guard kepemilikan & status sudah dilakukan
+     * di UpdatePengaduanRequest::authorize().
+     */
+    public function update(UpdatePengaduanRequest $request, Pengaduan $pengaduan): RedirectResponse
+    {
+        $this->pengaduanService->updatePengaduan($pengaduan, $request->validated());
+
+        return redirect()
+            ->route('mahasiswa.pengaduan.show', $pengaduan)
+            ->with('success', 'Pengaduan berhasil diperbarui.');
+    }
+
+    /**
      * Mahasiswa mengonfirmasi pengaduan miliknya sudah benar-benar selesai.
      * Hanya valid dari status menunggu_konfirmasi_mahasiswa.
      */
@@ -150,5 +183,32 @@ class PengaduanController extends Controller
         return redirect()
             ->route('mahasiswa.pengaduan.show', $pengaduan)
             ->with('success', 'Pengaduan dibuka kembali dan admin akan menindaklanjuti.');
+    }
+
+    /**
+     * Balasan terstruktur mahasiswa atas permintaan informasi tambahan dari admin.
+     * Hanya valid dari status membutuhkan_informasi_tambahan — otomatis membuka
+     * kembali penanganan ke status sedang_diproses.
+     */
+    public function balasInformasi(BalasInformasiRequest $request, Pengaduan $pengaduan): RedirectResponse
+    {
+        if ($pengaduan->user_id !== auth()->id()) {
+            abort(403, 'Anda tidak memiliki akses ke pengaduan ini.');
+        }
+
+        if ($pengaduan->status !== Pengaduan::STATUS_BUTUH_INFO) {
+            abort(403, 'Pengaduan ini tidak sedang meminta informasi tambahan.');
+        }
+
+        $this->pengaduanService->balasInformasiTambahan(
+            pengaduan: $pengaduan,
+            balasan: $request->validated('balasan'),
+            bukti: $request->file('bukti'),
+            mahasiswaId: auth()->id(),
+        );
+
+        return redirect()
+            ->route('mahasiswa.pengaduan.show', $pengaduan)
+            ->with('success', 'Balasan Anda berhasil dikirim dan admin akan menindaklanjuti.');
     }
 }

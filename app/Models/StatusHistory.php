@@ -16,6 +16,7 @@ class StatusHistory extends Model
         'status_lama',
         'status_baru',
         'catatan',
+        'bukti',
         'changed_by',
     ];
 
@@ -59,5 +60,13 @@ class StatusHistory extends Model
         return $this->status_lama
             ? (Pengaduan::statusLabels()[$this->status_lama] ?? $this->status_lama)
             : '—';
+    }
+
+    /**
+     * URL untuk mengakses file bukti yang dilampirkan pada entri riwayat ini (null jika tidak ada).
+     */
+    public function getBuktiUrlAttribute(): ?string
+    {
+        return $this->bukti ? route('bukti.riwayat', $this) : null;
     }
 }

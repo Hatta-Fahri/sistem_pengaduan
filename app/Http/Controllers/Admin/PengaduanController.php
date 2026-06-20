@@ -115,6 +115,7 @@ class PengaduanController extends Controller
             statusBaru: $request->validated('status'),
             catatanAdmin: $request->validated('catatan_admin'),
             adminId: $request->user()->id,
+            buktiAdmin: $request->file('bukti_admin'),
         );
 
         return redirect()

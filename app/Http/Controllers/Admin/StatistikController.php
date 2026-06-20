@@ -65,11 +65,12 @@ class StatistikController extends Controller
 
         // Warna badge status — disamakan dengan badge yang sudah dipakai di seluruh halaman pengaduan
         $warnaStatus = [
-            Pengaduan::STATUS_MENUNGGU   => '#9CA3AF', // gray-400
-            Pengaduan::STATUS_DIPROSES   => '#3B82F6', // blue-500
-            Pengaduan::STATUS_BUTUH_INFO => '#EAB308', // yellow-500
-            Pengaduan::STATUS_SELESAI    => '#22C55E', // green-500
-            Pengaduan::STATUS_DITOLAK    => '#EF4444', // red-500
+            Pengaduan::STATUS_MENUNGGU           => '#9CA3AF', // gray-400
+            Pengaduan::STATUS_DIPROSES           => '#3B82F6', // blue-500
+            Pengaduan::STATUS_BUTUH_INFO         => '#EAB308', // yellow-500
+            Pengaduan::STATUS_MENUNGGU_KONFIRMASI=> '#06B6D4', // cyan-500
+            Pengaduan::STATUS_SELESAI             => '#22C55E', // green-500
+            Pengaduan::STATUS_DITOLAK             => '#EF4444', // red-500
         ];
 
         return view('admin.statistik.index', [

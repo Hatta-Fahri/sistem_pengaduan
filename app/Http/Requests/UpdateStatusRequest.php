@@ -50,6 +50,7 @@ class UpdateStatusRequest extends FormRequest
                 'string',
                 'max:2000',
             ],
+            'bukti_admin' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
         ];
     }
 
@@ -83,6 +84,8 @@ class UpdateStatusRequest extends FormRequest
             'status.in'             => 'Status yang dipilih tidak valid.',
             'catatan_admin.required'=> 'Catatan admin wajib diisi untuk status "Ditolak" atau "Membutuhkan Informasi Tambahan".',
             'catatan_admin.max'     => 'Catatan admin maksimal 2000 karakter.',
+            'bukti_admin.mimes'     => 'Bukti harus berupa gambar (JPG, PNG) atau dokumen PDF.',
+            'bukti_admin.max'       => 'Ukuran bukti maksimal 5MB.',
         ];
     }
 }

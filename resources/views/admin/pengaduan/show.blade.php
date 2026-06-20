@@ -196,7 +196,15 @@
                                         "{{ $history->catatan }}"
                                     </div>
                                 @endif
-                                
+
+                                @if ($history->bukti)
+                                    <a href="{{ $history->bukti_url }}" target="_blank"
+                                       class="inline-flex items-center gap-1.5 px-3 py-1.5 mb-3 bg-blue-50 border border-blue-100 rounded-lg text-xs font-bold text-polmed-blue hover:bg-blue-100 transition-colors">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"></path></svg>
+                                        Lihat Lampiran
+                                    </a>
+                                @endif
+
                                 <div class="text-xs font-semibold text-gray-400 flex items-center gap-1.5 group-odd:md:justify-end">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                                     {{ $history->changedBy?->name ?? 'Sistem (Otomatis)' }}
@@ -256,7 +264,7 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('admin.pengaduan.update-status', $pengaduan) }}">
+                <form method="POST" action="{{ route('admin.pengaduan.update-status', $pengaduan) }}" enctype="multipart/form-data">
                     @csrf
                     @method('PATCH')
 
@@ -296,6 +304,18 @@
                                   :placeholder="isCatatanWajib ? 'Catatan wajib diisi untuk status ini...' : 'Tambahkan keterangan untuk mahasiswa... (opsional)'"
                                   class="w-full px-4 py-3 bg-gray-50 border rounded-xl text-sm font-medium text-gray-800 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue focus:bg-white outline-none transition-all resize-none
                                          {{ $errors->has('catatan_admin') ? 'border-red-400 bg-red-50' : 'border-gray-200' }}">{{ old('catatan_admin', $pengaduan->catatan_admin) }}</textarea>
+                    </div>
+
+                    {{-- Bukti Pendukung Admin (Opsional) --}}
+                    <div class="mb-8">
+                        <label for="bukti_admin" class="block text-sm font-bold text-gray-700 mb-2">
+                            Lampirkan Bukti <span class="text-gray-400 font-medium">(opsional)</span>
+                        </label>
+                        <input id="bukti_admin" name="bukti_admin" type="file" accept=".jpg,.jpeg,.png,.pdf"
+                               class="w-full text-xs font-medium text-gray-600 border rounded-xl bg-gray-50 cursor-pointer focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue transition-all
+                                      file:mr-3 file:py-3 file:px-4 file:border-0 file:font-bold file:text-xs file:bg-polmed-blue file:text-white hover:file:bg-blue-800 file:cursor-pointer file:transition-colors
+                                      {{ $errors->has('bukti_admin') ? 'border-red-400' : 'border-gray-200' }}" />
+                        <p class="text-xs text-gray-400 font-medium mt-1.5">Mis. foto bukti perbaikan/tindak lanjut. JPG, PNG, atau PDF — maksimal 5MB.</p>
                     </div>
 
                     <button type="submit"
