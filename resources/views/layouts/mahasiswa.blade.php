@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="SILPM Mahasiswa — Sistem Informasi Layanan Pengaduan Mahasiswa" />
-    <title>@yield('title', 'Dashboard Mahasiswa') — SILPM</title>
+    <meta name="description" content="Sistem Informasi Layanan Pengaduan Mahasiswa" />
+    <title>@yield('title', 'Dashboard Mahasiswa')</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -44,42 +44,45 @@
 
 <div class="min-h-full flex flex-col">
     <!-- Navbar (Atas) -->
-    <nav class="bg-gradient-to-r from-polmed-blue to-blue-900 border-b border-blue-800 sticky top-0 z-50 shadow-md">
+    <nav class="bg-[#2b4cba] border-b border-[#2441a1]/60 sticky top-0 z-50 shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
+            <div class="relative flex items-center justify-between h-16">
                 <div class="flex items-center gap-4">
                     <!-- Logo -->
                     <div class="flex-shrink-0 flex items-center gap-3">
-                        <div class="w-10 h-10 bg-polmed-yellow rounded-xl flex items-center justify-center shadow-sm">
-                            <svg class="w-6 h-6 text-polmed-blue" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3z"/>
-                                <path d="M3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <span class="text-white font-extrabold text-lg tracking-tight">SILPM</span>
-                            <span class="hidden sm:inline-block text-blue-200 text-xs ml-2 font-medium tracking-wide uppercase">Politeknik Negeri Medan</span>
+                        <img src="https://polmed.ac.id/wp-content/uploads/2014/04/logo-polmed-png.png"
+                             alt="Logo Polmed"
+                             class="h-10 w-auto object-contain drop-shadow-md flex-shrink-0">
+                        <div class="text-left border-l border-white/30 pl-3 whitespace-nowrap">
+                            <span class="block text-white font-bold text-sm leading-none">Layanan Pengaduan Mahasiswa</span>
+                            <span class="block text-white/70 text-xs font-medium mt-1">Politeknik Negeri Medan</span>
                         </div>
                     </div>
 
-                    <!-- Menu Desktop -->
-                    <div class="hidden sm:ml-8 sm:flex sm:space-x-2">
+                </div>
+
+                    <!-- Menu Desktop — ditengahkan secara absolut -->
+                    <div class="hidden sm:flex items-center gap-2 absolute left-1/2 -translate-x-1/2">
                         <a href="{{ route('mahasiswa.dashboard') }}"
-                           class="inline-flex items-center px-3 py-2 rounded-lg text-sm font-bold transition-colors
-                                  {{ request()->routeIs('mahasiswa.dashboard') ? 'bg-white/10 text-white' : 'text-blue-200 hover:bg-white/5 hover:text-white' }}">
+                           class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold backdrop-blur-sm border transition-all duration-200
+                                  {{ request()->routeIs('mahasiswa.dashboard')
+                                     ? 'bg-white/20 border-white/40 text-white shadow-inner'
+                                     : 'bg-white/10 border-white/20 text-white/80 hover:bg-white/20 hover:border-white/40 hover:text-white' }}">
                             Dashboard
                         </a>
                         <a href="{{ route('mahasiswa.pengaduan.index') }}"
-                           class="inline-flex items-center px-3 py-2 rounded-lg text-sm font-bold transition-colors
-                                  {{ request()->routeIs('mahasiswa.pengaduan.index') || request()->routeIs('mahasiswa.pengaduan.show') ? 'bg-white/10 text-white' : 'text-blue-200 hover:bg-white/5 hover:text-white' }}">
+                           class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold backdrop-blur-sm border transition-all duration-200
+                                  {{ request()->routeIs('mahasiswa.pengaduan.index') || request()->routeIs('mahasiswa.pengaduan.show')
+                                     ? 'bg-white/20 border-white/40 text-white shadow-inner'
+                                     : 'bg-white/10 border-white/20 text-white/80 hover:bg-white/20 hover:border-white/40 hover:text-white' }}">
                             Riwayat Pengaduan
                         </a>
                         <a href="{{ route('mahasiswa.pengaduan.create') }}"
-                           class="inline-flex items-center px-4 py-2 bg-polmed-yellow hover:bg-yellow-400 text-polmed-blue rounded-lg text-sm font-bold shadow-sm transition-colors ml-2">
-                            + Buat Pengaduan
+                           class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold backdrop-blur-sm border border-white/20 bg-white/10 text-white/80 hover:bg-white/20 hover:border-white/40 hover:text-white transition-all duration-200
+                                  {{ request()->routeIs('mahasiswa.pengaduan.create') ? 'bg-white/20 border-white/40 text-white' : '' }}">
+                            <span class="text-base leading-none"></span>Buat Pengaduan
                         </a>
                     </div>
-                </div>
 
                 <!-- User Dropdown Desktop -->
                 <div class="hidden sm:ml-6 sm:flex sm:items-center">
@@ -128,7 +131,7 @@
              x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="opacity-0 -translate-y-2"
              x-transition:enter-end="opacity-100 translate-y-0"
-             class="sm:hidden bg-polmed-blue border-t border-blue-800 absolute w-full shadow-xl">
+             class="sm:hidden bg-[#2b4cba] border-t border-[#2441a1]/60 absolute w-full shadow-xl">
             <div class="px-4 pt-2 pb-3 space-y-1">
                 <a href="{{ route('mahasiswa.dashboard') }}"
                    class="block px-3 py-2 rounded-lg text-base font-bold transition-colors {{ request()->routeIs('mahasiswa.dashboard') ? 'bg-white/10 text-white' : 'text-blue-200 hover:bg-white/5 hover:text-white' }}">
@@ -169,7 +172,7 @@
         <div class="max-w-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <h1 class="text-2xl font-bold text-gray-900 tracking-tight">@yield('title', 'Dashboard')</h1>
             <div class="text-sm font-semibold text-gray-500 bg-gray-100 px-3 py-1.5 rounded-lg w-fit">
-                {{ now()->isoFormat('dddd, D MMMM YYYY') }}
+                {{ \Carbon\Carbon::now('Asia/Jakarta')->locale('id')->isoFormat('dddd, D MMMM YYYY') }}
             </div>
         </div>
     </header>

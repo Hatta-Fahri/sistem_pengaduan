@@ -35,7 +35,7 @@ Route::middleware('auth')->prefix('bukti')->name('bukti.')->group(function () {
 // ===================== Mahasiswa Routes =====================
 Route::prefix('mahasiswa')
     ->name('mahasiswa.')
-    ->middleware(['auth', 'verified', 'role:mahasiswa'])
+    ->middleware(['auth', 'role:mahasiswa']) // 'verified' dihilangkan agar user lama yang login bisa langsung ke dashboard
     ->group(function () {
 
         // Dashboard mahasiswa

@@ -60,6 +60,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('mahasiswa.dashboard');
+        // Redirect ke halaman verifikasi email setelah mendaftar
+        return redirect()->route('verification.notice');
     }
 }

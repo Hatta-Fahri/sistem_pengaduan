@@ -15,17 +15,18 @@
 <div class="space-y-8">
 
     {{-- ===== Banner Welcome ===== --}}
-    <div class="bg-gradient-to-r from-polmed-blue to-blue-800 rounded-2xl p-8 sm:p-10 shadow-lg shadow-blue-900/10 text-white relative overflow-hidden">
-        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div class="bg-[#2b4cba] rounded-2xl p-5 sm:p-6 shadow-lg shadow-blue-900/10 text-white relative overflow-hidden">
+        <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-                <h2 class="text-3xl font-extrabold mb-3 tracking-tight">Halo, {{ auth()->user()->name }}! 👋</h2>
-                <p class="text-blue-100/90 text-sm md:text-base max-w-2xl leading-relaxed">
+                <h2 class="text-xl font-bold mb-1 tracking-tight">Halo, {{ auth()->user()->name }}! 👋</h2>
+                <p class="text-white/70 text-xs max-w-xl leading-relaxed">
                     Sistem Informasi Layanan Pengaduan Mahasiswa (SILPM) memudahkan Anda untuk menyampaikan keluhan, saran, atau masalah terkait akademik dan fasilitas kampus secara cepat dan transparan.
                 </p>
             </div>
             <div class="flex-shrink-0">
-                <a href="{{ route('mahasiswa.pengaduan.create') }}" class="inline-flex items-center gap-2 bg-polmed-yellow text-polmed-blue hover:bg-yellow-400 font-bold px-6 py-3.5 rounded-xl shadow-md transition-all duration-200 hover:-translate-y-0.5">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <a href="{{ route('mahasiswa.pengaduan.create') }}"
+                   class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold backdrop-blur-sm border border-white/20 bg-white/10 text-white/90 hover:bg-white/20 hover:border-white/40 hover:text-white transition-all duration-200 whitespace-nowrap">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                     Buat Pengaduan Baru
                 </a>
             </div>
@@ -36,7 +37,7 @@
     </div>
 
     {{-- ===== Kartu Statistik ===== --}}
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         @php
             $cards = [
                 ['label' => 'Total Pengaduan',    'value' => $stats['total'],      'bg' => 'bg-white',      'border' => 'border-gray-200',   'text' => 'text-gray-900',  'icon_bg' => 'bg-blue-50 text-blue-600', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>'],
@@ -46,14 +47,14 @@
             ];
         @endphp
         @foreach ($cards as $card)
-        <div class="relative group rounded-2xl border {{ $card['border'] }} {{ $card['bg'] }} p-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-            <div class="flex flex-col-reverse sm:flex-row items-start justify-between gap-4">
+        <div class="relative group rounded-xl border {{ $card['border'] }} {{ $card['bg'] }} p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+            <div class="flex flex-row items-center justify-between gap-3">
                 <div>
-                    <p class="text-3xl font-extrabold {{ $card['text'] }} tracking-tight">{{ $card['value'] }}</p>
-                    <p class="text-[11px] sm:text-xs font-bold text-gray-500 mt-1 uppercase tracking-wide">{{ $card['label'] }}</p>
+                    <p class="text-2xl font-extrabold {{ $card['text'] }} tracking-tight leading-none">{{ $card['value'] }}</p>
+                    <p class="text-[10px] font-bold text-gray-400 mt-1.5 uppercase tracking-wide">{{ $card['label'] }}</p>
                 </div>
-                <div class="w-10 h-10 rounded-xl {{ $card['icon_bg'] }} flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">{!! $card['icon'] !!}</svg>
+                <div class="w-8 h-8 rounded-lg {{ $card['icon_bg'] }} flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">{!! $card['icon'] !!}</svg>
                 </div>
             </div>
         </div>
