@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
+
 
 class StorePengaduanRequest extends FormRequest
 {
@@ -11,7 +14,9 @@ class StorePengaduanRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->isMahasiswa();
+        /** @var User|null */
+        $user = Auth::user();
+        return $user?->isMahasiswa() === true;
     }
 
     /**
