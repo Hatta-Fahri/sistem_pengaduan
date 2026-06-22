@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
     {
         // Akun Admin
         User::create([
-            'name'     => 'Administrator SILPM',
+            'name'     => 'Administrator',
             'nim'      => null,
             'class'    => null,
             'email'    => 'yuuotosaka2506@gmail.com',

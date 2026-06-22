@@ -21,8 +21,8 @@
             <p class="text-sm text-gray-500 mt-1 font-medium">Pantau status seluruh pengaduan yang pernah Anda buat.</p>
         </div>
         <div class="flex-shrink-0 w-full sm:w-auto">
-            <a href="{{ route('mahasiswa.pengaduan.create') }}" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-polmed-blue text-white hover:bg-blue-800 font-bold px-6 py-3 rounded-xl shadow-md transition-all duration-200 hover:-translate-y-0.5 focus:ring-4 focus:ring-blue-500/30">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            <a href="{{ route('mahasiswa.pengaduan.create') }}" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-[#2b4cba] hover:bg-[#2441a1] text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-blue-900/25 transition-all duration-200 hover:-translate-y-0.5 focus:ring-4 focus:ring-blue-500/30">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
                 Buat Pengaduan Baru
             </a>
         </div>
@@ -105,12 +105,13 @@
                 <div class="flex flex-col-reverse sm:flex-row items-center gap-3 w-full sm:w-auto">
                     @if (request()->hasAny(['status', 'kategori_id', 'search']))
                         <a href="{{ route('mahasiswa.pengaduan.index') }}"
-                           class="w-full sm:w-auto text-center px-5 py-2.5 bg-white border-2 border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900 text-sm font-bold rounded-xl transition-all">
+                           class="w-full sm:w-auto text-center px-5 py-2.5 bg-white border border-gray-200 text-gray-500 hover:text-gray-800 hover:border-gray-300 text-sm font-semibold rounded-xl transition-all">
                             Reset Filter
                         </a>
                     @endif
                     <button type="submit"
-                            class="w-full sm:w-auto px-6 py-2.5 bg-gray-800 hover:bg-gray-900 text-white text-sm font-bold rounded-xl shadow-md transition-all focus:ring-4 focus:ring-gray-300">
+                            class="w-full sm:w-auto px-6 py-2.5 bg-[#2b4cba] hover:bg-[#2441a1] text-white text-sm font-bold rounded-xl shadow-md shadow-blue-900/20 transition-all focus:ring-4 focus:ring-blue-500/30 flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
                         Terapkan Filter
                     </button>
                 </div>
@@ -128,8 +129,8 @@
                 </div>
                 <h3 class="text-lg font-bold text-gray-800">Tidak Ada Data</h3>
                 <p class="text-sm text-gray-500 mt-2 max-w-md">Kami tidak dapat menemukan pengaduan yang sesuai dengan pencarian Anda, atau Anda belum membuat pengaduan apapun.</p>
-                <a href="{{ route('mahasiswa.pengaduan.create') }}" class="mt-6 inline-flex items-center gap-2 px-5 py-2.5 bg-polmed-blue text-white font-bold rounded-xl shadow-sm hover:bg-blue-800 transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        <a href="{{ route('mahasiswa.pengaduan.create') }}" class="mt-6 inline-flex items-center gap-2 px-5 py-2.5 bg-[#2b4cba] text-white font-bold rounded-xl shadow-md shadow-blue-900/20 hover:bg-[#2441a1] hover:-translate-y-0.5 transition-all focus:ring-4 focus:ring-blue-500/30">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
                     Buat Pengaduan Sekarang
                 </a>
             </div>
@@ -175,8 +176,9 @@
                             </td>
                             <td class="px-6 py-4 text-center whitespace-nowrap">
                                 <a href="{{ route('mahasiswa.pengaduan.show', $p) }}"
-                                   class="inline-flex items-center justify-center px-4 py-2 bg-white border border-gray-200 hover:border-polmed-blue hover:text-polmed-blue text-gray-700 rounded-lg text-sm font-bold transition-all shadow-sm focus:ring-4 focus:ring-blue-500/20">
+                                   class="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-[#2b4cba]/8 border border-[#2b4cba]/20 hover:bg-[#2b4cba] hover:text-white text-[#2b4cba] rounded-lg text-sm font-bold transition-all duration-200 focus:ring-4 focus:ring-blue-500/20">
                                     Lihat Detail
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </a>
                             </td>
                         </tr>

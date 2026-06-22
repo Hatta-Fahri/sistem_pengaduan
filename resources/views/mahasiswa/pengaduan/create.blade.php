@@ -56,7 +56,7 @@
                         <div class="relative">
                             <select id="kategori_id" name="kategori_id" required
                                     class="appearance-none w-full px-4 py-3.5 bg-gray-50 border rounded-xl text-sm font-semibold text-gray-800 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue focus:bg-white outline-none transition-all cursor-pointer {{ $errors->has('kategori_id') ? 'border-red-400' : 'border-gray-200' }}">
-                                <option value="">-- Pilih Kategori --</option>
+                                <option value="">Pilih Kategori</option>
                                 @foreach ($kategoriList as $kat)
                                     <option value="{{ $kat->id }}" {{ old('kategori_id') == $kat->id ? 'selected' : '' }}>
                                         {{ $kat->nama_kategori }}
@@ -118,13 +118,13 @@
 
                 <div class="pt-6 mt-6 border-t border-gray-100 flex flex-col-reverse sm:flex-row items-center justify-end gap-3">
                     <a href="{{ route('mahasiswa.pengaduan.index') }}"
-                       class="w-full sm:w-auto text-center px-6 py-3.5 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-bold rounded-xl transition-colors">
+                       class="w-full sm:w-auto text-center px-6 py-3.5 bg-white border border-gray-200 text-gray-500 hover:text-gray-800 hover:border-gray-300 font-semibold rounded-xl transition-colors">
                         Batal
                     </a>
                     <button type="submit"
-                            class="w-full sm:w-auto px-8 py-3.5 bg-polmed-blue hover:bg-blue-800 text-white font-bold rounded-xl shadow-lg shadow-blue-900/20 transition-all focus:ring-4 focus:ring-blue-500/30 flex justify-center items-center gap-2">
-                        Kirim Laporan
+                            class="w-full sm:w-auto px-8 py-3.5 bg-[#2b4cba] hover:bg-[#2441a1] text-white font-bold rounded-xl shadow-lg shadow-blue-900/25 transition-all hover:-translate-y-0.5 focus:ring-4 focus:ring-blue-500/30 flex justify-center items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                        Kirim Laporan
                     </button>
                 </div>
             </form>

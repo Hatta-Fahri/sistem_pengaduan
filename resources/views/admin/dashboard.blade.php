@@ -37,26 +37,26 @@
     </div>
 
     {{-- ===== Kartu Statistik ===== --}}
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-6">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         @php
             $cards = [
                 ['label' => 'Total Pengaduan',     'value' => $stats['total'],               'bg' => 'bg-white', 'border' => 'border-gray-200',   'text' => 'text-gray-900',  'icon_bg' => 'bg-blue-50 text-blue-600',    'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>'],
                 ['label' => 'Menunggu Verifikasi',  'value' => $stats['menunggu'],            'bg' => 'bg-white', 'border' => 'border-gray-200',   'text' => 'text-gray-900',  'icon_bg' => 'bg-gray-100 text-gray-600',   'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>'],
                 ['label' => 'Sedang Diproses',      'value' => $stats['diproses'],            'bg' => 'bg-white', 'border' => 'border-blue-100',   'text' => 'text-blue-700',  'icon_bg' => 'bg-blue-50 text-blue-600',    'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>'],
                 ['label' => 'Menunggu Konfirmasi',  'value' => $stats['menunggu_konfirmasi'], 'bg' => 'bg-white', 'border' => 'border-cyan-100',   'text' => 'text-cyan-700',  'icon_bg' => 'bg-cyan-50 text-cyan-600',    'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>'],
-                ['label' => 'Selesai Ditangani',    'value' => $stats['selesai'],             'bg' => 'bg-white', 'border' => 'border-emerald-100','text' => 'text-emerald-700','icon_bg' => 'bg-emerald-50 text-emerald-600', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>'],
+                ['label' => 'Selesai Ditangani',    'value' => $stats['selesai'],             'bg' => 'bg-white', 'border' => 'border-emerald-100','text' => 'text-emerald-700','icon_bg' => 'bg-emerald-50 text-emerald-600', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>'],
                 ['label' => 'Ditolak',              'value' => $stats['ditolak'],             'bg' => 'bg-white', 'border' => 'border-red-100',    'text' => 'text-red-700',    'icon_bg' => 'bg-red-50 text-red-600',      'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>'],
             ];
         @endphp
         @foreach ($cards as $card)
-        <div class="relative group rounded-2xl border {{ $card['border'] }} {{ $card['bg'] }} p-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+        <div class="relative group rounded-xl border {{ $card['border'] }} {{ $card['bg'] }} p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-3xl font-extrabold {{ $card['text'] }} tracking-tight">{{ $card['value'] }}</p>
-                    <p class="text-xs font-medium text-gray-500 mt-1 uppercase tracking-wide">{{ $card['label'] }}</p>
+                    <p class="text-2xl font-extrabold {{ $card['text'] }} tracking-tight">{{ $card['value'] }}</p>
+                    <p class="text-[11px] font-medium text-gray-500 mt-1 uppercase tracking-wide leading-tight">{{ $card['label'] }}</p>
                 </div>
-                <div class="w-10 h-10 rounded-xl {{ $card['icon_bg'] }} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">{!! $card['icon'] !!}</svg>
+                <div class="w-8 h-8 rounded-lg {{ $card['icon_bg'] }} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">{!! $card['icon'] !!}</svg>
                 </div>
             </div>
         </div>
@@ -132,18 +132,15 @@
                     </thead>
                     <tbody class="divide-y divide-gray-100 bg-white">
                         @foreach ($pengaduanTerbaru as $p)
-                        {{-- Highlight baris jika status masih menunggu_verifikasi dengan indikator border kiri --}}
-                        <tr class="hover:bg-gray-50/80 transition-colors {{ $p->status === 'menunggu_verifikasi' ? 'bg-amber-50/30' : '' }} relative">
-                            @if($p->status === 'menunggu_verifikasi')
-                                <td class="absolute left-0 top-0 bottom-0 w-1 bg-amber-400 rounded-r-md"></td>
-                            @endif
-                            <td class="px-6 lg:px-8 py-4 whitespace-nowrap">
+                        {{-- Highlight baris jika status masih menunggu_verifikasi --}}
+                        <tr class="hover:bg-gray-50/80 transition-colors {{ $p->status === 'menunggu_verifikasi' ? 'bg-amber-50/30 border-l-4 border-amber-400' : 'border-l-4 border-transparent' }}">
+                            <td class="px-5 py-3.5 whitespace-nowrap">
                                 <div class="flex flex-col">
-                                    <span class="text-gray-900 font-medium">{{ $p->created_at->format('d M Y') }}</span>
+                                    <span class="text-gray-900 font-medium text-sm">{{ $p->created_at->format('d M Y') }}</span>
                                     <span class="text-xs text-gray-500 mt-0.5">{{ $p->created_at->format('H:i') }} WIB</span>
                                 </div>
                             </td>
-                            <td class="px-6 lg:px-8 py-4">
+                            <td class="px-5 py-3.5">
                                 <div class="flex items-center gap-3">
                                     @if ($p->is_anonymous)
                                         <div class="w-8 h-8 rounded-full bg-purple-50 text-purple-400 flex items-center justify-center flex-shrink-0">
@@ -164,11 +161,11 @@
                                     @endif
                                 </div>
                             </td>
-                            <td class="px-6 lg:px-8 py-4 max-w-sm">
+                            <td class="px-5 py-3.5 max-w-xs">
                                 <p class="text-gray-900 font-medium line-clamp-1 text-sm">{{ $p->subjek }}</p>
-                                <p class="text-xs text-polmed-blue mt-0.5">{{ $p->kategori->nama_kategori }}</p>
+                                <p class="text-xs text-[#2b4cba] mt-0.5">{{ $p->kategori->nama_kategori }}</p>
                             </td>
-                            <td class="px-6 lg:px-8 py-4 whitespace-nowrap">
+                            <td class="px-5 py-3.5 whitespace-nowrap">
                                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold
                                              {{ $badgeClass[$p->status] ?? 'bg-gray-100 text-gray-700 ring-1 ring-gray-200' }}">
                                     @if($p->status === 'menunggu_verifikasi')
@@ -177,10 +174,11 @@
                                     {{ \App\Models\Pengaduan::statusLabels()[$p->status] ?? $p->status }}
                                 </span>
                             </td>
-                            <td class="px-6 lg:px-8 py-4 text-right whitespace-nowrap">
+                            <td class="px-5 py-3.5 text-right whitespace-nowrap">
                                 <a href="{{ route('admin.pengaduan.show', $p) }}"
-                                   class="inline-flex items-center justify-center px-4 py-2 bg-white border border-gray-200 hover:border-polmed-blue hover:text-polmed-blue text-gray-700 rounded-lg text-sm font-semibold transition-all shadow-sm">
+                                   class="inline-flex items-center justify-center gap-1 px-3.5 py-1.5 bg-[#2b4cba]/8 border border-[#2b4cba]/20 hover:bg-[#2b4cba] hover:text-white text-[#2b4cba] rounded-lg text-xs font-bold transition-all duration-200">
                                     Kelola
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </a>
                             </td>
                         </tr>

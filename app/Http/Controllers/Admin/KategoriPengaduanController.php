@@ -80,4 +80,24 @@ class KategoriPengaduanController extends Controller
             ->route('admin.kategori.index')
             ->with('success', $pesan);
     }
+
+    /**
+     * Hapus kategori secara permanen.
+     * Gagal jika kategori masih memiliki pengaduan terkait.
+     */
+    public function destroy(KategoriPengaduan $kategori): RedirectResponse
+    {
+        if ($kategori->pengaduan()->count() > 0) {
+            return redirect()
+                ->route('admin.kategori.index')
+                ->with('error', 'Kategori "' . $kategori->nama_kategori . '" tidak dapat dihapus karena masih memiliki ' . $kategori->pengaduan()->count() . ' pengaduan terkait.');
+        }
+
+        $nama = $kategori->nama_kategori;
+        $kategori->delete();
+
+        return redirect()
+            ->route('admin.kategori.index')
+            ->with('success', 'Kategori "' . $nama . '" berhasil dihapus.');
+    }
 }

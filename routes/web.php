@@ -115,4 +115,6 @@ Route::prefix('admin')
             ->name('kategori.update');
         Route::patch('/kategori/{kategori}/toggle-active', [Admin\KategoriPengaduanController::class, 'toggleActive'])
             ->name('kategori.toggle-active');
+        Route::delete('/kategori/{kategori}', [Admin\KategoriPengaduanController::class, 'destroy'])
+            ->name('kategori.destroy');
     });

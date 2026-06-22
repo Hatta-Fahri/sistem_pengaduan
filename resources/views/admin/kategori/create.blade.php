@@ -43,10 +43,11 @@
 
             <div class="flex items-center gap-3">
                 <button type="submit"
-                        class="px-6 py-3 bg-polmed-blue hover:bg-blue-800 text-white font-bold rounded-xl text-sm shadow-md shadow-blue-900/20 transition-all">
+                        class="px-6 py-3 bg-[#2b4cba] hover:bg-[#2441a1] text-white font-bold rounded-xl text-sm shadow-md shadow-blue-900/20 transition-all hover:-translate-y-0.5 focus:ring-4 focus:ring-blue-500/30 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                     Simpan Kategori
                 </button>
-                <a href="{{ route('admin.kategori.index') }}" class="px-6 py-3 bg-white border-2 border-gray-200 hover:bg-gray-50 text-gray-600 font-bold rounded-xl text-sm transition-all">
+                <a href="{{ route('admin.kategori.index') }}" class="px-6 py-3 bg-white border border-gray-200 hover:border-gray-300 hover:text-gray-800 text-gray-500 font-semibold rounded-xl text-sm transition-all">
                     Batal
                 </a>
             </div>

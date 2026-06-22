@@ -87,31 +87,78 @@
                 <!-- User Dropdown Desktop -->
                 <div class="hidden sm:ml-6 sm:flex sm:items-center">
                     <div class="relative" x-data="{ userMenuOpen: false }">
-                        <button @click="userMenuOpen = !userMenuOpen" @click.away="userMenuOpen = false" class="flex items-center gap-2 focus:outline-none">
+                        <!-- Trigger Button -->
+                        <button @click="userMenuOpen = !userMenuOpen"
+                                @click.away="userMenuOpen = false"
+                                class="flex items-center gap-2.5 px-3 py-1.5 rounded-xl hover:bg-white/10 focus:outline-none transition-all duration-200 group">
                             <div class="text-right hidden md:block">
-                                <p class="text-sm font-bold text-white">{{ auth()->user()->name }}</p>
-                                <p class="text-xs text-blue-300">{{ auth()->user()->nim }}</p>
+                                <p class="text-sm font-semibold text-white leading-tight">{{ auth()->user()->name }}</p>
+                                <p class="text-xs text-white/50 mt-0.5">{{ auth()->user()->nim ?? 'Admin' }}</p>
                             </div>
-                            <div class="w-9 h-9 rounded-full bg-blue-800 text-white flex items-center justify-center font-bold text-sm ring-2 ring-white/20">
-                                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                            <!-- Ikon Profil SVG -->
+                            <div class="w-9 h-9 rounded-full bg-white/15 border border-white/25 flex items-center justify-center flex-shrink-0 ring-2 ring-white/10 group-hover:bg-white/25 transition-all duration-200">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                </svg>
                             </div>
-                            <svg class="w-4 h-4 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            <svg class="w-3.5 h-3.5 text-white/40 transition-transform duration-200" :class="userMenuOpen ? 'rotate-180' : ''"
+                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
                         </button>
-                        
+
+                        <!-- Dropdown Liquid Glass -->
                         <div x-cloak x-show="userMenuOpen"
-                             x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100"
-                             x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95"
-                             class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg ring-1 ring-black ring-opacity-5 py-1 z-50 border border-gray-100">
-                            <!-- Link Profil -->
-                            <a href="{{ route('mahasiswa.profil.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium">Profil Saya</a>
-                            
-                            <!-- Form Logout -->
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-bold transition-colors">
-                                    Keluar
-                                </button>
-                            </form>
+                             x-transition:enter="transition ease-out duration-150"
+                             x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-100"
+                             x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                             x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
+                             class="absolute right-0 mt-2.5 w-60 bg-[#1e3a8a]/95 backdrop-blur-xl border border-white/15 rounded-2xl shadow-2xl overflow-hidden z-50">
+
+                            <!-- Info User -->
+                            <div class="px-4 py-3.5 border-b border-white/10">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-white/15 border border-white/20 flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-5 h-5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-sm font-semibold text-white truncate">{{ auth()->user()->name }}</p>
+                                        <p class="text-xs text-white/50 truncate mt-0.5">{{ auth()->user()->email }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Menu Items -->
+                            <div class="py-1.5 px-1.5">
+                                <a href="{{ route('mahasiswa.profil.edit') }}"
+                                   class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-white/80 hover:text-white hover:bg-white/10 font-medium transition-all duration-150">
+                                    <svg class="w-4 h-4 text-white/50 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                    </svg>
+                                    Profil Saya
+                                </a>
+                            </div>
+
+                            <!-- Divider -->
+                            <div class="border-t border-white/10 mx-3"></div>
+
+                            <!-- Logout -->
+                            <div class="py-1.5 px-1.5">
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit"
+                                            class="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-red-300 hover:text-red-200 hover:bg-red-500/15 font-medium transition-all duration-150">
+                                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                        </svg>
+                                        Keluar
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -146,14 +193,16 @@
                     + Buat Pengaduan Baru
                 </a>
             </div>
-            <div class="pt-4 pb-3 border-t border-blue-800">
+            <div class="pt-4 pb-3 border-t border-white/10">
                 <div class="px-5 flex items-center gap-3">
-                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-800 text-white flex items-center justify-center font-bold ring-2 ring-white/20">
-                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-white/15 border border-white/20 text-white flex items-center justify-center ring-2 ring-white/10">
+                        <svg class="w-5 h-5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
                     </div>
-                    <div>
-                        <div class="text-base font-bold text-white">{{ auth()->user()->name }}</div>
-                        <div class="text-sm font-medium text-blue-300">{{ auth()->user()->nim }}</div>
+                    <div class="min-w-0">
+                        <div class="text-sm font-semibold text-white truncate">{{ auth()->user()->name }}</div>
+                        <div class="text-xs text-white/50 truncate">{{ auth()->user()->email }}</div>
                     </div>
                 </div>
                 <div class="mt-3 px-2 space-y-1">

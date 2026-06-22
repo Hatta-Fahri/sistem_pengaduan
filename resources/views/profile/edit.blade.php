@@ -2,11 +2,7 @@
 @section('title', 'Profil Saya')
 @section('content')
 
-<div class="relative overflow-hidden bg-[#2b4cba] rounded-3xl shadow-xl">
-    <!-- Dekorasi Background seperti halaman Login -->
-    <div class="absolute top-0 left-0 w-80 h-80 bg-[#2441a1] rounded-br-full opacity-80 mix-blend-multiply pointer-events-none"></div>
-    <div class="absolute bottom-0 right-0 w-[30rem] h-[30rem] bg-[#2441a1] rounded-tl-full opacity-80 mix-blend-multiply pointer-events-none"></div>
-    <div class="absolute -bottom-20 -left-20 w-96 h-96 bg-[#3657c9] rounded-tr-full opacity-50 pointer-events-none"></div>
+<div class="relative bg-[#3b5fc0] rounded-2xl shadow-lg">
 
     <div class="relative z-10 p-6 sm:p-8 space-y-8 max-w-4xl mx-auto">
         
