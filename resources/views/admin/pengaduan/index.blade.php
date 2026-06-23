@@ -15,20 +15,11 @@
 
 <div class="space-y-6">
 
-    {{-- ===== Header & Aksi Cepat ===== --}}
+    {{-- ===== Header ===== --}}
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Data Pengaduan Mahasiswa</h1>
             <p class="text-sm text-gray-500 mt-1">Kelola, verifikasi, dan pantau status seluruh pengaduan yang masuk.</p>
-        </div>
-        <div class="flex items-center gap-3 w-full sm:w-auto">
-            <a href="{{ route('admin.pengaduan.export', request()->only(['status', 'kategori_id', 'tanggal_dari', 'tanggal_sampai'])) }}"
-               class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border-2 border-emerald-600 text-emerald-700 hover:bg-emerald-50 text-sm font-bold rounded-xl shadow-sm transition-all focus:ring-4 focus:ring-emerald-100">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/>
-                </svg>
-                Ekspor Data (CSV)
-            </a>
         </div>
     </div>
 
@@ -148,27 +139,24 @@
                 <p class="text-sm text-gray-500 mt-1 max-w-sm">Kami tidak dapat menemukan pengaduan yang cocok dengan filter yang Anda berikan.</p>
             </div>
         @else
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left">
+            <div class="overflow-x-auto w-full">
+                <table class="w-full text-sm text-left" style="min-width: 700px;">
                     <thead class="bg-gray-50/80 border-b border-gray-200 text-gray-500 text-xs uppercase tracking-wider font-semibold">
                         <tr>
-                            <th scope="col" class="px-6 py-4 w-12 text-center">No</th>
-                            <th scope="col" class="px-6 py-4">Info Pelapor</th>
-                            <th scope="col" class="px-6 py-4">Detail Pengaduan</th>
-                            <th scope="col" class="px-6 py-4 w-48">Status & Waktu</th>
-                            <th scope="col" class="px-6 py-4 w-24 text-center">Aksi</th>
+                            <th scope="col" class="px-4 py-4 w-10 text-center">No</th>
+                            <th scope="col" class="px-4 py-4 w-[340px]">Info Pelapor</th>
+                            <th scope="col" class="px-4 py-4 w-15" >Detail Pengaduan</th>
+                            <th scope="col" class="px-4 py-4 w-44">Status & Waktu</th>
+                            <th scope="col" class="px-4 py-4 w-40 text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 bg-white">
                         @foreach ($pengaduan as $index => $p)
-                        <tr class="hover:bg-gray-50/80 transition-colors {{ $p->status === 'menunggu_verifikasi' ? 'bg-amber-50/30' : '' }} group relative">
-                            @if($p->status === 'menunggu_verifikasi')
-                                <td class="absolute left-0 top-0 bottom-0 w-1 bg-amber-400 rounded-r-md"></td>
-                            @endif
-                            <td class="px-6 py-4 text-center text-gray-400 text-xs font-medium">
+                        <tr class="hover:bg-gray-50/80 transition-colors {{ $p->status === 'menunggu_verifikasi' ? 'bg-amber-50/30 border-l-4 border-amber-400' : 'border-l-4 border-transparent' }}">
+                            <td class="px-4 py-4 text-center text-gray-400 text-xs font-medium">
                                 {{ ($pengaduan->currentPage() - 1) * $pengaduan->perPage() + $loop->iteration }}
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-4 py-4">
                                 <div class="flex items-center gap-3">
                                     @if ($p->is_anonymous)
                                         <div class="w-9 h-9 rounded-full bg-purple-50 text-purple-400 flex items-center justify-center ring-1 ring-purple-100">
@@ -179,8 +167,10 @@
                                             <p class="text-xs text-gray-400 font-medium mt-0.5">Identitas disembunyikan</p>
                                         </div>
                                     @else
-                                        <div class="w-9 h-9 rounded-full bg-blue-50 text-polmed-blue flex items-center justify-center font-bold text-sm ring-1 ring-blue-100">
-                                            {{ strtoupper(substr($p->user->name, 0, 1)) }}
+                                        <div class="w-9 h-9 rounded-full bg-[#2b4cba]/10 border border-[#2b4cba]/20 flex items-center justify-center flex-shrink-0">
+                                            <svg class="w-5 h-5 text-[#2b4cba]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                            </svg>
                                         </div>
                                         <div>
                                             <p class="font-bold text-gray-900">{{ $p->user->name }}</p>
@@ -189,14 +179,14 @@
                                     @endif
                                 </div>
                             </td>
-                            <td class="px-6 py-4 max-w-sm">
+                            <td class="px-4 py-4 max-w-[180px]">
                                 <p class="text-gray-900 font-semibold line-clamp-1 mb-1">{{ $p->subjek }}</p>
                                 <span class="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-600 uppercase tracking-wider">
                                     {{ $p->kategori->nama_kategori }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4">
-                                <div class="flex flex-col items-start gap-1.5 max-w-[170px]">
+                            <td class="px-4 py-4">
+                                <div class="flex flex-col items-start gap-1.5">
                                     <span class="inline-flex items-center justify-center text-center leading-tight px-2.5 py-1 rounded-lg text-xs font-bold {{ $badgeClass[$p->status] ?? 'bg-gray-100 text-gray-700 ring-1 ring-gray-200' }}">
                                         @if($p->status === 'menunggu_verifikasi')
                                             <span class="w-1.5 h-1.5 rounded-full bg-gray-500 mr-1.5 animate-pulse flex-shrink-0"></span>
@@ -214,7 +204,7 @@
                                     </span>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 text-center whitespace-nowrap">
+                            <td class="px-4 py-4 text-center whitespace-nowrap">
                                 <a href="{{ route('admin.pengaduan.show', $p) }}"
                                    class="inline-flex items-center justify-center px-4 py-2 bg-white border border-gray-200 hover:border-polmed-blue hover:text-polmed-blue text-gray-700 rounded-lg text-sm font-bold transition-all shadow-sm focus:ring-4 focus:ring-blue-500/20">
                                     Detail

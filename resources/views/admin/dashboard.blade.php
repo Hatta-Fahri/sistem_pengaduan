@@ -25,7 +25,7 @@
                 </p>
             </div>
             <div class="flex-shrink-0">
-                <a href="{{ route('admin.pengaduan.index') }}" class="inline-flex items-center gap-2 bg-polmed-yellow text-polmed-blue hover:bg-yellow-400 font-bold px-6 py-3 rounded-xl shadow-md transition-colors duration-200">
+                <a href="{{ route('admin.pengaduan.index') }}" class="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white font-bold px-6 py-3 rounded-xl shadow-md border border-white/30 transition-all duration-200 backdrop-blur-sm">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                     Tinjau Pengaduan
                 </a>
@@ -151,8 +151,10 @@
                                             <p class="text-xs text-gray-400 mt-0.5">Identitas disembunyikan</p>
                                         </div>
                                     @else
-                                        <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs flex-shrink-0">
-                                            {{ strtoupper(substr($p->user->name, 0, 1)) }}
+                                        <div class="w-8 h-8 rounded-full bg-white/15 border border-[#2b4cba]/20 bg-[#2b4cba]/10 flex items-center justify-center flex-shrink-0">
+                                            <svg class="w-4 h-4 text-[#2b4cba]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                            </svg>
                                         </div>
                                         <div>
                                             <p class="font-semibold text-gray-900 text-sm">{{ $p->user->name }}</p>
