@@ -3,14 +3,12 @@
 @section('content')
 
 <div class="space-y-6">
-    <!-- Header -->
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div>
             <h1 class="text-2xl font-extrabold text-gray-900 tracking-tight">Manajemen Mahasiswa</h1>
             <p class="text-sm text-gray-500 mt-1 font-medium">Kelola akun mahasiswa yang terdaftar di dalam sistem SILPM.</p>
         </div>
         <div>
-            <!-- Kolom Pencarian -->
             <form method="GET" action="{{ route('admin.users.index') }}" class="relative w-full sm:w-72">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -22,35 +20,6 @@
         </div>
     </div>
 
-    <!-- Flash Messages -->
-    @if (session('success'))
-        <div x-data="{ show: true }" x-show="show" x-transition.opacity.duration.500ms
-             class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-start gap-4 shadow-sm relative">
-            <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-            </div>
-            <div class="flex-1">
-                <h3 class="text-sm font-bold text-emerald-800">Berhasil!</h3>
-                <p class="text-emerald-700 text-sm mt-0.5">{{ session('success') }}</p>
-            </div>
-            <button @click="show = false" class="text-emerald-500 hover:bg-emerald-100 rounded-lg p-1.5 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-        </div>
-    @endif
-    @if (session('error'))
-        <div x-data="{ show: true }" x-show="show" x-transition.opacity.duration.500ms
-             class="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-4 shadow-sm relative">
-            <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-                <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            </div>
-            <div class="flex-1">
-                <h3 class="text-sm font-bold text-red-800">Gagal!</h3>
-                <p class="text-red-700 text-sm mt-0.5">{{ session('error') }}</p>
-            </div>
-            <button @click="show = false" class="text-red-500 hover:bg-red-100 rounded-lg p-1.5 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-        </div>
-    @endif
-
-    <!-- Tabel Pengguna -->
     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
@@ -109,17 +78,18 @@
                                    class="inline-flex items-center justify-center px-3 py-2 bg-white border border-gray-200 hover:border-polmed-blue hover:text-polmed-blue text-gray-700 rounded-lg text-xs font-bold transition-all shadow-sm">
                                     Detail
                                 </a>
-                                <form method="POST" action="{{ route('admin.users.toggle-active', $user) }}"
-                                      onsubmit="return confirm('{{ $user->isActive() ? 'Nonaktifkan akun ' . $user->name . '? Mahasiswa ini tidak akan bisa login lagi sampai diaktifkan kembali.' : 'Aktifkan kembali akun ' . $user->name . '?' }}');">
+                                <form method="POST" action="{{ route('admin.users.toggle-active', $user) }}">
                                     @csrf
                                     @method('PATCH')
                                     @if ($user->isActive())
                                         <button type="submit"
+                                                onclick="return confirm('Yakin ingin menonaktifkan pengguna ini?')"
                                                 class="inline-flex items-center justify-center px-3 py-2 bg-white border border-red-200 hover:bg-red-50 text-red-600 rounded-lg text-xs font-bold transition-all shadow-sm">
                                             Nonaktifkan
                                         </button>
                                     @else
                                         <button type="submit"
+                                                onclick="return confirm('Yakin ingin mengaktifkan pengguna ini?')"
                                                 class="inline-flex items-center justify-center px-3 py-2 bg-white border border-emerald-200 hover:bg-emerald-50 text-emerald-700 rounded-lg text-xs font-bold transition-all shadow-sm">
                                             Aktifkan
                                         </button>
@@ -143,7 +113,6 @@
             </table>
         </div>
         
-        <!-- Pagination -->
         @if ($users->hasPages())
             <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50">
                 {{ $users->links() }}

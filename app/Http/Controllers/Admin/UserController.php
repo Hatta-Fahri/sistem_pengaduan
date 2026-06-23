@@ -63,8 +63,6 @@ class UserController extends Controller
             ? 'Akun mahasiswa "' . $user->name . '" berhasil diaktifkan kembali.'
             : 'Akun mahasiswa "' . $user->name . '" berhasil dinonaktifkan. Mahasiswa ini tidak akan bisa login lagi sampai diaktifkan kembali.';
 
-        return redirect()
-            ->route('admin.users.index')
-            ->with('success', $pesan);
+        return redirect()->back()->with('success', $pesan);
     }
 }

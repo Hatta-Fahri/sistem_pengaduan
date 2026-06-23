@@ -3,7 +3,6 @@
 @section('content')
 
 <div class="space-y-6">
-    <!-- Header -->
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div>
             <h1 class="text-2xl font-extrabold text-gray-900 tracking-tight">Kelola Kategori Pengaduan</h1>
@@ -16,22 +15,6 @@
         </a>
     </div>
 
-    <!-- Flash Messages -->
-    @if (session('success'))
-        <div x-data="{ show: true }" x-show="show" x-transition.opacity.duration.500ms
-             class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-start gap-4 shadow-sm relative">
-            <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-            </div>
-            <div class="flex-1">
-                <h3 class="text-sm font-bold text-emerald-800">Berhasil!</h3>
-                <p class="text-emerald-700 text-sm mt-0.5">{{ session('success') }}</p>
-            </div>
-            <button @click="show = false" class="text-emerald-500 hover:bg-emerald-100 rounded-lg p-1.5 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-        </div>
-    @endif
-
-    <!-- Tabel Kategori -->
     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
@@ -70,11 +53,11 @@
                                     Edit
                                 </a>
                                 {{-- Tombol Hapus --}}
-                                <form method="POST" action="{{ route('admin.kategori.destroy', $kategori) }}"
-                                      onsubmit="return confirm('Hapus kategori &quot;{{ $kategori->nama_kategori }}&quot; secara permanen? Tindakan ini tidak dapat dibatalkan.')">
+                                <form method="POST" action="{{ route('admin.kategori.destroy', $kategori) }}">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
+                                            onclick="return confirm('Yakin ingin menghapus data ini?')"
                                             class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-red-50 border border-red-200 hover:bg-red-600 hover:text-white text-red-600 rounded-lg text-xs font-bold transition-all duration-200">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                         Hapus
