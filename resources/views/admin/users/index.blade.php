@@ -78,18 +78,16 @@
                                    class="inline-flex items-center justify-center px-3 py-2 bg-white border border-gray-200 hover:border-polmed-blue hover:text-polmed-blue text-gray-700 rounded-lg text-xs font-bold transition-all shadow-sm">
                                     Detail
                                 </a>
-                                <form method="POST" action="{{ route('admin.users.toggle-active', $user) }}">
+                                <form method="POST" action="{{ route('admin.users.toggle-active', $user) }}" onsubmit="return confirm('{{ $user->isActive() ? 'Yakin ingin menonaktifkan pengguna ini?' : 'Yakin ingin mengaktifkan pengguna ini?' }}')">
                                     @csrf
                                     @method('PATCH')
                                     @if ($user->isActive())
                                         <button type="submit"
-                                                onclick="return confirm('Yakin ingin menonaktifkan pengguna ini?')"
                                                 class="inline-flex items-center justify-center px-3 py-2 bg-white border border-red-200 hover:bg-red-50 text-red-600 rounded-lg text-xs font-bold transition-all shadow-sm">
                                             Nonaktifkan
                                         </button>
                                     @else
                                         <button type="submit"
-                                                onclick="return confirm('Yakin ingin mengaktifkan pengguna ini?')"
                                                 class="inline-flex items-center justify-center px-3 py-2 bg-white border border-emerald-200 hover:bg-emerald-50 text-emerald-700 rounded-lg text-xs font-bold transition-all shadow-sm">
                                             Aktifkan
                                         </button>
