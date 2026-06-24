@@ -71,9 +71,9 @@
                 },
 
                 evaluateState() {
-                    if (this.clicks >= 2) {
+                    if (this.clicks >= 5) {
                         this.isDisabled = true;
-                        this.buttonText = 'Batas pengiriman tercapai (Maksimal 2x)';
+                        this.buttonText = 'Batas pengiriman tercapai (Maksimal 5x)';
                     } else {
                         this.isDisabled = false;
                         this.buttonText = 'Kirim Ulang Email Verifikasi';
@@ -85,10 +85,10 @@
                         e.preventDefault();
                         return;
                     }
-                    
+
                     this.clicks++;
                     localStorage.setItem('verif_req_count', this.clicks);
-                    
+
                     this.evaluateState();
                 }
             }
