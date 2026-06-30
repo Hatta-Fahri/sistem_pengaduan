@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\KategoriPengaduan;
 use App\Models\Pengaduan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class StatistikController extends Controller
@@ -87,5 +89,90 @@ class StatistikController extends Controller
             'trendLabelsJson'    => json_encode($trendLabels),
             'trendDataJson'      => json_encode($trendData),
         ]);
+    }
+
+    /**
+     * Ekspor laporan statistik ke PDF menggunakan DomPDF.
+     * Filter: tahun (default tahun berjalan).
+     */
+    public function exportPdf(Request $request): Response
+    {
+        $tahunList = [now()->year, now()->year - 1, now()->year - 2];
+
+        $tahun = (int) $request->input('tahun', now()->year);
+        if (! in_array($tahun, $tahunList, true)) {
+            $tahun = now()->year;
+        }
+
+        // ===== Total pengaduan per kategori =====
+        $perKategori = KategoriPengaduan::query()
+            ->withCount(['pengaduan' => fn ($q) => $q->whereYear('created_at', $tahun)])
+            ->orderBy('nama_kategori')
+            ->get();
+
+        // ===== Total pengaduan per status =====
+        $statusLabels = Pengaduan::statusLabels();
+        $statusColors = [
+            Pengaduan::STATUS_MENUNGGU            => '#9CA3AF',
+            Pengaduan::STATUS_DIPROSES            => '#3B82F6',
+            Pengaduan::STATUS_BUTUH_INFO          => '#EAB308',
+            Pengaduan::STATUS_MENUNGGU_KONFIRMASI => '#06B6D4',
+            Pengaduan::STATUS_SELESAI             => '#22C55E',
+            Pengaduan::STATUS_DITOLAK             => '#EF4444',
+        ];
+        $perStatus    = [];
+        foreach ($statusLabels as $key => $label) {
+            $perStatus[$key] = Pengaduan::byStatus($key)->whereYear('created_at', $tahun)->count();
+        }
+
+        // ===== Tren pengaduan per bulan, 12 bulan terakhir (rolling) =====
+        $trendLabels = [];
+        $trendData   = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $bulan         = now()->subMonths($i);
+            $trendLabels[] = $bulan->isoFormat('MMM YYYY');
+            $trendData[]   = Pengaduan::whereYear('created_at', $bulan->year)
+                ->whereMonth('created_at', $bulan->month)
+                ->count();
+        }
+
+        // ===== Rata-rata waktu penyelesaian =====
+        $pengaduanSelesai = Pengaduan::where('status', Pengaduan::STATUS_SELESAI)
+            ->whereYear('created_at', $tahun)
+            ->get(['created_at', 'updated_at']);
+
+        $rataRataJam = $pengaduanSelesai->isEmpty()
+            ? 0
+            : round($pengaduanSelesai->avg(fn ($p) => $p->created_at->diffInHours($p->updated_at)), 1);
+
+        // ===== Kategori dengan pengaduan terbanyak =====
+        $kategoriTerbanyak = $perKategori->sortByDesc('pengaduan_count')->first();
+
+        // ===== Seluruh pengaduan tahun terpilih untuk tabel detail =====
+        $pengaduanList = Pengaduan::with(['user', 'kategori'])
+            ->whereYear('created_at', $tahun)
+            ->orderBy('created_at')
+            ->get();
+
+        $pdf = Pdf::loadView('admin.statistik.export-pdf', [
+            'tahun'            => $tahun,
+            'totalPengaduan'   => array_sum($perStatus),
+            'rataRataJam'      => $rataRataJam,
+            'kategoriTerbanyak'=> $kategoriTerbanyak,
+            'perKategori'      => $perKategori,
+            'perStatus'        => $perStatus,
+            'statusLabels'     => $statusLabels,
+            'statusColors'     => $statusColors,
+            'trendLabels'      => $trendLabels,
+            'trendData'        => $trendData,
+            'pengaduanList'    => $pengaduanList,
+        ])->setOption([
+            'isLocalEnabled' => true,
+            'chroot'         => public_path(),
+        ])->setPaper('a4', 'portrait');
+
+        $filename = 'laporan-statistik-pengaduan-' . $tahun . '.pdf';
+
+        return $pdf->download($filename);
     }
 }

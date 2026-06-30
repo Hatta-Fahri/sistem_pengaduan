@@ -82,6 +82,8 @@ Route::prefix('admin')
         // Statistik & rekap pengaduan
         Route::get('/statistik', [Admin\StatistikController::class, 'index'])
             ->name('statistik');
+        Route::get('/statistik/export-pdf', [Admin\StatistikController::class, 'exportPdf'])
+            ->name('statistik.export-pdf');
 
         // Manajemen pengaduan (admin)
         // Route ekspor didaftarkan sebelum {pengaduan} agar "export" tidak ditangkap sebagai ID.
