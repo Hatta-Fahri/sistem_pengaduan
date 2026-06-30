@@ -18,7 +18,7 @@
 
     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden relative">
         <!-- Decorative Top Border -->
-        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-polmed-yellow to-yellow-300"></div>
+          <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-polmed-blue to-blue-400"></div>
         
         <div class="p-6 sm:p-8">
             <div class="flex items-start gap-4 mb-8 pb-6 border-b border-gray-100">
@@ -84,7 +84,7 @@
                     <input id="subjek" name="subjek" type="text" required maxlength="100"
                            value="{{ old('subjek') }}"
                            class="w-full px-4 py-3.5 bg-gray-50 border rounded-xl text-sm font-semibold text-gray-800 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue focus:bg-white outline-none transition-all {{ $errors->has('subjek') ? 'border-red-400' : 'border-gray-200' }}"
-                           placeholder="Contoh: Proyektor di Kelas MI-4A Rusak" />
+                           placeholder="Contoh: Proyektor di Ruangan N-210 Rusak" />
                     <p class="text-xs text-gray-400 font-medium mt-1.5 flex justify-end">Maksimal 100 karakter</p>
                 </div>
 

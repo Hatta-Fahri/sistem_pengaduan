@@ -266,13 +266,8 @@
             <p class="text-gray-400 text-sm font-medium text-center md:text-left">
                 &copy; {{ date('Y') }} SILPM — Politeknik Negeri Medan.
             </p>
-            <div class="flex items-center gap-4 text-sm text-gray-400 font-medium">
-                <a href="#" class="hover:text-polmed-blue transition-colors">Bantuan</a>
-                <a href="#" class="hover:text-polmed-blue transition-colors">Panduan Penggunaan</a>
-            </div>
         </div>
     </footer>
 </div>
-
 </body>
 </html>
