@@ -10,7 +10,6 @@
             padding: 0;
         }
 
-        /* Reset elemen dalam */
         div, p, h1, h2, h3, h4, h5, h6,
         table, tr, td, th, thead, tbody, tfoot,
         ul, ol, li, span, img, a {
@@ -26,101 +25,103 @@
             background: #fff;
         }
 
-        /* Wrapper sebagai pengganti margin halaman */
+        /* ============================================================
+           HEADER TETAP — kop surat, muncul di SETIAP halaman
+           position:fixed + top:0 adalah cara DomPDF untuk repeating header
+           ============================================================ */
+        #pdf-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 10pt 35pt 0;
+            background: #fff;
+        }
+
+        /* Tabel kop: [logo 105pt] | [teks center] | [spacer 105pt]
+           Kolom logo = spacer → teks tepat center */
+        .kop-h-tbl  { width: 100%; border-collapse: collapse; }
+        .kop-h-logo { width: 105pt; text-align: center; vertical-align: middle;
+                      padding: 0 6pt 6pt 0; }
+        .kop-h-logo img { width: 93pt; height: auto; }
+        .kop-h-text { text-align: center; vertical-align: middle;
+                      padding: 0 4pt 6pt; }
+        .kop-h-spacer { width: 105pt; }
+
+        .kop-kemendikti { font-size: 12pt; font-weight: normal;
+                          text-transform: uppercase; letter-spacing: 0.2pt; }
+        .kop-polmed     { font-size: 17pt; font-weight: bold;
+                          text-transform: uppercase; letter-spacing: 0.5pt;
+                          margin-top: 1pt; }
+        .kop-jurusan    { font-size: 12pt; font-weight: bold;
+                          text-transform: uppercase; margin-top: 1pt; }
+        .kop-addr       { font-size: 10pt; margin-top: 2pt; }
+
+        /* Garis bawah kop: tebal + tipis */
+        .kop-hr-thick { border: none; border-top: 3pt solid #000; margin: 0; }
+        .kop-hr-thin  { border: none; border-top: 1pt solid #000;
+                        margin: 2pt 0 0; }
+
+        /* ============================================================
+           FOOTER TETAP — strip dokumen, muncul di SETIAP halaman
+           ============================================================ */
+        #pdf-footer {
+            position: fixed;
+            bottom: 22pt;
+            left: 0;
+            right: 0;
+            padding: 0 57pt;
+            background: #fff;
+        }
+        .footer-strip { width: 100%; border-collapse: collapse; }
+        .footer-strip td {
+            font-size: 8pt;
+            padding: 0;
+            /* border dihapus */
+        }
+
+        /* ============================================================
+           AREA KONTEN — padding atas menyesuaikan tinggi header fixed
+           ============================================================ */
         .page-wrap {
-            padding: 28pt 57pt;   /* atas/bawah 1cm=28pt | kiri/kanan 2cm=57pt */
+            padding: 128pt 57pt 40pt;  /* bottom 40pt: ruang untuk footer strip fixed (bottom:22pt) */
         }
 
-        /* ===== KOP SURAT ===== */
-        .kop-outer {
-            border: 2px solid #000;
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        /*
-         * Trik 3-kolom DomPDF:
-         *   [logo 86px] [teks center flex] [spacer 86px]
-         * Lebar logo = lebar spacer → teks tepat di tengah halaman.
-         * Tidak ada border antar kolom → tampak sebagai satu blok menyatu.
-         */
-        table.kop-tbl {
-            width: 100%;
-            border-collapse: collapse;
-            background: #fff;
-        }
-        table.kop-tbl td {
-            padding: 10px 8px;
-            vertical-align: middle;
-        }
-        .kop-col-logo {
-            width: 86px;
+        /* ============================================================
+           JUDUL LAPORAN (di dalam konten, di bawah kop)
+           ============================================================ */
+        .laporan-title {
             text-align: center;
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
         }
-        .kop-col-text {
+        .laporan-subtitle {
             text-align: center;
+            font-size: 10px;
+            margin-bottom: 10px;
         }
-        .kop-col-spacer {
-            width: 86px;
-        }
-        .kop-col-logo img {
-            width: 78px;
-            height: auto;
-        }
-        .kop-line1 {
-            font-size: 19px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: #000;
-            line-height: 1.2;
-        }
-        .kop-line2 {
-            font-size: 13.5px;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-top: 3px;
-            color: #000;
-        }
-        .kop-line3 {
-            font-size: 13.5px;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-top: 1px;
-            color: #000;
-        }
-        .kop-divider {
-            border-top: 2px solid #000;
-            background: #fff;
-            color: #000;
-            text-align: center;
-            padding: 5px 0 4px;
-            font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-        }
-        .kop-sub-divider {
+        .laporan-divider {
+            border: none;
             border-top: 1px solid #000;
-            background: #fff;
-            text-align: center;
-            padding: 3px 0;
-            font-size: 9.5px;
-            color: #000;
+            margin: 6px 0 10px;
         }
 
-        /* ===== INFO DOKUMEN ===== */
-        .doc-info {
-            margin: 10px 0 8px;
-            font-size: 10.5px;
-        }
+        /* ============================================================
+           INFO DOKUMEN
+           ============================================================ */
+        .doc-info { margin: 0 0 8px; font-size: 10.5px; }
         .doc-info table { width: 100%; }
         .doc-info td { padding: 2px 0; vertical-align: top; }
         .doc-info .lbl   { width: 155px; }
         .doc-info .colon { width: 12px; }
         .doc-info .val   { font-weight: normal; }
 
-        /* ===== SECTION TITLE ===== */
+        /* ============================================================
+           SECTION TITLE
+           ============================================================ */
         .section-title {
             font-size: 11px;
             font-weight: bold;
@@ -132,12 +133,10 @@
             margin-top: 12px;
         }
 
-        /* ===== RINGKASAN ===== */
-        table.summary-tbl {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 10px;
-        }
+        /* ============================================================
+           RINGKASAN
+           ============================================================ */
+        table.summary-tbl { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
         table.summary-tbl th {
             border: 1px solid #000;
             padding: 4px 8px;
@@ -156,12 +155,10 @@
         }
         table.summary-tbl td.small-val { font-size: 10px; }
 
-        /* ===== DATA TABLE ===== */
-        table.data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 10px;
-        }
+        /* ============================================================
+           DATA TABLE
+           ============================================================ */
+        table.data-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
         table.data-table thead th {
             border: 1px solid #000;
             padding: 5px 5px;
@@ -178,6 +175,9 @@
             text-align: center;
             vertical-align: middle;
         }
+        table.data-table tbody tr {
+            page-break-inside: avoid;  /* baris tidak boleh terpotong antar halaman */
+        }
         table.data-table tbody td.td-left { text-align: left; }
         table.data-table tfoot td {
             border: 1px solid #000;
@@ -188,61 +188,78 @@
             background: #fff;
         }
 
-        /* ===== TWO-COLUMN ===== */
+        /* ============================================================
+           TWO-COLUMN
+           ============================================================ */
         .two-col { display: table; width: 100%; border-spacing: 8px; }
         .col      { display: table-cell; width: 50%; vertical-align: top; }
 
-        /* ===== FOOTER ===== */
-        .footer {
-            margin-top: 14px;
-            border-top: 1px solid #000;
-            padding-top: 5px;
-            display: table;
-            width: 100%;
-            font-size: 9px;
-        }
-        .footer-left  { display: table-cell; }
-        .footer-right { display: table-cell; text-align: right; }
+        /* ============================================================
+           TANDA TANGAN (akhir dokumen, halaman terakhir)
+           ============================================================ */
+        .signature-section { margin-top: 20pt; }
+        .sig-tbl { width: 100%; border-collapse: collapse; }
+        .sig-tbl td { font-size: 11px; vertical-align: top; }
+        .sig-left  { width: 55%; }
+        .sig-right { width: 45%; text-align: center; }
+        .sig-space { height: 52pt; }   /* ruang tanda tangan */
 
         .page-break { page-break-after: always; }
     </style>
 </head>
 <body>
+
+{{-- =====================================================================
+     HEADER TETAP — kop surat muncul di setiap halaman PDF
+     ===================================================================== --}}
+<div id="pdf-header">
+    <table class="kop-h-tbl">
+        <tr>
+            <td class="kop-h-logo">
+                <img src="{{ public_path('images/logo-polmed-small.png') }}"
+                     alt="Logo Politeknik Negeri Medan" />
+            </td>
+            <td class="kop-h-text">
+                <div class="kop-kemendikti">Kementerian Pendidikan Tinggi, Sains, dan Teknologi</div>
+                <div class="kop-polmed">Politeknik Negeri Medan</div>
+                <div class="kop-jurusan">Jurusan Teknik Komputer &amp; Informatika</div>
+                <div class="kop-addr">Jl. Almamater No. 1 Kampus USU, Medan 20155, Indonesia</div>
+                <div class="kop-addr">Telp. (061) 8210463, 8211235, Faks: (061) 8215845</div>
+                <div class="kop-addr">http://www.polmed.ac.id e-mail: polmed@polmed.ac.id, info@polmed.ac.id</div>
+            </td>
+            <td class="kop-h-spacer"></td>
+        </tr>
+    </table>
+    <hr class="kop-hr-thick" />
+</div>
+
+{{-- =====================================================================
+     FOOTER TETAP — strip No. Dokumen di setiap halaman PDF
+     ===================================================================== --}}
+<div id="pdf-footer">
+    <table class="footer-strip">
+        <tr>
+            <td>No. Dokumen: SILPM/LAP/{{ $tahun }}</td>
+            <td style="text-align:center;">Revisi ke: 01</td>
+            <td style="text-align:right;">Tanggal Efektif: {{ now()->locale('id')->isoFormat('D MMMM YYYY') }}</td>
+        </tr>
+    </table>
+</div>
+
+{{-- =====================================================================
+     KONTEN UTAMA
+     ===================================================================== --}}
 <div class="page-wrap">
 
-    <!-- ===== KOP SURAT ===== -->
-    <div class="kop-outer">
-
-        {{-- Tabel 3-kolom: logo | teks | spacer (lebar logo = spacer → teks tepat center) --}}
-        <table class="kop-tbl">
-            <tr>
-                <td class="kop-col-logo">
-                    <img src="{{ public_path('images/logo-polmed-small.png') }}"
-                         alt="Logo Politeknik Negeri Medan" />
-                </td>
-                <td class="kop-col-text">
-                    <div class="kop-line1">Politeknik Negeri Medan</div>
-                    <div class="kop-line2">Jurusan Teknik Komputer &amp; Informatika</div>
-                    <div class="kop-line3">Program Studi Manajemen Informatika</div>
-                </td>
-                <td class="kop-col-spacer"></td>
-            </tr>
-        </table>
-
-        {{-- Garis navy + judul laporan --}}
-        <div class="kop-divider">
-            Laporan Statistik Pengaduan Mahasiswa
-        </div>
-
-        {{-- Sub-judul sistem --}}
-        <div class="kop-sub-divider">
-            Sistem Informasi Layanan Pengaduan Mahasiswa &mdash; Tahun {{ $tahun }}
-        </div>
-
+    {{-- Judul laporan di dalam konten --}}
+    <div class="laporan-title">Laporan Statistik Pengaduan Mahasiswa</div>
+    <div class="laporan-subtitle">
+        Sistem Informasi Layanan Pengaduan Mahasiswa &mdash; Tahun {{ $tahun }}
     </div>
+    <hr class="laporan-divider" />
 
     <!-- ===== INFO DOKUMEN ===== -->
-    <div class="doc-info" style="margin-top:10px;">
+    <div class="doc-info">
         <table>
             <tr>
                 <td class="lbl">Periode Laporan</td>
@@ -251,7 +268,7 @@
                 <td style="width:20px;"></td>
                 <td class="lbl">Tanggal Cetak</td>
                 <td class="colon">:</td>
-                <td class="val">{{ now()->isoFormat('D MMMM YYYY') }}, Pukul {{ now()->format('H:i') }} WIB</td>
+                <td class="val">{{ now()->locale('id')->isoFormat('D MMMM YYYY') }}, Pukul {{ now()->format('H:i') }} WIB</td>
             </tr>
             <tr>
                 <td class="lbl">Total Pengaduan Masuk</td>
@@ -364,7 +381,8 @@
 
     <!-- ===== DAFTAR PENGADUAN ===== -->
     @if($pengaduanList->isNotEmpty())
-    <div class="section-title" style="margin-top:14px;">IV. Daftar Seluruh Pengaduan Tahun {{ $tahun }}</div>
+    <div style="page-break-before: always; padding-top: 130pt;">
+    <div class="section-title">IV. Daftar Seluruh Pengaduan Tahun {{ $tahun }}</div>
     <table class="data-table">
         <thead>
             <tr>
@@ -402,17 +420,8 @@
             </tr>
         </tfoot>
     </table>
+    </div>{{-- tutup div page-break-before --}}
     @endif
-
-    <!-- ===== FOOTER ===== -->
-    <div class="footer">
-        <div class="footer-left">
-            Dokumen ini dicetak secara otomatis oleh sistem &mdash; Politeknik Negeri Medan
-        </div>
-        <div class="footer-right">
-            {{ now()->format('d/m/Y H:i') }} WIB
-        </div>
-    </div>
 
 </div><!-- /.page-wrap -->
 </body>

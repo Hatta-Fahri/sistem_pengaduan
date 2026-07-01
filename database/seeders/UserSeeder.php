@@ -18,39 +18,9 @@ class UserSeeder extends Seeder
             'name'     => 'Administrator',
             'nim'      => null,
             'class'    => null,
-            'email'    => 'yuuotosaka2506@gmail.com',
+            'email'    => 'adminprodimi@gmail.com',
             'password' => Hash::make('password'),
             'role'     => 'admin',
-        ]);
-
-        // Mahasiswa dummy 1
-        User::create([
-            'name'     => 'Budi Santoso',
-            'nim'      => '2305001',
-            'class'    => 'MI-4A',
-            'email'    => 'mahasiswa1@silpm.local',
-            'password' => Hash::make('Test123!'),
-            'role'     => 'mahasiswa',
-        ]);
-
-        // Mahasiswa dummy 2
-        User::create([
-            'name'     => 'Sari Dewi',
-            'nim'      => '2305002',
-            'class'    => 'MI-4B',
-            'email'    => 'mahasiswa2@silpm.local',
-            'password' => Hash::make('Test123!'),
-            'role'     => 'mahasiswa',
-        ]);
-
-        // Mahasiswa dummy 3
-        User::create([
-            'name'     => 'Ahmad Fauzi',
-            'nim'      => '2305003',
-            'class'    => 'MI-4A',
-            'email'    => 'mahasiswa3@silpm.local',
-            'password' => Hash::make('Test123!'),
-            'role'     => 'mahasiswa',
         ]);
     }
 }
