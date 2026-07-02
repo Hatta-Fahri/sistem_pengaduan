@@ -16,10 +16,6 @@
         .header-logo { font-size: 26px; font-weight: 900; color: #ffffff; letter-spacing: 2px; margin-bottom: 4px; }
         .header-sub  { font-size: 12px; color: #bfdbfe; letter-spacing: 0.5px; }
 
-        /* Icon email */
-        .icon-wrap { text-align: center; padding: 32px 40px 0; }
-        .icon-circle { display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 72px; background: #eff6ff; border: 3px solid #bfdbfe; border-radius: 50%; }
-        .icon-circle svg { width: 36px; height: 36px; }
 
         /* Body */
         .body { padding: 24px 40px 36px; }
@@ -69,14 +65,7 @@
         <div class="header-sub">Sistem Informasi Layanan Pengaduan Mahasiswa</div>
     </div>
 
-    <!-- Icon -->
-    <div class="icon-wrap">
-        <div class="icon-circle">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-            </svg>
-        </div>
-    </div>
+
 
     <!-- Body -->
     <div class="body">
