@@ -13,14 +13,16 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Akun Admin
-        User::create([
-            'name'     => 'Administrator',
-            'nim'      => null,
-            'class'    => null,
-            'email'    => 'adminprodimi@gmail.com',
-            'password' => Hash::make('password'),
-            'role'     => 'admin',
-        ]);
+        // Akun Admin — gunakan firstOrCreate agar tidak error jika sudah ada
+        User::firstOrCreate(
+            ['email' => 'adminprodimi@gmail.com'],
+            [
+                'name'     => 'Administrator',
+                'nim'      => null,
+                'class'    => null,
+                'password' => Hash::make('password'),
+                'role'     => 'admin',
+            ]
+        );
     }
 }

@@ -21,9 +21,22 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
+     * Sebelum rollback ke enum, normalkan dulu nilai-nilai status yang tidak
+     * ada di daftar enum lama agar tidak terjadi data truncation error.
      */
     public function down(): void
     {
+        // Normalkan status yang tidak ada di enum lama → fallback ke menunggu_verifikasi
+        \DB::table('pengaduan')
+            ->whereNotIn('status', [
+                'menunggu_verifikasi',
+                'sedang_diproses',
+                'membutuhkan_informasi_tambahan',
+                'selesai_ditangani',
+                'ditolak',
+            ])
+            ->update(['status' => 'menunggu_verifikasi']);
+
         Schema::table('pengaduan', function (Blueprint $table) {
             $table->enum('status', [
                 'menunggu_verifikasi',
