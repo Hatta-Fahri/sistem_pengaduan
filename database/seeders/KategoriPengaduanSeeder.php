@@ -12,6 +12,12 @@ class KategoriPengaduanSeeder extends Seeder
      */
     public function run(): void
     {
+        // Guard: skip jika data sudah ada — mencegah duplikat saat db:seed dijalankan ulang
+        if (DB::table('kategori_pengaduan')->count() > 0) {
+            $this->command->info('KategoriPengaduanSeeder: data sudah ada, skip.');
+            return;
+        }
+
         $kategori = [
             [
                 'nama_kategori' => 'Layanan Dosen Pengampu Mata Kuliah',
