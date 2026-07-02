@@ -20,7 +20,7 @@
         <div class="fixed bottom-0 right-0 w-[30rem] h-[30rem] bg-[#2441a1] rounded-tl-full opacity-80 mix-blend-multiply pointer-events-none"></div>
         <div class="fixed -bottom-20 -left-20 w-96 h-96 bg-[#3657c9] rounded-tr-full opacity-50 pointer-events-none"></div>
 
-        <div class="relative z-10 min-h-screen flex items-center justify-center p-4 py-10" x-data="forgotPasswordLimit()" x-init="init()">
+        <div class="relative z-10 min-h-screen flex items-center justify-center p-4 py-10">
             
             <div class="w-full max-w-lg p-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl shadow-2xl">
                 
@@ -53,7 +53,7 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('password.email') }}" class="space-y-6" @submit="submitForm($event)">
+                <form method="POST" action="{{ route('password.email') }}" class="space-y-6">
                     @csrf
 
                     <div>
@@ -73,11 +73,10 @@
                         @enderror
                     </div>
 
-                    <button type="submit" 
-                            :disabled="isDisabled"
-                            class="w-full py-3.5 bg-blue-500 text-white font-bold rounded-lg text-sm shadow-lg shadow-blue-500/40 hover:bg-blue-600 hover:shadow-blue-600/50 transition-all focus:ring-4 focus:ring-blue-500/50 flex justify-center items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-blue-500 disabled:hover:shadow-none">
-                        <span x-text="buttonText">Kirim Link Reset Password</span>
-                        <svg x-show="!isDisabled" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    <button type="submit"
+                            class="w-full py-3.5 bg-blue-500 text-white font-bold rounded-lg text-sm shadow-lg shadow-blue-500/40 hover:bg-blue-600 hover:shadow-blue-600/50 transition-all focus:ring-4 focus:ring-blue-500/50 flex justify-center items-center gap-2">
+                        <span>Kirim Link Reset Password</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                     </button>
                 </form>
 
@@ -92,40 +91,6 @@
         </div>
     </div>
 
-    <script>
-        function forgotPasswordLimit() {
-            return {
-                clicks: parseInt(localStorage.getItem('reset_req_count')) || 0,
-                isDisabled: false,
-                buttonText: 'Kirim Link Reset Password',
 
-                init() {
-                    this.evaluateState();
-                },
-
-                evaluateState() {
-                    if (this.clicks >= 2) {
-                        this.isDisabled = true;
-                        this.buttonText = 'Batas pengiriman tercapai (Maksimal 2x)';
-                    } else {
-                        this.isDisabled = false;
-                        this.buttonText = 'Kirim Link Reset Password';
-                    }
-                },
-
-                submitForm(e) {
-                    if (this.isDisabled) {
-                        e.preventDefault();
-                        return;
-                    }
-                    
-                    this.clicks++;
-                    localStorage.setItem('reset_req_count', this.clicks);
-                    
-                    this.evaluateState();
-                }
-            }
-        }
-    </script>
 
 @endsection

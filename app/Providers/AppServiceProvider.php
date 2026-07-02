@@ -4,11 +4,13 @@ namespace App\Providers;
 
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use App\Mail\VerifikasiEmail;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,6 +34,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Event::listen(Registered::class, SendEmailVerificationNotification::class);
+
+        // Ganti email verifikasi default Laravel dengan template kustom SILPM
+        VerifyEmail::toMailUsing(function ($notifiable, $url) {
+            return (new VerifikasiEmail(
+                userName:        $notifiable->name,
+                verificationUrl: $url,
+            ))->to($notifiable->email, $notifiable->name);
+        });
 
         RateLimiter::for('pengaduan-submit', function (Request $request) {
             return Limit::perDay(self::MAX_PENGADUAN_PER_HARI)
