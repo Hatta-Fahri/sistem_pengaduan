@@ -70,6 +70,17 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Cek apakah user adalah kaprodi.
+     * 
+     * Encapsulating the role check prevents hardcoding string comparisons 
+     * throughout the application controllers, adhering to DRY principles.
+     */
+    public function isKaprodi(): bool
+    {
+        return $this->role === 'kaprodi';
+    }
+
+    /**
      * Cek apakah akun masih aktif (belum dinonaktifkan admin).
      */
     public function isActive(): bool
@@ -88,7 +99,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Riwayat perubahan status yang dilakukan oleh user ini (admin).
+     * Riwayat perubahan status yang dilakukan oleh user ini (admin/kaprodi).
      */
     public function statusHistoryChanges()
     {
