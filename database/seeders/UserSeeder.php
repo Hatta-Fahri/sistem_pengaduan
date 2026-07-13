@@ -9,7 +9,7 @@ use App\Models\User;
 class UserSeeder extends Seeder
 {
     /**
-     * Seed akun admin dan mahasiswa dummy untuk testing.
+     * Seed akun admin, kaprodi, dan mahasiswa dummy untuk testing.
      */
     public function run(): void
     {
@@ -17,11 +17,23 @@ class UserSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'adminprodimi@gmail.com'],
             [
-                'name'     => 'Administrator',
+                'name'     => 'Administrator MI',
                 'nim'      => null,
                 'class'    => null,
                 'password' => Hash::make('password'),
                 'role'     => 'admin',
+            ]
+        );
+
+        // Akun Kaprodi
+        User::firstOrCreate(
+            ['email' => 'kaprodimipolmed@gmail.com'],
+            [
+                'name'     => 'Kaprodi MI',
+                'nim'      => null,
+                'class'    => null,
+                'password' => Hash::make('password'),
+                'role'     => 'kaprodi',
             ]
         );
     }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\BuktiController;
+use App\Http\Controllers\Kaprodi;
 use App\Http\Controllers\Mahasiswa;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -15,9 +16,13 @@ use Illuminate\Support\Facades\Route;
 // Halaman landing — redirect berdasarkan auth status
 Route::get('/', function () {
     if (auth()->check()) {
-        return auth()->user()->isAdmin()
-            ? redirect()->route('admin.dashboard')
-            : redirect()->route('mahasiswa.dashboard');
+        $role = auth()->user()->role;
+        if ($role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } elseif ($role === 'kaprodi') {
+            return redirect()->route('kaprodi.dashboard');
+        }
+        return redirect()->route('mahasiswa.dashboard');
     }
     return redirect()->route('login');
 });
@@ -118,5 +123,52 @@ Route::prefix('admin')
         Route::patch('/kategori/{kategori}/toggle-active', [Admin\KategoriPengaduanController::class, 'toggleActive'])
             ->name('kategori.toggle-active');
         Route::delete('/kategori/{kategori}', [Admin\KategoriPengaduanController::class, 'destroy'])
+            ->name('kategori.destroy');
+    });
+
+// ===================== Kaprodi Routes =====================
+Route::prefix('kaprodi')
+    ->name('kaprodi.')
+    ->middleware(['auth', 'role:kaprodi'])
+    ->group(function () {
+
+        // Dashboard kaprodi
+        Route::get('/dashboard', [Kaprodi\DashboardController::class, 'index'])
+            ->name('dashboard');
+
+        // Statistik & rekap pengaduan
+        Route::get('/statistik', [Kaprodi\StatistikController::class, 'index'])
+            ->name('statistik');
+        Route::get('/statistik/export-pdf', [Kaprodi\StatistikController::class, 'exportPdf'])
+            ->name('statistik.export-pdf');
+
+        // Lihat detail pengaduan (read-only, kaprodi tidak bisa update status)
+        Route::get('/pengaduan/export', [Admin\PengaduanController::class, 'export'])
+            ->name('pengaduan.export');
+        Route::get('/pengaduan/{pengaduan}', [Kaprodi\PengaduanController::class, 'show'])
+            ->name('pengaduan.show');
+
+        // Kelola pengguna (mahasiswa)
+        Route::get('/users', [Kaprodi\UserController::class, 'index'])
+            ->name('users.index');
+        Route::get('/users/{user}', [Kaprodi\UserController::class, 'show'])
+            ->name('users.show');
+        Route::patch('/users/{user}/toggle-active', [Kaprodi\UserController::class, 'toggleActive'])
+            ->name('users.toggle-active');
+
+        // Kelola kategori pengaduan
+        Route::get('/kategori', [Kaprodi\KategoriPengaduanController::class, 'index'])
+            ->name('kategori.index');
+        Route::get('/kategori/buat', [Kaprodi\KategoriPengaduanController::class, 'create'])
+            ->name('kategori.create');
+        Route::post('/kategori', [Kaprodi\KategoriPengaduanController::class, 'store'])
+            ->name('kategori.store');
+        Route::get('/kategori/{kategori}/edit', [Kaprodi\KategoriPengaduanController::class, 'edit'])
+            ->name('kategori.edit');
+        Route::put('/kategori/{kategori}', [Kaprodi\KategoriPengaduanController::class, 'update'])
+            ->name('kategori.update');
+        Route::patch('/kategori/{kategori}/toggle-active', [Kaprodi\KategoriPengaduanController::class, 'toggleActive'])
+            ->name('kategori.toggle-active');
+        Route::delete('/kategori/{kategori}', [Kaprodi\KategoriPengaduanController::class, 'destroy'])
             ->name('kategori.destroy');
     });
