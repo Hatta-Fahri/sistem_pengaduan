@@ -11,64 +11,162 @@
         'selesai_ditangani'              => 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
         'ditolak'                        => 'bg-red-50 text-red-700 ring-1 ring-red-200',
     ];
+
+    $trendSubtitle = match(true) {
+        $startDate->diffInDays($endDate) <= 31 => 'Grafik menampilkan data pengaduan per hari.',
+        default => 'Grafik menampilkan data pengaduan per bulan.',
+    };
 @endphp
 
 <div class="space-y-6">
 
     {{-- ===== Header ===== --}}
-    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-        <div>
-            <h1 class="text-2xl font-extrabold text-gray-900 tracking-tight">Statistik &amp; Laporan</h1>
-            <p class="text-sm text-gray-500 mt-1 font-medium">Pantau rekapitulasi data pengaduan untuk kebutuhan analisis dan laporan.</p>
-        </div>
-        <div class="flex items-center gap-3 w-full sm:w-auto">
-            {{-- Filter Tahun: sertakan parameter search/filter agar tidak hilang saat ganti tahun --}}
-            <form method="GET" action="{{ route('admin.statistik') }}" class="flex-1 sm:flex-none">
-                @foreach (['search','status','kategori_id','tanggal_dari','tanggal_sampai'] as $param)
-                    @if (request()->filled($param))
-                        <input type="hidden" name="{{ $param }}" value="{{ request($param) }}">
-                    @endif
-                @endforeach
-                <select name="tahun" onchange="this.form.submit()"
-                        class="w-full sm:w-auto px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-700 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue cursor-pointer">
-                    @foreach ($tahunList as $tahun)
-                        <option value="{{ $tahun }}" {{ $tahunTerpilih == $tahun ? 'selected' : '' }}>Tahun {{ $tahun }}</option>
-                    @endforeach
-                </select>
-            </form>
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-5">
 
-            {{-- Export Buttons Group --}}
-            <div class="flex-1 sm:flex-none flex rounded-xl overflow-hidden shadow-md" role="group" aria-label="Pilihan format ekspor laporan">
-                {{-- Ekspor CSV --}}
-                <a id="btn-export-csv"
-                   href="{{ route('admin.pengaduan.export', ['tanggal_dari' => $tahunTerpilih . '-01-01', 'tanggal_sampai' => $tahunTerpilih . '-12-31']) }}"
-                   title="Unduh laporan dalam format CSV"
-                   class="inline-flex flex-1 sm:flex-none justify-center items-center gap-2 bg-polmed-blue text-white hover:bg-blue-800 font-bold px-5 py-3 text-sm transition-all duration-200 hover:-translate-y-0.5 focus:ring-4 focus:ring-blue-500/30 border-r border-blue-700/50">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                    CSV
-                </a>
-                {{-- Ekspor PDF --}}
-                <a id="btn-export-pdf"
-                   href="{{ route('admin.statistik.export-pdf', ['tahun' => $tahunTerpilih]) }}"
-                   title="Unduh laporan dalam format PDF"
-                   class="inline-flex flex-1 sm:flex-none justify-center items-center gap-2 bg-red-600 text-white hover:bg-red-700 font-bold px-5 py-3 text-sm transition-all duration-200 hover:-translate-y-0.5 focus:ring-4 focus:ring-red-500/30">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 13h1.5a1.5 1.5 0 010 3H10v-3zm0 0V10"/>
-                    </svg>
-                    PDF
-                </a>
+        {{-- Row 1: Judul + Tombol Ekspor --}}
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-extrabold text-gray-900 tracking-tight">Statistik & Laporan</h1>
+                <p class="text-sm text-gray-500 mt-1 font-medium">Pantau rekapitulasi data pengaduan untuk kebutuhan analisis dan laporan.</p>
+            </div>
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+                {{-- Export Buttons Group --}}
+                <div class="flex-1 sm:flex-none flex rounded-xl overflow-hidden shadow-md" role="group" aria-label="Pilihan format ekspor laporan">
+                    {{-- Ekspor CSV --}}
+                    <a id="btn-export-csv"
+                       href="{{ route('admin.pengaduan.export', ['tanggal_dari' => $startDate->format('Y-m-d'), 'tanggal_sampai' => $endDate->format('Y-m-d')]) }}"
+                       title="Unduh laporan dalam format CSV"
+                       class="inline-flex flex-1 sm:flex-none justify-center items-center gap-2 bg-polmed-blue text-white hover:bg-blue-800 font-bold px-5 py-3 text-sm transition-all duration-200 hover:-translate-y-0.5 focus:ring-4 focus:ring-blue-500/30 border-r border-blue-700/50">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        CSV
+                    </a>
+                    {{-- Ekspor PDF --}}
+                    <a id="btn-export-pdf"
+                       href="{{ route('admin.statistik.export-pdf', array_filter(['periode' => $periode, 'bulan' => request('bulan'), 'tahun_bulan' => request('tahun_bulan'), 'tahun' => request('tahun'), 'tanggal_dari' => $startDate->format('Y-m-d'), 'tanggal_sampai' => $endDate->format('Y-m-d')])) }}"
+                       title="Unduh laporan dalam format PDF"
+                       class="inline-flex flex-1 sm:flex-none justify-center items-center gap-2 bg-red-600 text-white hover:bg-red-700 font-bold px-5 py-3 text-sm transition-all duration-200 hover:-translate-y-0.5 focus:ring-4 focus:ring-red-500/30">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 13h1.5a1.5 1.5 0 010 3H10v-3zm0 0V10"/>
+                        </svg>
+                        PDF
+                    </a>
+                </div>
             </div>
         </div>
+
+        {{-- Row 2: Filter Periode --}}
+        <form method="GET" action="{{ route('admin.statistik') }}"
+              x-data="{
+                  selectedPeriode: '{{ $periode }}',
+                  submitIfNotCustom() {
+                      if (this.selectedPeriode !== 'custom') {
+                          this.$nextTick(() => this.$el.closest('form').submit());
+                      }
+                  }
+              }"
+              class="flex flex-wrap items-end gap-3 pt-4 border-t border-gray-100">
+
+            {{-- Pertahankan parameter pencarian aktif --}}
+            @foreach (['search', 'status', 'kategori_id'] as $param)
+                @if (request()->filled($param))
+                    <input type="hidden" name="{{ $param }}" value="{{ request($param) }}">
+                @endif
+            @endforeach
+
+            {{-- Dropdown Periode --}}
+            <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Periode</label>
+                <select name="periode" x-model="selectedPeriode"
+                        @change="submitIfNotCustom()"
+                        class="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-700 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue cursor-pointer min-w-[140px]">
+                    <option value="mingguan">7 Hari Terakhir</option>
+                    <option value="bulanan">Bulanan</option>
+                    <option value="tahunan">Tahunan</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </div>
+
+            {{-- Input Bulan (muncul hanya saat bulanan dipilih) --}}
+            <div x-show="selectedPeriode === 'bulanan'" x-transition.opacity class="flex items-end gap-2">
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Bulan</label>
+                    <select name="bulan"
+                            class="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue min-w-[130px]">
+                        @for ($m = 1; $m <= 12; $m++)
+                            <option value="{{ $m }}" {{ (int) request('bulan', now()->month) === $m ? 'selected' : '' }}>
+                                {{ \Carbon\Carbon::create(null, $m, 1)->locale('id')->isoFormat('MMMM') }}
+                            </option>
+                        @endfor
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Tahun</label>
+                    <select name="tahun_bulan"
+                            class="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue">
+                        @for ($y = now()->year; $y >= 2020; $y--)
+                            <option value="{{ $y }}" {{ (int) request('tahun_bulan', now()->year) === $y ? 'selected' : '' }}>{{ $y }}</option>
+                        @endfor
+                    </select>
+                </div>
+                <button type="submit"
+                        class="px-5 py-2.5 bg-polmed-blue hover:bg-blue-800 text-white text-sm font-bold rounded-xl shadow-md transition-all focus:ring-4 focus:ring-blue-500/30">
+                    Terapkan
+                </button>
+            </div>
+
+            {{-- Input Tahun (muncul hanya saat tahunan dipilih) --}}
+            <div x-show="selectedPeriode === 'tahunan'" x-transition.opacity class="flex items-end gap-2">
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Tahun</label>
+                    <select name="tahun"
+                            class="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue">
+                        @for ($y = now()->year; $y >= 2020; $y--)
+                            <option value="{{ $y }}" {{ (int) request('tahun', now()->year) === $y ? 'selected' : '' }}>{{ $y }}</option>
+                        @endfor
+                    </select>
+                </div>
+                <button type="submit"
+                        class="px-5 py-2.5 bg-polmed-blue hover:bg-blue-800 text-white text-sm font-bold rounded-xl shadow-md transition-all focus:ring-4 focus:ring-blue-500/30">
+                    Terapkan
+                </button>
+            </div>
+
+            {{-- Input tanggal custom (muncul hanya saat custom dipilih) --}}
+            <div x-show="selectedPeriode === 'custom'" x-transition.opacity class="flex flex-wrap items-end gap-2">
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Dari</label>
+                    <input type="date" name="tanggal_dari"
+                           value="{{ $startDate->format('Y-m-d') }}"
+                           class="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Sampai</label>
+                    <input type="date" name="tanggal_sampai"
+                           value="{{ $endDate->format('Y-m-d') }}"
+                           class="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue">
+                </div>
+                <button type="submit"
+                        class="px-5 py-2.5 bg-polmed-blue hover:bg-blue-800 text-white text-sm font-bold rounded-xl shadow-md transition-all focus:ring-4 focus:ring-blue-500/30">
+                    Terapkan
+                </button>
+            </div>
+
+            {{-- Badge periode aktif --}}
+            <span class="inline-flex items-center px-3 py-2 bg-blue-50 text-polmed-blue rounded-lg text-xs font-bold gap-1.5 self-end">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                {{ $teksPeriode }}
+            </span>
+        </form>
     </div>
 
     {{-- ===== Ringkasan Cepat ===== --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="bg-gradient-to-br from-polmed-blue to-blue-900 rounded-2xl p-6 shadow-md text-white relative overflow-hidden group">
             <div class="relative z-10">
-                <p class="text-blue-100 font-bold text-sm uppercase tracking-wider mb-2">Total Pengaduan Tahun {{ $tahunTerpilih }}</p>
+                <p class="text-blue-100 font-bold text-sm uppercase tracking-wider mb-2">Total Pengaduan — {{ $teksPeriode }}</p>
                 <div class="flex items-end gap-3">
                     <h3 class="text-5xl font-extrabold">{{ $totalPengaduan }}</h3>
                     <p class="text-blue-200 text-sm font-medium mb-1">laporan masuk</p>
@@ -105,7 +203,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {{-- Doughnut: Distribusi Status --}}
         <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
-            <h3 class="text-lg font-bold text-gray-900 mb-6">Distribusi Status Pengaduan — Tahun {{ $tahunTerpilih }}</h3>
+            <h3 class="text-lg font-bold text-gray-900 mb-6">Distribusi Status Pengaduan — {{ $teksPeriode }}</h3>
             <div class="relative" style="height: 280px;">
                 <canvas id="chartStatus"></canvas>
             </div>
@@ -113,17 +211,17 @@
 
         {{-- Bar: Rekap per Kategori --}}
         <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
-            <h3 class="text-lg font-bold text-gray-900 mb-6">Rekap Berdasarkan Kategori — Tahun {{ $tahunTerpilih }}</h3>
+            <h3 class="text-lg font-bold text-gray-900 mb-6">Rekap Berdasarkan Kategori — {{ $teksPeriode }}</h3>
             <div class="relative" style="height: 280px;">
                 <canvas id="chartKategori"></canvas>
             </div>
         </div>
     </div>
 
-    {{-- Line: Tren 12 Bulan Terakhir --}}
+    {{-- Line: Tren Pengaduan --}}
     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
-        <h3 class="text-lg font-bold text-gray-900 mb-1">Tren Pengaduan — 12 Bulan Terakhir</h3>
-        <p class="text-xs text-gray-400 font-medium mb-6">Grafik ini selalu menampilkan 12 bulan berjalan, terlepas dari filter tahun di atas.</p>
+        <h3 class="text-lg font-bold text-gray-900 mb-1">Tren Pengaduan — {{ $teksPeriode }}</h3>
+        <p class="text-xs text-gray-400 font-medium mb-6">{{ $trendSubtitle }}</p>
         <div class="relative" style="height: 280px;">
             <canvas id="chartTren"></canvas>
         </div>
@@ -137,7 +235,7 @@
         <div class="h-6 w-1 bg-polmed-blue rounded-full flex-shrink-0"></div>
         <div>
             <h2 class="text-xl font-extrabold text-gray-900 tracking-tight">Cari &amp; Telusuri Data Pengaduan</h2>
-            <p class="text-sm text-gray-500 mt-0.5">Pencarian dan filter di bawah ini independen dari filter tahun grafik di atas.</p>
+            <p class="text-sm text-gray-500 mt-0.5">Pencarian di bawah ini memfilter data dalam periode yang dipilih di atas.</p>
         </div>
     </div>
 
@@ -164,13 +262,22 @@
               class="p-6 lg:block"
               :class="filterOpen ? 'block' : 'hidden'">
 
-            {{-- Pertahankan filter tahun aktif saat submit form pencarian --}}
-            <input type="hidden" name="tahun" value="{{ $tahunTerpilih }}">
+            {{-- Pertahankan filter periode aktif saat submit form pencarian --}}
+            <input type="hidden" name="periode" value="{{ $periode }}">
+            @if ($periode === 'bulanan')
+                <input type="hidden" name="bulan" value="{{ request('bulan', now()->month) }}">
+                <input type="hidden" name="tahun_bulan" value="{{ request('tahun_bulan', now()->year) }}">
+            @elseif ($periode === 'tahunan')
+                <input type="hidden" name="tahun" value="{{ request('tahun', now()->year) }}">
+            @elseif ($periode === 'custom')
+                <input type="hidden" name="tanggal_dari" value="{{ $startDate->format('Y-m-d') }}">
+                <input type="hidden" name="tanggal_sampai" value="{{ $endDate->format('Y-m-d') }}">
+            @endif
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
                 {{-- Search Bar --}}
-                <div class="md:col-span-2 lg:col-span-4">
+                <div class="md:col-span-2">
                     <label for="search-statistik" class="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wide">
                         Pencarian
                     </label>
@@ -229,20 +336,6 @@
                         </div>
                     </div>
                 </div>
-
-                {{-- Filter Mulai Tanggal --}}
-                <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wide">Mulai Tanggal</label>
-                    <input type="date" name="tanggal_dari" value="{{ request('tanggal_dari') }}"
-                           class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue focus:bg-white transition-all"/>
-                </div>
-
-                {{-- Filter Sampai Tanggal --}}
-                <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wide">Sampai Tanggal</label>
-                    <input type="date" name="tanggal_sampai" value="{{ request('tanggal_sampai') }}"
-                           class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue focus:bg-white transition-all"/>
-                </div>
             </div>
 
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pt-6 border-t border-gray-100">
@@ -250,8 +343,8 @@
                     Ditemukan <span class="text-gray-900 font-bold">{{ $pengaduanDetail->total() }}</span> hasil pengaduan
                 </div>
                 <div class="flex items-center gap-3 w-full sm:w-auto">
-                    @if (request()->hasAny(['search', 'status', 'kategori_id', 'tanggal_dari', 'tanggal_sampai']))
-                        <a href="{{ route('admin.statistik', ['tahun' => $tahunTerpilih]) }}"
+                    @if (request()->hasAny(['search', 'status', 'kategori_id']))
+                        <a href="{{ route('admin.statistik', array_filter(['periode' => $periode, 'bulan' => $periode === 'bulanan' ? request('bulan') : null, 'tahun_bulan' => $periode === 'bulanan' ? request('tahun_bulan') : null, 'tahun' => $periode === 'tahunan' ? request('tahun') : null, 'tanggal_dari' => $periode === 'custom' ? $startDate->format('Y-m-d') : null, 'tanggal_sampai' => $periode === 'custom' ? $endDate->format('Y-m-d') : null])) }}"
                            class="flex-1 sm:flex-none text-center px-5 py-2.5 bg-white border-2 border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900 text-sm font-bold rounded-xl transition-all">
                             Reset Filter
                         </a>
@@ -278,10 +371,10 @@
                 </div>
                 <h3 class="text-lg font-bold text-gray-800">Tidak Ada Data</h3>
                 <p class="text-sm text-gray-500 mt-1 max-w-sm">
-                    @if (request()->hasAny(['search', 'status', 'kategori_id', 'tanggal_dari', 'tanggal_sampai']))
+                    @if (request()->hasAny(['search', 'status', 'kategori_id']))
                         Tidak ditemukan pengaduan yang cocok dengan filter yang Anda berikan.
                     @else
-                        Belum ada data pengaduan yang tersimpan di sistem.
+                        Belum ada data pengaduan dalam periode ini.
                     @endif
                 </p>
             </div>

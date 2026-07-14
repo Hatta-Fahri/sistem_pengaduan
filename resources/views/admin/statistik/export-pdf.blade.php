@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Laporan Statistik Pengaduan {{ $tahun }}</title>
+    <title>Laporan Statistik Pengaduan - {{ $teksPeriode }}</title>
     <style>
         html, body {
             margin: 0;
@@ -48,14 +48,14 @@
                       padding: 0 4pt 6pt; }
         .kop-h-spacer { width: 105pt; }
 
-        .kop-kemendikti { font-size: 12pt; font-weight: normal;
+        .kop-kemendikti { font-size: 13pt; font-weight: normal;
                           text-transform: uppercase; letter-spacing: 0.2pt; }
-        .kop-polmed     { font-size: 17pt; font-weight: bold;
+        .kop-polmed     { font-size: 13pt; font-weight: bold;
                           text-transform: uppercase; letter-spacing: 0.5pt;
                           margin-top: 1pt; }
-        .kop-jurusan    { font-size: 12pt; font-weight: bold;
+        .kop-jurusan    { font-size: 10pt; font-weight: bold;
                           text-transform: uppercase; margin-top: 1pt; }
-        .kop-addr       { font-size: 10pt; margin-top: 2pt; }
+        .kop-addr       { font-size: 9.5pt; font-weight: bold; margin-top: 2pt; }
 
         /* Garis bawah kop: tebal + tipis */
         .kop-hr-thick { border: none; border-top: 3pt solid #000; margin: 0; }
@@ -225,7 +225,7 @@
                 <div class="kop-jurusan">Jurusan Teknik Komputer &amp; Informatika</div>
                 <div class="kop-addr">Jl. Almamater No. 1 Kampus USU, Medan 20155, Indonesia</div>
                 <div class="kop-addr">Telp. (061) 8210463, 8211235, Faks: (061) 8215845</div>
-                <div class="kop-addr">http://www.polmed.ac.id e-mail: polmed@polmed.ac.id, info@polmed.ac.id</div>
+                <div class="kop-addr" style="white-space: nowrap; font-size: 8.5pt;">http://www.polmed.ac.id e-mail: polmed@polmed.ac.id, info@polmed.ac.id</div>
             </td>
             <td class="kop-h-spacer"></td>
         </tr>
@@ -239,7 +239,7 @@
 <div id="pdf-footer">
     <table class="footer-strip">
         <tr>
-            <td>No. Dokumen: SILPM/LAP/{{ $tahun }}</td>
+            <td>No. Dokumen: SILPM/LAP/{{ $startDate->format('Ymd') }}-{{ $endDate->format('Ymd') }}</td>
             <td style="text-align:center;">Revisi ke: 01</td>
             <td style="text-align:right;">Tanggal Efektif: {{ now()->locale('id')->isoFormat('D MMMM YYYY') }}</td>
         </tr>
@@ -254,7 +254,7 @@
     {{-- Judul laporan di dalam konten --}}
     <div class="laporan-title">Laporan Statistik Pengaduan Mahasiswa</div>
     <div class="laporan-subtitle">
-        Sistem Informasi Layanan Pengaduan Mahasiswa &mdash; Tahun {{ $tahun }}
+        Sistem Informasi Layanan Pengaduan Mahasiswa &mdash; {{ $teksPeriode }}
     </div>
     <hr class="laporan-divider" />
 
@@ -264,7 +264,7 @@
             <tr>
                 <td class="lbl">Periode Laporan</td>
                 <td class="colon">:</td>
-                <td class="val">1 Januari {{ $tahun }} s.d. 31 Desember {{ $tahun }}</td>
+                <td class="val">{{ $teksPeriode }}</td>
                 <td style="width:20px;"></td>
                 <td class="lbl">Tanggal Cetak</td>
                 <td class="colon">:</td>
@@ -366,14 +366,25 @@
 
     <!-- ===== TREN BULANAN ===== -->
     <div class="section-title">III. Tren Pengaduan &mdash; 12 Bulan Terakhir</div>
+    @php
+        $pdfTrendLabels = [];
+        $pdfTrendData   = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $bulanRolling       = now()->subMonths($i);
+            $pdfTrendLabels[]   = strtoupper($bulanRolling->locale('en')->isoFormat('MMM YYYY'));
+            $pdfTrendData[]     = \App\Models\Pengaduan::whereYear('created_at', $bulanRolling->year)
+                ->whereMonth('created_at', $bulanRolling->month)
+                ->count();
+        }
+    @endphp
     <table class="data-table">
         <thead><tr>
-            @foreach($trendLabels as $label)
+            @foreach($pdfTrendLabels as $label)
             <th style="font-size:8px;">{{ $label }}</th>
             @endforeach
         </tr></thead>
         <tbody><tr>
-            @foreach($trendData as $jumlah)
+            @foreach($pdfTrendData as $jumlah)
             <td style="font-weight:bold;">{{ $jumlah }}</td>
             @endforeach
         </tr></tbody>
@@ -381,8 +392,8 @@
 
     <!-- ===== DAFTAR PENGADUAN ===== -->
     @if($pengaduanList->isNotEmpty())
-    <div style="page-break-before: always; padding-top: 130pt;">
-    <div class="section-title">IV. Daftar Seluruh Pengaduan Tahun {{ $tahun }}</div>
+    <div style="margin-top: 14px;">
+    <div class="section-title">IV. Daftar Seluruh Pengaduan &mdash; {{ $teksPeriode }}</div>
     <table class="data-table">
         <thead>
             <tr>
@@ -416,7 +427,7 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="10" class="td-left">Total: {{ $pengaduanList->count() }} pengaduan pada Tahun {{ $tahun }}</td>
+                <td colspan="10" class="td-left">Total: {{ $pengaduanList->count() }} pengaduan — {{ $teksPeriode }}</td>
             </tr>
         </tfoot>
     </table>
