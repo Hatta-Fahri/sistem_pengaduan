@@ -77,14 +77,13 @@
         .footer-strip td {
             font-size: 8pt;
             padding: 0;
-            /* border dihapus */
         }
 
         /* ============================================================
            AREA KONTEN — padding atas menyesuaikan tinggi header fixed
            ============================================================ */
         .page-wrap {
-            padding: 128pt 57pt 40pt;  /* bottom 40pt: ruang untuk footer strip fixed (bottom:22pt) */
+            padding: 128pt 57pt 40pt;
         }
 
         /* ============================================================
@@ -433,6 +432,21 @@
     </table>
     </div>{{-- tutup div page-break-before --}}
     @endif
+
+    {{-- ===== TANDA TANGAN ===== --}}
+    <div style="margin-top: 24pt; width: 100%; text-align: right; padding-right: 30pt;">
+        <div style="display: inline-block; text-align: left; font-family: 'Times New Roman', Times, serif; font-size: 9pt; font-weight: normal;">
+            <div>Medan, {{ now()->locale('id')->isoFormat('D MMMM YYYY') }}</div>
+            <div>Koordinator Program Studi</div>
+            <div style="margin: 6pt 0; text-align: center;">
+                <img src="{{ public_path('images/tanda-tangan_kaprodimi.png') }}"
+                     alt="Tanda Tangan Kaprodi"
+                     style="height: 45pt; width: auto; display: block; margin: 0 auto;" />
+            </div>
+            <div>Bister Purba, S.Kom., M.Kom.</div>
+            <div>NIP. 19910103 202203 1 008</div>
+        </div>
+    </div>
 
 </div><!-- /.page-wrap -->
 </body>
