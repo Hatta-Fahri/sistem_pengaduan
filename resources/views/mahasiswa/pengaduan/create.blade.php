@@ -73,7 +73,7 @@
                     <div>
                         <label for="tanggal_kejadian" class="block text-sm font-bold text-gray-700 mb-2">Waktu Kejadian <span class="text-red-500">*</span></label>
                         <input id="tanggal_kejadian" name="tanggal_kejadian" type="datetime-local" required
-                               value="{{ old('tanggal_kejadian') }}"
+                               value="{{ old('tanggal_kejadian', now()->timezone('Asia/Jakarta')->format('Y-m-d\TH:i')) }}"
                                class="w-full px-4 py-3 bg-gray-50 border rounded-xl text-sm font-semibold text-gray-800 focus:ring-4 focus:ring-blue-500/20 focus:border-polmed-blue focus:bg-white outline-none transition-all {{ $errors->has('tanggal_kejadian') ? 'border-red-400' : 'border-gray-200' }}" />
                     </div>
                 </div>
