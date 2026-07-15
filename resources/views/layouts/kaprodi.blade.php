@@ -141,8 +141,8 @@
                     </svg>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold text-white truncate">{{ auth()->user()->name }}</p>
-                    <p class="text-xs text-white/50 truncate">Kepala Program Studi</p>
+                    <p class="text-sm font-semibold text-white truncate">Kaprodi</p>
+                    <p class="text-xs text-white/50 truncate">Kaprodi MI</p>
                 </div>
             </div>
             <form method="POST" action="{{ route('logout') }}">

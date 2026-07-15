@@ -40,6 +40,11 @@ class EnsureRole
                     ->with('error', 'Anda tidak memiliki izin untuk mengakses halaman tersebut.');
             }
 
+            if ($userRole === 'kaprodi') {
+                return redirect()->route('kaprodi.dashboard')
+                    ->with('error', 'Anda tidak memiliki izin untuk mengakses halaman tersebut.');
+            }
+
             return redirect()->route('mahasiswa.dashboard')
                 ->with('error', 'Anda tidak memiliki izin untuk mengakses halaman tersebut.');
         }

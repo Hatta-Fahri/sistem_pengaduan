@@ -35,6 +35,10 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
+        if ($user->isKaprodi()) {
+            return redirect()->route('kaprodi.dashboard');
+        }
+
         return redirect()->route('mahasiswa.dashboard');
     }
 
