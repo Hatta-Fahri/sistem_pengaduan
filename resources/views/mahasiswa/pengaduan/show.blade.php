@@ -236,13 +236,13 @@
                         <li>
                             <div class="relative pb-8">
                                 <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
-                                <div class="relative flex space-x-3">
+                                <div class="relative flex items-center gap-3">
                                     <div>
                                         <span class="h-8 w-8 rounded-full {{ $timelineColors['dibuat'] }} flex items-center justify-center ring-4 ring-white shadow-sm">
                                             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">{!! $timelineIcons['dibuat'] !!}</svg>
                                         </span>
                                     </div>
-                                    <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
+                                    <div class="flex min-w-0 flex-1 justify-between space-x-4">
                                         <div>
                                             <p class="text-sm font-bold text-gray-900">Pengaduan Dibuat</p>
                                         </div>
@@ -261,13 +261,13 @@
                                     @if (!$loop->last)
                                         <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
                                     @endif
-                                    <div class="relative flex space-x-3">
+                                    <div class="relative flex items-center gap-3">
                                         <div>
                                             <span class="h-8 w-8 rounded-full {{ $timelineColors[$riwayat->status_baru] ?? 'bg-gray-100 text-gray-500' }} flex items-center justify-center ring-4 ring-white shadow-sm">
                                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">{!! $timelineIcons[$riwayat->status_baru] ?? $timelineIcons['menunggu_verifikasi'] !!}</svg>
                                             </span>
                                         </div>
-                                        <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
+                                        <div class="flex min-w-0 flex-1 justify-between space-x-4">
                                             <div class="flex-1">
                                                 <p class="text-sm font-bold text-gray-900">
                                                     Status: {{ \App\Models\Pengaduan::statusLabels()[$riwayat->status_baru] ?? $riwayat->status_baru }}

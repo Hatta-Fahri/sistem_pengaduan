@@ -2,6 +2,7 @@
 <html lang="id" class="h-full bg-gray-50">
 <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-polmed-small.png') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="SILPM Kaprodi Panel — Sistem Informasi Layanan Pengaduan Mahasiswa" />
     <title>@yield('title', 'Dashboard') — SILPM Kaprodi</title>
