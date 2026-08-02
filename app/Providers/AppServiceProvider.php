@@ -5,12 +5,14 @@ namespace App\Providers;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use App\Mail\VerifikasiEmail;
+use App\Mail\ResetPasswordEmail;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -41,6 +43,17 @@ class AppServiceProvider extends ServiceProvider
                 userName:        $notifiable->name,
                 verificationUrl: $url,
             ))->to($notifiable->email, $notifiable->name);
+        });
+
+        // Ganti email reset password default Laravel dengan template kustom SILPM
+        ResetPassword::toMailUsing(function ($notifiable, $token) {
+            $url = url(route('password.reset', [
+                'token' => $token,
+                'email' => $notifiable->getEmailForPasswordReset(),
+            ], false));
+
+            return (new ResetPasswordEmail($url, $notifiable->name))
+                ->to($notifiable->email, $notifiable->name);
         });
 
         RateLimiter::for('pengaduan-submit', function (Request $request) {
