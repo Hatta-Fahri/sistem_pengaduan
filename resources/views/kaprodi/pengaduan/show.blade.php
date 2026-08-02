@@ -42,7 +42,7 @@
         <p class="text-sm font-semibold text-amber-800">Anda hanya memiliki hak akses untuk <strong>melihat</strong> detail pengaduan. Pengelolaan status pengaduan dilakukan oleh Administrator.</p>
     </div>
 
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8">
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8 items-start">
 
         {{-- ===== KOLOM KIRI: Detail + Timeline ===== --}}
         <div class="xl:col-span-2 space-y-6 lg:space-y-8">
@@ -221,7 +221,7 @@
 
         {{-- ===== KOLOM KANAN: Info Status (Read-Only) ===== --}}
         <div class="xl:col-span-1">
-            <div class="bg-white rounded-2xl border border-gray-200 shadow-lg shadow-gray-200/50 p-6 sm:p-8 sticky top-24">
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-lg shadow-gray-200/50 p-6 sm:p-8 sticky top-6">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="w-10 h-10 rounded-xl bg-blue-50 text-polmed-blue flex items-center justify-center">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>

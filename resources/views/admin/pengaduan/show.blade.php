@@ -40,7 +40,7 @@
         <span class="text-polmed-blue font-bold">Detail #{{ $pengaduan->id }}</span>
     </nav>
 
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8">
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8 items-start">
 
         {{-- ===== KOLOM KIRI: Detail + Timeline ===== --}}
         <div class="xl:col-span-2 space-y-6 lg:space-y-8">
@@ -217,9 +217,8 @@
             </div>
         </div>
 
-        {{-- ===== KOLOM KANAN: Form Update Status (Sticky) ===== --}}
         <div class="xl:col-span-1">
-            <div class="bg-white rounded-2xl border border-gray-200 shadow-lg shadow-gray-200/50 p-6 sm:p-8 sticky top-24"
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-lg shadow-gray-200/50 p-6 sm:p-8 sticky top-6"
                  x-data="{ 
                     selectedStatus: '{{ old('status', $pengaduan->status) }}',
                     wajibCatatanList: {{ json_encode($wajibCatatan) }},
