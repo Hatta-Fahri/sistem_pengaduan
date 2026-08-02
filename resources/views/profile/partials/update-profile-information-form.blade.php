@@ -47,7 +47,7 @@
         </div>
 
         @if(!$user->isAdmin())
-        <div class="grid grid-cols-2 gap-4 pt-2">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
             <div>
                 <label class="block text-sm font-bold text-white/60 mb-1.5">NIM</label>
                 <input type="text" value="{{ $user->nim }}" disabled class="w-full px-3 py-2.5 sm:px-4 sm:py-3 bg-white/10 border border-white/10 rounded-xl text-sm font-medium text-white/50 cursor-not-allowed" />

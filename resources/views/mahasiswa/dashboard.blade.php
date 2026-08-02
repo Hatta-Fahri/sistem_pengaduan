@@ -89,7 +89,7 @@
             </div>
         @else
             <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left">
+                <table class="w-full text-sm text-left" style="min-width: 640px;">
                     <thead class="bg-gray-50/80 border-b border-gray-100 text-gray-500 text-xs uppercase tracking-wider font-bold">
                         <tr>
                             <th scope="col" class="px-6 lg:px-8 py-4">Informasi Tanggal</th>

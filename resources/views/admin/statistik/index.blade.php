@@ -31,12 +31,12 @@
             </div>
             <div class="flex items-center gap-3 w-full sm:w-auto">
                 {{-- Export Buttons Group --}}
-                <div class="flex-1 sm:flex-none flex rounded-xl overflow-hidden shadow-md" role="group" aria-label="Pilihan format ekspor laporan">
+                <div class="flex rounded-xl overflow-hidden shadow-md w-full sm:w-auto" role="group" aria-label="Pilihan format ekspor laporan">
                     {{-- Ekspor CSV --}}
                     <a id="btn-export-csv"
                        href="{{ route('admin.pengaduan.export', ['tanggal_dari' => $startDate->format('Y-m-d'), 'tanggal_sampai' => $endDate->format('Y-m-d')]) }}"
                        title="Unduh laporan dalam format CSV"
-                       class="inline-flex flex-1 sm:flex-none justify-center items-center gap-2 bg-polmed-blue text-white hover:bg-blue-800 font-bold px-5 py-3 text-sm transition-all duration-200 hover:-translate-y-0.5 focus:ring-4 focus:ring-blue-500/30 border-r border-blue-700/50">
+                       class="inline-flex flex-1 sm:flex-none justify-center items-center gap-1.5 sm:gap-2 bg-polmed-blue text-white hover:bg-blue-800 font-bold px-3 sm:px-5 py-2.5 sm:py-3 text-xs sm:text-sm transition-all duration-200 hover:-translate-y-0.5 focus:ring-4 focus:ring-blue-500/30 border-r border-blue-700/50">
                         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
@@ -46,7 +46,7 @@
                     <a id="btn-export-pdf"
                        href="{{ route('admin.statistik.export-pdf', array_filter(['periode' => $periode, 'bulan' => request('bulan'), 'tahun_bulan' => request('tahun_bulan'), 'tahun' => request('tahun'), 'tanggal_dari' => $startDate->format('Y-m-d'), 'tanggal_sampai' => $endDate->format('Y-m-d')])) }}"
                        title="Unduh laporan dalam format PDF"
-                       class="inline-flex flex-1 sm:flex-none justify-center items-center gap-2 bg-red-600 text-white hover:bg-red-700 font-bold px-5 py-3 text-sm transition-all duration-200 hover:-translate-y-0.5 focus:ring-4 focus:ring-red-500/30">
+                       class="inline-flex flex-1 sm:flex-none justify-center items-center gap-1.5 sm:gap-2 bg-red-600 text-white hover:bg-red-700 font-bold px-3 sm:px-5 py-2.5 sm:py-3 text-xs sm:text-sm transition-all duration-200 hover:-translate-y-0.5 focus:ring-4 focus:ring-red-500/30">
                         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 13h1.5a1.5 1.5 0 010 3H10v-3zm0 0V10"/>
