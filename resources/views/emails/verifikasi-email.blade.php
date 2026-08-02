@@ -88,7 +88,6 @@
 
         <!-- Expiry -->
         <div class="expiry">
-            <div class="expiry-icon">⏰</div>
             <p>Tautan verifikasi ini hanya berlaku selama <strong>60 menit</strong>. Jika sudah kedaluwarsa, Anda dapat meminta tautan baru melalui halaman verifikasi email di portal SILPM.</p>
         </div>
 

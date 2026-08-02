@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Status Pengaduan Diperbarui — SILPM</title>
+    <title>Status Pengaduan Diperbarui</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background-color: #eef2ff; color: #1f2937; -webkit-font-smoothing: antialiased; }
@@ -155,7 +155,7 @@
     </div>
 
     <div class="footer">
-        <p>&copy; {{ date('Y') }} <strong>SILPM</strong> — Program Studi Manajemen Informatika</p>
+        <p>&copy; {{ date('Y') }} SILPM — Program Studi Manajemen Informatika</p>
         <p>Politeknik Negeri Medan</p>
         <p style="margin-top:6px; color:#d1d5db; font-size:10px;">Email ini dikirim secara otomatis. Mohon tidak membalas email ini.</p>
     </div>
