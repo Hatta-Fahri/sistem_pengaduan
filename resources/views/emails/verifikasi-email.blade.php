@@ -27,7 +27,7 @@
         .cta a { background: #2b4cba; color: #ffffff; text-decoration: none; padding: 14px 38px; border-radius: 10px; font-size: 15px; font-weight: 700; display: inline-block; letter-spacing: 0.2px; box-shadow: 0 4px 14px rgba(43,76,186,0.35); }
 
         /* Info box */
-        .info-box { background: #f0f4ff; border-left: 3px solid #2b4cba; border-radius: 8px; padding: 14px 18px; margin: 20px 0; }
+        .info-box { background: #f8faff; border-left: 3px solid #2b4cba; border-right: 3px solid #2b4cba; border-radius: 10px; padding: 14px 18px; margin: 20px 0; }
         .info-box p { font-size: 13px; color: #374151; line-height: 1.75; }
 
         /* Expiry */

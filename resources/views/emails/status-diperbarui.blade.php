@@ -34,11 +34,12 @@
         .arrow { color: #9ca3af; font-size: 16px; font-weight: bold; flex-shrink: 0; }
 
         /* Info box */
-        .info-box { background: #f0f4ff; border-left: 3px solid #2b4cba; border-radius: 8px; padding: 14px 18px; margin: 16px 0; }
-        .info-box .label { font-size: 10px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
-        .info-row { display: flex; gap: 8px; margin-bottom: 7px; font-size: 13px; align-items: flex-start; }
-        .info-row .key { color: #6b7280; min-width: 130px; flex-shrink: 0; }
-        .info-row .val { color: #111827; font-weight: 500; word-break: break-word; }
+        .info-box { background: #f8faff; border-left: 3px solid #2b4cba; border-right: 3px solid #2b4cba; border-radius: 10px; padding: 4px 18px; margin: 16px 0; }
+        .info-box .label { font-size: 10px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.08em; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0; margin-bottom: 0; }
+        .info-row { padding: 10px 0; border-bottom: 1px solid #e2e8f0; font-size: 13px; }
+        .info-row:last-child { border-bottom: none; }
+        .info-row .key { display: block; color: #6b7280; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 4px; }
+        .info-row .val { display: block; color: #111827; font-weight: 500; word-break: break-word; }
 
         /* Catatan */
         .catatan-box { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 14px 18px; margin: 16px 0; }
@@ -64,8 +65,7 @@
             .header-title { font-size: 12px !important; }
             .header-sub { font-size: 10px !important; }
             .body { padding: 20px 16px 24px !important; }
-            .info-row { flex-direction: column !important; gap: 2px !important; }
-            .info-row .key { min-width: unset !important; font-weight: 600; }
+            .info-row .key { font-size: 10px !important; }
             .status-change { gap: 6px !important; }
             .footer { padding: 14px 16px !important; }
         }
