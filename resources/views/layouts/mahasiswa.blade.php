@@ -41,7 +41,7 @@
         [x-cloak] { display: none !important; }
     </style>
 </head>
-<body class="h-full font-sans antialiased text-gray-800" x-data="{ mobileMenuOpen: false }">
+<body class="h-full font-sans antialiased text-gray-800 overflow-x-hidden" x-data="{ mobileMenuOpen: false }">
 
 <div class="min-h-full flex flex-col">
     <!-- Navbar (Atas) -->
