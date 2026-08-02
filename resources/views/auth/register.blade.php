@@ -2,28 +2,26 @@
 @section('title', 'Daftar Akun - Sistem Informasi Layanan Pengaduan Mahasiswa MI')
 @section('content')
 
-    <div class="fixed inset-0 z-50 bg-[#2b4cba] overflow-y-auto">
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-[#2b4cba] overflow-y-auto py-4">
         
-        <div class="fixed top-0 left-0 w-80 h-80 bg-[#2441a1] rounded-br-full opacity-80 mix-blend-multiply pointer-events-none"></div>
-        <div class="fixed bottom-0 right-0 w-[30rem] h-[30rem] bg-[#2441a1] rounded-tl-full opacity-80 mix-blend-multiply pointer-events-none"></div>
-        <div class="fixed -bottom-20 -left-20 w-96 h-96 bg-[#3657c9] rounded-tr-full opacity-50 pointer-events-none"></div>
+        <div class="absolute top-0 left-0 w-80 h-80 bg-[#2441a1] rounded-br-full opacity-80 mix-blend-multiply pointer-events-none"></div>
+        <div class="absolute bottom-0 right-0 w-[30rem] h-[30rem] bg-[#2441a1] rounded-tl-full opacity-80 mix-blend-multiply pointer-events-none"></div>
+        <div class="absolute -bottom-20 -left-20 w-96 h-96 bg-[#3657c9] rounded-tr-full opacity-50 pointer-events-none"></div>
 
-        <div class="relative z-10 min-h-screen flex items-center justify-center p-4 py-10">
+        <div class="relative z-10 w-full max-w-lg p-5 sm:p-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl shadow-2xl mx-4 my-auto">
             
-            <div class="w-full max-w-lg p-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl shadow-2xl">
-                
-                <div class="flex items-center justify-center gap-4 mb-8">
-                    <img src="https://polmed.ac.id/wp-content/uploads/2014/04/logo-polmed-png.png" alt="Logo Polmed" class="h-16 w-auto object-contain drop-shadow-lg flex-shrink-0">
-                    <div class="text-left border-l border-white/30 pl-4 whitespace-nowrap">
-                        <h1 class="text-white font-bold text-lg leading-none">Layanan Pengaduan Mahasiswa</h1>
-                        <p class="text-white/80 text-sm font-medium mt-1.5">Politeknik Negeri Medan</p>
-                    </div>
+            <div class="flex items-center justify-center gap-2 sm:gap-4 mb-4 sm:mb-8">
+                <img src="https://polmed.ac.id/wp-content/uploads/2014/04/logo-polmed-png.png" alt="Logo Polmed" class="h-10 sm:h-16 w-auto object-contain drop-shadow-lg flex-shrink-0">
+                <div class="text-left border-l border-white/30 pl-3 sm:pl-4 min-w-0">
+                    <h1 class="text-white font-bold text-sm sm:text-lg leading-snug">Layanan Pengaduan Mahasiswa</h1>
+                    <p class="text-white/80 text-xs sm:text-sm font-medium mt-1">Politeknik Negeri Medan</p>
                 </div>
+            </div>
 
-                <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-white mb-1">Buat Akun Baru</h2>
-                    <p class="text-white/80 text-sm">Lengkapi form berikut untuk mendaftar sebagai mahasiswa.</p>
-                </div>
+            <div class="text-center mb-4 sm:mb-8">
+                <h2 class="text-2xl sm:text-3xl font-bold text-white mb-1">Buat Akun Baru</h2>
+                <p class="text-white/80 text-sm">Lengkapi form berikut untuk mendaftar sebagai mahasiswa.</p>
+            </div>
 
                 <form method="POST" action="{{ route('register') }}" class="space-y-4">
                     @csrf
@@ -45,7 +43,7 @@
                         @enderror
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
