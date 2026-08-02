@@ -8,7 +8,7 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('mahasiswa.profil.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('mahasiswa.profil.update') }}" class="mt-4 space-y-4 sm:space-y-5">
         @csrf
         @method('patch')
         <div>
@@ -50,11 +50,11 @@
         <div class="grid grid-cols-2 gap-4 pt-2">
             <div>
                 <label class="block text-sm font-bold text-white/60 mb-1.5">NIM</label>
-                <input type="text" value="{{ $user->nim }}" disabled class="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-xl text-sm font-medium text-white/50 cursor-not-allowed" />
+                <input type="text" value="{{ $user->nim }}" disabled class="w-full px-3 py-2.5 sm:px-4 sm:py-3 bg-white/10 border border-white/10 rounded-xl text-sm font-medium text-white/50 cursor-not-allowed" />
             </div>
             <div>
                 <label class="block text-sm font-bold text-white/60 mb-1.5">Kelas</label>
-                <input type="text" value="{{ $user->class }}" disabled class="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-xl text-sm font-medium text-white/50 cursor-not-allowed" />
+                <input type="text" value="{{ $user->class }}" disabled class="w-full px-3 py-2.5 sm:px-4 sm:py-3 bg-white/10 border border-white/10 rounded-xl text-sm font-medium text-white/50 cursor-not-allowed" />
             </div>
         </div>
         <p class="text-xs text-white/50 mt-2 italic">*NIM dan Kelas tidak dapat diubah. Hubungi Administrator jika terdapat kesalahan.</p>

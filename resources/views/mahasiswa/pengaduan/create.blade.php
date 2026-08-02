@@ -49,9 +49,9 @@
             <form method="POST" action="{{ route('mahasiswa.pengaduan.store') }}" class="space-y-6" enctype="multipart/form-data">
                 @csrf
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {{-- Kategori --}}
-                    <div>
+                    <div class="min-w-0">
                         <label for="kategori_id" class="block text-sm font-bold text-gray-700 mb-2">Kategori <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <select id="kategori_id" name="kategori_id" required
@@ -70,7 +70,7 @@
                     </div>
 
                     {{-- Tanggal Kejadian --}}
-                    <div>
+                    <div class="min-w-0">
                         <label for="tanggal_kejadian" class="block text-sm font-bold text-gray-700 mb-2">Waktu Kejadian <span class="text-red-500">*</span></label>
                         <input id="tanggal_kejadian" name="tanggal_kejadian" type="datetime-local" required
                                value="{{ old('tanggal_kejadian', now()->timezone('Asia/Jakarta')->format('Y-m-d\TH:i')) }}"

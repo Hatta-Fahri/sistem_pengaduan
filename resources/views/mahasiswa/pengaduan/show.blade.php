@@ -232,69 +232,92 @@
 
                 <div class="flow-root">
                     <ul role="list" class="-mb-8">
-                        <!-- Step: Dibuat -->
+
+                        {{-- Step: Dibuat --}}
                         <li>
                             <div class="relative pb-8">
-                                <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                                @if ($pengaduan->statusHistory->isNotEmpty())
+                                <span class="absolute left-4 -ml-px top-[calc(50%-1rem)] h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                                @endif
                                 <div class="relative flex items-center gap-3">
-                                    <div>
+                                    <div class="flex-shrink-0 relative z-10">
                                         <span class="h-8 w-8 rounded-full {{ $timelineColors['dibuat'] }} flex items-center justify-center ring-4 ring-white shadow-sm">
                                             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">{!! $timelineIcons['dibuat'] !!}</svg>
                                         </span>
                                     </div>
-                                    <div class="flex min-w-0 flex-1 justify-between space-x-4">
-                                        <div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-0.5">
                                             <p class="text-sm font-bold text-gray-900">Pengaduan Dibuat</p>
-                                        </div>
-                                        <div class="whitespace-nowrap text-right text-xs font-semibold text-gray-500">
-                                            {{ $pengaduan->created_at->format('d M H:i') }}
+                                            <span class="text-xs font-semibold text-gray-400 whitespace-nowrap">
+                                                {{ $pengaduan->created_at->format('d M Y, H:i') }}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </li>
 
-                        <!-- Riwayat Status Dinamis -->
+                        {{-- Riwayat Status Dinamis --}}
                         @foreach ($pengaduan->statusHistory as $idx => $riwayat)
+                            @php
+                                $rBadge = $badgeClass[$riwayat->status_baru] ?? 'bg-gray-100 text-gray-700';
+                                $rColor = $timelineColors[$riwayat->status_baru] ?? 'bg-gray-100 text-gray-500';
+                                $rLabel = \App\Models\Pengaduan::statusLabels()[$riwayat->status_baru] ?? $riwayat->status_baru;
+                                $rLama  = $riwayat->status_lama
+                                    ? (\App\Models\Pengaduan::statusLabels()[$riwayat->status_lama] ?? $riwayat->status_lama)
+                                    : null;
+                            @endphp
                             <li>
                                 <div class="relative pb-8">
                                     @if (!$loop->last)
-                                        <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                                        <span class="absolute left-4 -ml-px top-[calc(50%-1rem)] h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
                                     @endif
                                     <div class="relative flex items-center gap-3">
-                                        <div>
-                                            <span class="h-8 w-8 rounded-full {{ $timelineColors[$riwayat->status_baru] ?? 'bg-gray-100 text-gray-500' }} flex items-center justify-center ring-4 ring-white shadow-sm">
+                                        <div class="flex-shrink-0 relative z-10">
+                                            <span class="h-8 w-8 rounded-full {{ $rColor }} flex items-center justify-center ring-4 ring-white shadow-sm">
                                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">{!! $timelineIcons[$riwayat->status_baru] ?? $timelineIcons['menunggu_verifikasi'] !!}</svg>
                                             </span>
                                         </div>
-                                        <div class="flex min-w-0 flex-1 justify-between space-x-4">
-                                            <div class="flex-1">
-                                                <p class="text-sm font-bold text-gray-900">
-                                                    Status: {{ \App\Models\Pengaduan::statusLabels()[$riwayat->status_baru] ?? $riwayat->status_baru }}
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-0.5 mb-1">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold {{ $rBadge }}">
+                                                    {{ $rLabel }}
+                                                </span>
+                                                <span class="text-xs font-semibold text-gray-400 whitespace-nowrap">
+                                                    {{ $riwayat->created_at->format('d M Y, H:i') }}
+                                                </span>
+                                            </div>
+                                            @if ($rLama)
+                                                <p class="text-[11px] font-semibold text-gray-400 mb-1 flex items-center gap-1 flex-wrap">
+                                                    Dari:
+                                                    <span class="bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded text-[10px] font-bold">{{ $rLama }}</span>
                                                 </p>
-                                                @if ($riwayat->catatan)
-                                                    <div class="mt-2 text-xs font-medium text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-100 relative">
-                                                        <div class="absolute -top-1.5 left-3 w-3 h-3 bg-gray-50 border-t border-l border-gray-100 transform rotate-45"></div>
-                                                        <span class="block font-bold text-gray-800 mb-0.5">Catatan:</span>
-                                                        {{ $riwayat->catatan }}
-                                                    </div>
-                                                @endif
-                                                @if ($riwayat->bukti)
-                                                    <a href="{{ $riwayat->bukti_url }}" target="_blank"
-                                                       class="inline-flex items-center gap-1.5 mt-2 px-2.5 py-1 bg-blue-50 border border-blue-100 rounded-lg text-[11px] font-bold text-polmed-blue hover:bg-blue-100 transition-colors">
-                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"></path></svg>
-                                                        Lihat Lampiran
-                                                    </a>
-                                                @endif
-                                            </div>
-                                            <div class="whitespace-nowrap text-right text-xs font-semibold text-gray-500">
-                                                {{ $riwayat->created_at->format('d M H:i') }}
-                                            </div>
+                                            @endif
+                                            @if ($riwayat->catatan)
+                                                <div class="mt-1.5 text-xs font-medium text-gray-600 bg-gray-50 px-3 py-2 rounded-lg border border-gray-100">
+                                                    <span class="block font-bold text-gray-700 mb-0.5 text-[11px] uppercase tracking-wide">Catatan:</span>
+                                                    {{ $riwayat->catatan }}
+                                                </div>
+                                            @endif
+                                            @if ($riwayat->bukti)
+                                                <a href="{{ $riwayat->bukti_url }}" target="_blank"
+                                                   class="inline-flex items-center gap-1.5 mt-2 px-2.5 py-1 bg-blue-50 border border-blue-100 rounded-lg text-[11px] font-bold text-polmed-blue hover:bg-blue-100 transition-colors">
+                                                    <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+                                                    Lihat Lampiran
+                                                </a>
+                                            @endif
+                                            @if ($riwayat->changedBy)
+                                                <p class="text-[11px] font-semibold text-gray-400 mt-1.5 flex items-center gap-1">
+                                                    <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                                    {{ $riwayat->changedBy->name }}
+                                                </p>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
                             </li>
                         @endforeach
+
                     </ul>
                 </div>
 
