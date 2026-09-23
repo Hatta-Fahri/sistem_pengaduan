@@ -107,17 +107,14 @@ DB_PASSWORD=
 
 ### Konfigurasi Akun Seeder
 
-Seeder membaca email & password dari `.env` agar kredensial asli tidak ter-commit
-ke repository publik. Sesuaikan variabel berikut di `.env`:
-
 ```env
 ADMIN_EMAIL=admin@email-anda.com
 ADMIN_NAME="Administrator MI"
-ADMIN_PASSWORD=password_aman_anda
+ADMIN_PASSWORD=password_anda
 
 KAPRODI_EMAIL=kaprodi@email-anda.com
 KAPRODI_NAME="Kaprodi MI"
-KAPRODI_PASSWORD=password_aman_anda
+KAPRODI_PASSWORD=password_anda
 ```
 
 > Jika variabel tidak diisi, seeder akan menggunakan nilai placeholder default (`admin@silpm.local` / `kaprodi@silpm.local` dengan password `password`).
