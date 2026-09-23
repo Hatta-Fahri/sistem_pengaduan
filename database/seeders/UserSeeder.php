@@ -9,30 +9,34 @@ use App\Models\User;
 class UserSeeder extends Seeder
 {
     /**
-     * Seed akun admin, kaprodi, dan mahasiswa dummy untuk testing.
+     * Seed akun admin dan kaprodi.
+     *
+     * Email & password dibaca dari .env agar kredensial asli tidak
+     * ter-commit ke repository publik. Lihat .env.example untuk
+     * daftar variabel yang perlu diisi.
      */
     public function run(): void
     {
         // Akun Admin — gunakan firstOrCreate agar tidak error jika sudah ada
         User::firstOrCreate(
-            ['email' => 'adminprodimi@gmail.com'],
+            ['email' => env('ADMIN_EMAIL', 'admin@silpm.local')],
             [
-                'name'     => 'Administrator MI',
+                'name'     => env('ADMIN_NAME', 'Administrator MI'),
                 'nim'      => null,
                 'class'    => null,
-                'password' => Hash::make('password'),
+                'password' => Hash::make(env('ADMIN_PASSWORD', 'password')),
                 'role'     => 'admin',
             ]
         );
 
         // Akun Kaprodi
         User::firstOrCreate(
-            ['email' => 'kaprodimipolmed@gmail.com'],
+            ['email' => env('KAPRODI_EMAIL', 'kaprodi@silpm.local')],
             [
-                'name'     => 'Kaprodi MI',
+                'name'     => env('KAPRODI_NAME', 'Kaprodi MI'),
                 'nim'      => null,
                 'class'    => null,
-                'password' => Hash::make('password'),
+                'password' => Hash::make(env('KAPRODI_PASSWORD', 'password')),
                 'role'     => 'kaprodi',
             ]
         );
